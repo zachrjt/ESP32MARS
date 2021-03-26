@@ -1,19 +1,3 @@
-struct Agenda
-{
-    int event_counter;
-    int dates[2];
-
-};
-
-struct Event
-{
-    int day;
-    int event_time[3];
-    //event time specified: time-hour, time-minute, time-seconds, can be local or UTC
-    int day;
-};
-
-
 /*
     .iCalendar files are pretty simple "xml"-like files strucuted in an order that can be read, for more information about specific parts refer to https://tools.ietf.org/html/rfc5545
 
@@ -67,5 +51,32 @@ struct Event
                         -ONLY A COMPONENT OF VEVENTS/VTODO not an individual component cant just have alarms
                     *****************************************************************************************************************************************
 
-        Alright that seems simple right?, well time zones and timming makes things alot harder but overall not too bad just lots and lots of string/text parsing to grab info    
+        Alright that seems simple right?, well time zones and timing makes things alot harder but overall not too bad just lots and lots of string/text parsing to grab info    
 */ 
+
+
+typedef struct Agenda
+{
+    char agenda_name[32];       //The name of the agenda, im not going to use a pointer, like who tf needs a long ass agenda name 
+    int timezone_properties;    //Tells us the timezone settings for the entire agenda
+    int agenda_event_counter;   //Tells us how many events are present within the Agenda
+
+    CalendarEvent *jobs[4];     //An array of points that must be intialized to point to dynamically allocated heap CalendarEvents
+
+} UserAgenda;
+
+
+typedef struct Event
+{
+    int event_properties;       //Encodes properties such as alarm?.....local or UTC......priority....maybe other?
+    
+
+    int event_dmy;              //The day, month, year of the event in a certain encoding, can be bitwise accessed for parts
+    int event_time[3];          //Event time specified: time-hour, time-minute, time-seconds, can be local or UTC 
+
+    int event_alarm_time;       //The end time of alarm/due date if used; is an offset from the event-time
+} CalendarEvent;
+
+
+
+
