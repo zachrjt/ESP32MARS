@@ -43,25 +43,27 @@ void setup()
         return;
     }
 
-    long keyword_position = parse_keyword(&sdcard_calendar, "VCALENDAR", 0);
+    long keyword_position = parse_keyword(&sdcard_calendar, "END:VCALENDAR", 0);
     if (keyword_position == EOF)
     {
         Serial.println("Could not find specified keyvalue within the file");
-        return;
     }
-    Serial.println(keyword_position);
-
-    Serial.println(parse_keyword(&sdcard_calendar, "END:VCALENDAR", 0));
-
-    char *data = parse_data_line(&sdcard_calendar, keyword_position);
-    for (int i = 0; i < 77 && data[i] != '\0'; i++)
+    else
     {
-        Serial.print(data[i]);
+        Serial.println("THE KEYWORD IS AT THIS POS:--------------------------------------------------------------------------------------------------------------------");
+        Serial.println(keyword_position);
+        Serial.println("-----------------------------------------------------------------------------------------------------------------------------------------------");
+
+        char *data = parse_data_line(&sdcard_calendar, keyword_position);
+        for (int i = 0; i < 77 && data[i] != '\0'; i++)
+        {
+            Serial.print(data[i]);
+        }
+        Serial.print('\n');
+        free(data);
     }
-    free(data);
-    Serial.print('\n');
-    Serial.println("end message");
-    Serial.end();
+
+    Serial.println("ENDING SERIAL CONNECTION");
     sdcard_calendar.close();
     SD.end();
 }
@@ -80,6 +82,7 @@ char *parse_data_line(File *file, const long file_byte_offset)
     {
         return NULL; //specifed position could not be seeked out
     }
+    else
     buffer_state = 0;
     char buffer_byte = '\0';
 
@@ -122,10 +125,11 @@ long parse_keyword(File *file, const char *keyword, const long file_byte_offset)
     int keyword_index = 0;                       //Pointer index of our keyword string
     int keyword_length = 0;                      //The length of the keyword
     
+    int keyword_state = 0;                       //State of if the keyword has been found
     for (int i = 0; keyword[i] != '\0'; i++, keyword_length++);
-    int maxbuffer_length = (75 - keyword_length);
+    int maxbuffer_length = (75 - (keyword_length));
 
-    char text_buffer[77] = {}; //A line text buffer, used to recieve data from the file consisting of up to one line...
+    char text_buffer[maxbuffer_length] = {}; //A line text buffer, used to recieve data from the file consisting of up to one line...
                                //...the maximum length of a line in a ical file is 77 bytes with the ending CR-LF sequence...
                                //...some data is longer than one line, ie multi=line "folded" SUMMARY or DESCRIPTION components...
                                //...that isn't relevant for the keyword parsing being done here
@@ -161,25 +165,33 @@ long parse_keyword(File *file, const char *keyword, const long file_byte_offset)
                     keyword_byte_offset = EOF; //Since the next character was not LF, it indicates a bad .ical file since...
                                                //..any CR in an .ical file cannot be without LF, return error
                 }
+                else
+                {
+                    keyword_byte_offset++;
+                }
+
                 break;                         //Otherwise no error, but end of line need to parse next line
             }
             else if('\0' != buffer_byte)       //Not an error nor a CR so a regular char byte
             {
-                keyword_byte_offset += 1;
+                keyword_byte_offset ++;
                 text_buffer[text_buffer_index] = buffer_byte; //Setting current byte in text buffer to the read byte
 
                 if (buffer_byte == keyword[keyword_index++])  //If the current byte matches the first/next character in the keyword
                 {
-                    if (keyword[keyword_index] == '\0')       //If a keyword match was found, ie reached end of keyword string;
+                    if (keyword_index == keyword_length)       //If a keyword match was found, ie reached end of keyword string;
                     {
+                        
                         keyword_byte_offset -= keyword_index;
-                        return keyword_byte_offset;           //Since keyword was found returning the keyword_byte_offset to...
+                        keyword_state = 1;
+                        text_buffer_index++;
+                        break;                                //Since keyword was found returning the keyword_byte_offset to...
                                                               //...first character of the keyword match
                     }
                 }
                 else
                 {
-                    keyword_byte_offset = 0;                  //Keyword pattern broken or not even found yet
+                    keyword_index = 0;                        //Keyword pattern broken or not even found yet
                 }
             }
         }
@@ -194,8 +206,11 @@ long parse_keyword(File *file, const char *keyword, const long file_byte_offset)
                 Serial.print(text_buffer[i]);
             }
             Serial.print('\n');
+            if(keyword_state == 1)
+            {
+                break;
+            }
         }
-
     }
     return keyword_byte_offset; //Since no key value was found in the entire file return EOF
 }
