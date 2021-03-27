@@ -54,19 +54,6 @@
 
         Alright that seems simple right?, well time zones and timing makes things alot harder but overall not too bad just lots and lots of string/text parsing to grab info    
 */ 
-
-
-typedef struct Agenda
-{
-    char agenda_name[32];       //The name of the agenda, im not going to use a pointer, like who tf needs a long ass agenda name 
-    int timezone_properties;    //Tells us the timezone settings for the entire agenda
-    int agenda_event_counter;   //Tells us how many events are present within the Agenda
-
-    CalendarEvent *jobs[4];     //An array of points that must be intialized to point to dynamically allocated heap CalendarEvents
-
-} UserAgenda;
-
-
 typedef struct Event
 {
     int event_properties;       //Encodes properties such as alarm?.....local or UTC......priority....maybe other?
@@ -79,6 +66,19 @@ typedef struct Event
     int event_time[3];          //Event time specified: time-hour, time-minute, time-seconds, can be local or UTC 
     int event_alarm_time;       //The end time of alarm/due date if used; is an offset from the event-time
 } CalendarEvent;
+
+typedef struct Agenda
+{
+    char agenda_name[32];       //The name of the agenda, im not going to use a pointer, like who tf needs a long ass agenda name 
+    int timezone_properties;    //Tells us the timezone settings for the entire agenda
+    int agenda_event_counter;   //Tells us how many events are present within the Agenda
+
+    CalendarEvent *jobs[4];     //An array of points that must be intialized to point to dynamically allocated heap CalendarEvents
+
+} UserAgenda;
+
+
+
 
 
 
