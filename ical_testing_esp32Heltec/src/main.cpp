@@ -36,7 +36,7 @@ void setup()
     }
     Serial.println("Mounted SD card");
 
-    File sdcard_calendar = SD.open("/ical_simple.ics");
+    File sdcard_calendar = SD.open("/uofc_calendar.ics");
     if (!sdcard_calendar)
     {
         Serial.println("Could not open file");
@@ -86,7 +86,7 @@ char *parse_data_line(File *file, const long file_byte_offset)
     buffer_state = 0;
     char buffer_byte = '\0';
 
-    for (text_buffer_index = 0; text_buffer_index < 77; text_buffer_index++)
+    for (text_buffer_index = 0; text_buffer_index < 77 && file->available(); text_buffer_index++)
     {
         if (!buffer_state) //if we have not found a CRLF sequence
         {
@@ -124,26 +124,21 @@ long parse_keyword(File *file, const char *keyword, const long file_byte_offset)
     int text_buffer_index = 0;                   //Array index of our line text buffer
     int keyword_index = 0;                       //Pointer index of our keyword string
     int keyword_length = 0;                      //The length of the keyword
-    
     int keyword_state = 0;                       //State of if the keyword has been found
-    for (int i = 0; keyword[i] != '\0'; i++, keyword_length++);
-    int maxbuffer_length = (75 - (keyword_length));
 
-    char text_buffer[maxbuffer_length] = {}; //A line text buffer, used to recieve data from the file consisting of up to one line...
-                               //...the maximum length of a line in a ical file is 77 bytes with the ending CR-LF sequence...
-                               //...some data is longer than one line, ie multi=line "folded" SUMMARY or DESCRIPTION components...
-                               //...that isn't relevant for the keyword parsing being done here
-    text_buffer[0] = '\0';
+    for (int i = 0; keyword[i] != '\0'; i++, keyword_length++); //Finding the length of keyword passed, I know C++ has strings but, I dont feel like learing them
+    int maxbuffer_length = (77 - (keyword_length));             //The maximum buffer length is 75 with the end CR-LF, but if we havent found the 
 
-    char buffer_byte = '\0'; //Initializing a buffer byte to read bytes in from the file
+    char text_buffer[maxbuffer_length] = {};    //A line text buffer, used to recieve data from the file consisting of up to one line...
 
+    char buffer_byte = '\0';                    //Initializing a buffer byte to read bytes in from the file
 
     if (!file->seek(file_byte_offset)) //Going to the specified position within the file
     {
         keyword_byte_offset = EOF; //Specifed position could not be seeked out since invalid, returning EOF
     }
 
-    while ((text_buffer_index != EOF) && (file->available())) //if available is not true then EOF
+    while (text_buffer_index != EOF && file->available()) //if available is not true then EOF
     {
         text_buffer_index = 0; //reseting text buffer index value
         keyword_index = 0;     //Reseting keyword pattern index value
@@ -175,23 +170,23 @@ long parse_keyword(File *file, const char *keyword, const long file_byte_offset)
             else if('\0' != buffer_byte)       //Not an error nor a CR so a regular char byte
             {
                 keyword_byte_offset ++;
-                text_buffer[text_buffer_index] = buffer_byte; //Setting current byte in text buffer to the read byte
+                text_buffer[text_buffer_index] = buffer_byte;   //Setting current byte in text buffer to the read byte
 
-                if (buffer_byte == keyword[keyword_index++])  //If the current byte matches the first/next character in the keyword
-                {
-                    if (keyword_index == keyword_length)       //If a keyword match was found, ie reached end of keyword string;
+                if (buffer_byte == keyword[keyword_index++])    //If the current byte matches the first/next character in the keyword
+                {   
+                    if (keyword_index == keyword_length)        //If a keyword match was found, ie reached end of keyword string;
                     {
                         
                         keyword_byte_offset -= keyword_index;
                         keyword_state = 1;
                         text_buffer_index++;
-                        break;                                //Since keyword was found returning the keyword_byte_offset to...
-                                                              //...first character of the keyword match
+                        break;                                  //Since keyword was found returning the keyword_byte_offset to...
+                                                                //...first character of the keyword match
                     }
                 }
                 else
                 {
-                    keyword_index = 0;                        //Keyword pattern broken or not even found yet
+                    keyword_index = 0;                          //Keyword pattern broken or not even found yet
                 }
             }
         }
@@ -200,12 +195,13 @@ long parse_keyword(File *file, const char *keyword, const long file_byte_offset)
             break;
         }
         else
-        {
-            for (int i = 0; i < text_buffer_index; i++)
+        {   
+            //For testing
+            /*for (int i = 0; i < text_buffer_index; i++)
             {
                 Serial.print(text_buffer[i]);
             }
-            Serial.print('\n');
+            Serial.print('\n');*/
             if(keyword_state == 1)
             {
                 break;
