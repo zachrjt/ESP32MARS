@@ -50,7 +50,7 @@ void setup()
     Serial.println("Serial connection sucessful....");
 
     Serial.println("Connecting to SD card");
-    SDSPI.begin(SD_SPICLK, MISO, SD_MOSI, SD_SPICS);
+    SDSPI.begin(SD_SPICLK, SD_MISO, SD_MOSI, SD_SPICS);
     if (!SD.begin(SD_SPICS,  SDSPI))
     {
         Serial.println("Could not mount SD card!");
@@ -82,7 +82,7 @@ void setup()
             Serial.print(data[i]);
         }
         Serial.print('\n');
-        free(data);
+        vPortFree(data);
     }
 
     Serial.println("ENDING SERIAL CONNECTION");

@@ -103,7 +103,7 @@ char *parse_data_line(File *file, const long file_byte_offset)
     int max_text_buffer_index = 77;
     int text_buffer_index = 0;
     int buffer_state = 0;                                      //state indicates if a CRLF sequence was found, happens on every ical line
-    char *text_buffer = (char *)(malloc(sizeof(char) * (max_text_buffer_index))); //the maximum length of a line in a ical file is 77 with the CR-LF sequence, using 78 so string is always null terminated if one line
+    char *text_buffer = (char *)(pvPortMalloc(sizeof(char) * (max_text_buffer_index))); //the maximum length of a line in a ical file is 77 with the CR-LF sequence, using 78 so string is always null terminated if one line
     if (!file->seek(file_byte_offset))                         //going to the specified position
     {
         return NULL; //specifed position could not be seeked out
@@ -130,7 +130,7 @@ char *parse_data_line(File *file, const long file_byte_offset)
             buffer_byte = file->read();
             if (buffer_byte == -1) //read returns -1 if EOF or other error
             {
-                free(text_buffer); //if EOF bad .ical format since all lines
+                vPortFree(text_buffer); //if EOF bad .ical format since all lines
                 return NULL;
             }
             else
