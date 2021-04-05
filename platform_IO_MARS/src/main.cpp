@@ -66,7 +66,7 @@ void setup()
         return;
     }
 
-    long keyword_position = find_keyword(&sdcard_calendar, "ENEL300", 0, 0xFF);
+    long keyword_position = find_keyword(&sdcard_calendar, "DESCRIPTION:print ", 0, ICALMODE 0xFF);
     if (keyword_position == EOF)
     {
         Serial.println("Could not find specified keyvalue within the file");
@@ -77,10 +77,27 @@ void setup()
         Serial.println(keyword_position);
         Serial.println("----------------------------------------------------------------------------------------------");
 
-        char *data = parse_data_line(&sdcard_calendar, keyword_position);
+        char *data = parse_data_string(&sdcard_calendar, keyword_position, ICALMODE 0xFF);
         for (int i = 0; data[i] != '\0' ; i++)
         {
-            Serial.print(data[i]);
+            if(data[i] == '\t')//Replacing real text horizontal tabs with \t sequence to better recognize function return strings
+            {
+                Serial.print('\\');
+                Serial.print('t');
+            }
+            else if(data[i] == ' ')//Replacing real text spaces with underscores to better recognize function return strings
+            {
+                Serial.print('_');
+            }
+            else if(data[i] == '\\' && data[1 + i] == 'n' && 0)//Replacing intext newline \n with actual newlines, DISABLED CURRENTLY
+            {
+                Serial.println();
+                i++;
+            }
+            else
+            {
+                Serial.print(data[i]);
+            }
         }
         Serial.print('\n');
         vPortFree(data);

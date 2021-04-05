@@ -47,11 +47,14 @@
 
 
 //FUNCTION DECLARATION SECTION START-----------------------------------------------------------------------------------------------------------------------------------------------
-    char *parse_data_line(File *file, const long file_byte_offset);
+    char *parse_data_string(File *file, const long file_byte_offset, ICALMODE const byte return_string_mode);
     /* 
     REQUIRES:
         -A file_byte_offset which is the byte location/offset within the SD card File
         -A SD card class file address which is initialized and opened
+        -A return_string_mode byte, most common is 0xFF indicating:
+            -0xFF: Mode is till end of string so it can return multi-line strings
+            -0x00: Mode is till end of the line (CR-LF sequence) 
     PROMISES:
         -Upon sucess to return a pointer to a heap allocated character array which contains the string or multi-line string that is on the line/lines following 
         the file_byte_offset given
@@ -81,7 +84,6 @@
         -Upon failure to return EOF
                 -Possible failures include:
                 -Invaild file_byte_offset
-                -Bad ical file which is not line terminated with CR-LF sequence
                 -End of file before occurance of the keyword
         -THREAD SAFE WITH pvPortMalloc() / vPortFree()
     */
@@ -111,7 +113,7 @@
         -A long tolerance which is for how long after this long time and date, in hours, the event should be within
     PROMISES:
         -Upon success to return a pointer to a 2-long array containing:
-            =1)The file_byte_offset of the event's BEGIN:VEVENT that is within the specified time range
+            -1)The file_byte_offset of the event's BEGIN:VEVENT that is within the specified time range
             -2)The first byte of the line after the event's END:VEVENT of the event specified
         -Upon failure to return:
             -1)EOF in both the 1st and 2nd element of the array if failure
