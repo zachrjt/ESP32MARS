@@ -1,6 +1,7 @@
 #ifndef PERIPHERAL_INITIALIZE_H
     #define PERIPHERAL_INITIALIZE_H
 
+//FUNCTION DECLARATION SECTION START-----------------------------------------------------------------------------------------------------------------------------------------------
     int setup_functions(void);
     int WiFiSetup(void);
     int SDCardSetup(void);
@@ -8,5 +9,6 @@
     int LocalTimeSetup();
     int AlarmSetup();
     int SDCardInterruptSetup();
+//FUNCTION DECLARATION SECTION END-------------------------------------------------------------------------------------------------------------------------------------------------
 
-#endif
+#endif  // #ifndef PERIPHERAL_INITIALIZE_H

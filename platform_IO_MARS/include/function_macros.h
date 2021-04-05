@@ -9,4 +9,4 @@
     #define PERIPHERAL_FAILURE 1
     #define PERIPHERAL_TIMEOUT 2
     #define PERIPHERAL_BAD_BEHAVIOUR 3
-#endif
+#endif  // #ifndef FUNCTION_MACROS_H

@@ -19,4 +19,4 @@
     #define TASK_3_CORE 0
     #define TASK_4_CORE 0
     #define TASK_5_CORE 0
-#endif
+#endif  // #ifndef TASK_MARCOS_H

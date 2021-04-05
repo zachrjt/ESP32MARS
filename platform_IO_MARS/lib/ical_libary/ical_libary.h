@@ -1,5 +1,7 @@
 #ifndef ICAL_LIBARY_H
     #define ICAL_LIBARY_H
+
+//FUNCTION DECLARATION SECTION START-----------------------------------------------------------------------------------------------------------------------------------------------
     char *parse_data_line(File *file, const long file_byte_offset);
     /* 
     REQUIRES:
@@ -16,6 +18,8 @@
                 -End of file before end of a line
         -THREAD SAFE WITH pvPortMalloc() / vPortFree()
     */
+
+
     long parse_keyword(File *file, const char *keyword, const long file_byte_offset);
     /* 
     REQUIRES:
@@ -32,4 +36,35 @@
                 -End of file before occurance of the keyword
         -THREAD SAFE WITH pvPortMalloc() / vPortFree()
     */
-#endif//(ICAL_LIBARY_H)
+
+//FUNCTION DECLARATION SECTION END-------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+//CLASS/STRUCT DECLARATION SECTION START-------------------------------------------------------------------------------------------------------------------------------------------
+    typedef struct Agenda
+    {
+        char agenda_name[32];       //The name of the agenda, im not going to use a pointer, like who tf needs a long ass agenda name 
+        int timezone_properties;    //Tells us the timezone settings for the entire agenda
+        int agenda_event_counter;   //Tells us how many events are present within the Agenda
+
+        CalendarEvent *jobs[4];     //An array of points that must be intialized to point to dynamically allocated heap CalendarEvents
+
+    } UserAgenda;
+
+
+    typedef struct Event
+    {
+        int event_properties;       //Encodes properties such as alarm?.....local or UTC......priority....maybe other?
+        char event_name[32];       //The event name 
+        char event_summary[64];       //The summary of the event, might use description later, but summary is text only, where as description can have html 
+
+        char event_location[32];
+
+        int event_dmy;              //The day, month, year of the event in a certain encoding, can be bitwise accessed for parts
+        int event_time[3];          //Event time specified: time-hour, time-minute, time-seconds, can be local or UTC 
+        int event_alarm_time;       //The end time of alarm/due date if used; is an offset from the event-time
+    } CalendarEvent;
+//CLASS/STRUCT DECLARATION SECTION END---------------------------------------------------------------------------------------------------------------------------------------------
+#endif  // #ifndef ICAL_LIBARY_H
