@@ -4,7 +4,7 @@
 
 #include "ical_libary.h"  //Associated header file
 
-long parse_keyword(File *file, const char *keyword, const long file_byte_offset)
+long find_keyword(File *file, const char *keyword, const long file_byte_offset, ICALMODE const byte return_offset_mode)
 {
     long keyword_byte_offset = file_byte_offset; //The byte offset to returned, of the first character of the keyword we're looking for
     int text_buffer_index = 0;                   //Array index of our line text buffer
@@ -12,7 +12,7 @@ long parse_keyword(File *file, const char *keyword, const long file_byte_offset)
     int keyword_length = 0;                      //The length of the keyword
     int keyword_state = 0;                       //State of if the keyword has been found
 
-    for (int i = 0; keyword[i] != '\0'; i++, keyword_length++); //Finding the length of keyword passed, I know C++ has strings but, I dont feel like learing them
+    for (int i = 0; keyword[i] != '\0'; i++, keyword_length++); //Finding the length of keyword passed, I know C++ has strings but, I dont feel like learning them
     int maxbuffer_length = (77 - (keyword_length));             //The maximum buffer length is 75 with the end CR-LF, but if we havent found the 
 
     char text_buffer[maxbuffer_length] = {};    //A line text buffer, used to recieve data from the file consisting of up to one line...
@@ -103,7 +103,8 @@ char *parse_data_line(File *file, const long file_byte_offset)
     int max_text_buffer_index = 77;
     int text_buffer_index = 0;
     int buffer_state = 0;                                      //state indicates if a CRLF sequence was found, happens on every ical line
-    char *text_buffer = (char *)(pvPortMalloc(sizeof(char) * (max_text_buffer_index))); //the maximum length of a line in a ical file is 77 with the CR-LF sequence, using 78 so string is always null terminated if one line
+    char *text_buffer = (char *)(pvPortMalloc(sizeof(char) * (max_text_buffer_index))); //the maximum length of a line in a ical file is 77 with the CR-LF sequence, 
+                                                                                        //using 78 so string is always null terminated if one line
     if (!file->seek(file_byte_offset))                         //going to the specified position
     {
         return NULL; //specifed position could not be seeked out
@@ -158,10 +159,21 @@ char *parse_data_line(File *file, const long file_byte_offset)
         }
         else
         {
-            //fill rest of buffer with null characters
+            //fill next text_buffer element with a null character
             text_buffer[text_buffer_index] = '\0';
+            break;
         }
     }
     Serial.println(max_text_buffer_index);
     return text_buffer;
+}
+
+long *find_event(File *file, const long start_offset_byte, long date, long time, long tolerance)
+{
+    return 0;
+}
+
+int intialize_calendar(File *file, Calendar *user_calendar)
+{
+    return 0;
 }

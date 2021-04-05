@@ -32,7 +32,8 @@ SPIClass SDSPI(HSPI); //defines the spi bus for use with the SD card
 //PERIPHERAL GPIO SETUP SECTION END------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-
+long DATESTAMP = 20210404;  //The current year, month, day
+long TIMESTAMP = 010000;    //The current time: hours (24 hours) minutes, seconds
 
 //SETUP FUNCTION START-------------------------------------------------------------------------------------------------------------------------------------------------------------
 void setup()
@@ -65,7 +66,7 @@ void setup()
         return;
     }
 
-    long keyword_position = parse_keyword(&sdcard_calendar, "ENEL300", 0);
+    long keyword_position = find_keyword(&sdcard_calendar, "ENEL300", 0, 0xFF);
     if (keyword_position == EOF)
     {
         Serial.println("Could not find specified keyvalue within the file");
@@ -85,6 +86,7 @@ void setup()
         vPortFree(data);
     }
 
+    //Calendar myCalendar;
     Serial.println("ENDING SERIAL CONNECTION");
     sdcard_calendar.close();
     SD.end();

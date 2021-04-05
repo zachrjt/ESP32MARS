@@ -1,6 +1,11 @@
 #ifndef TASK_MACROS_H
     #define TASK_MACROS_H
 
+
+
+
+//DEFINE STATEMENT SECTION START---------------------------------------------------------------------------------------------------------------------------------------------------
+
     #define TASK_1_STACK_SIZE 1024
     #define TASK_2_STACK_SIZE 1024
     #define TASK_3_STACK_SIZE 1024
@@ -19,4 +24,9 @@
     #define TASK_3_CORE 0
     #define TASK_4_CORE 0
     #define TASK_5_CORE 0
+//DEFINE STATEMENT SECTION END-----------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
 #endif  // #ifndef TASK_MARCOS_H
