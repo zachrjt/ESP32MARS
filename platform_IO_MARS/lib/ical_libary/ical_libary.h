@@ -144,7 +144,7 @@
     */
 
 
-    int intialize_calendar(File *file, Calendar *user_calendar);
+    byte intialize_calendar(File *file, Calendar *user_calendar);
     /* 
     REQUIRES:
         -A SD card class file address which is initialized and opened
@@ -155,6 +155,7 @@
             -Timezone id
             -Day light savings crap
         -Returns 0 if success, -1 otherwise
+        -THREAD SAFE WITH pvPortMalloc() / vPortFree(), (used internally with the function)
     */
 
 
@@ -170,18 +171,15 @@
 
 
 
-   void calendar_str_to_num(const char * str_num, const byte length, long *long_pointer, int *int_pointer, byte *byte_pointer);
+   byte calendar_str_to_int(const char * str_num, const int num_length, int *int_pointer);
        /* 
     REQUIRES:
         -A pointer to a charcter array that is numerical, a NO CHECK IS PERFORMED
-        -A length of the number that starts at the address passed as a pointer, length must fit in a byte
-        -ONE pointer to either:
-            -long
-            -int
-            -byte
-        -The others should point to NULL
+        -A length of the number that starts at the address passed as a pointer
+        -A pointer to an int to fill
     PROMISES:
-        -To attempt to convert the string within the character array to a base 10 number and fit it in the variable passed as a non-NULL pointer
+        -Return value of 0 indicates a success, -1 failure
+        -To attempt to convert the string within the character array to a base 10 int
     */
 //FUNCTION DECLARATION SECTION END-------------------------------------------------------------------------------------------------------------------------------------------------
 

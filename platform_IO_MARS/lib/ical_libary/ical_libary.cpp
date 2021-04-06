@@ -236,7 +236,7 @@ long *find_event(File *file, const long start_offset_byte, const long *read_sect
 }
 
 
-int intialize_calendar(File *file, Calendar *user_calendar)
+byte intialize_calendar(File *file, Calendar *user_calendar)
 {
     //This function just needs some basic text parsing for the name and time zone id calling the parse string and find keyword funcs
     long working_byte_offset = 0;
@@ -297,7 +297,30 @@ void calendar_str_print(const char * char_array)
     #endif  // #ifndef ICAL_LIBARY_H
 }
 
-void calendar_str_to_num(const char * str_num, byte length, long *long_pointer, int *int_pointer, byte *byte_pointer)
+byte calendar_str_to_int(const char * str_num, int num_length, int *int_pointer)
 {
-    
+    int temp_num = 0;
+    int temp_exponent = 0;
+    int i = 0;
+    while((i < num_length) && (str_num[i] != '\0'))
+    {
+        temp_exponent = 1;
+        for(int j = (i+1); j < num_length; j++)
+        {
+            temp_exponent*=10;   //This is for the base 2 conversion
+        }
+
+        temp_num += (temp_exponent * ((int)str_num[i] - 48));    //ascii offset of 48 needed
+        i++;    //increment i
+    }
+    if((str_num[i] == '\0'))    //Error occured, reached end of string before length specified could be achieved
+    {
+        return -1;              //Failure/Error return -1
+    }
+    else
+    {
+        *int_pointer = temp_num;  //Change the pointer's content 
+        return 0;               //Success return 0
+    }
+
 }
