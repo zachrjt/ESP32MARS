@@ -66,14 +66,14 @@ void setup()
         return;
     }
     //6.5858 seconds to go through 150000 lines/ 600,730 byte
-    long keyword_position = find_next_keyword(&sdcard_calendar, "-//D2L//NONSGML ", 0, ICALMODERTN 0x00);
+    long keyword_position = find_next_keyword(&sdcard_calendar, "-//D2L//NONSGML ",ICALOFFSET 0, ICALOFFSET -1, ICALMODERTN 0x00);
     /*-A return_offset_mode byte, most common is 0xFF, indicating:
             -0xFF: Mode is start of keyword, means return value byte-offset is the first byte of the sequence of the keyword
             -0x11: Mode is end of keyword, means return value byte-offset is the first byte after the end of the keyword
             -0x00: Mode is next line after keyword, means return value byte-offset is the first byte of the next line after the keyword occurance line
     */
     //0.27 seconds to find a previous keyword 
-    keyword_position = find_previous_keyword(&sdcard_calendar, "BEGIN", keyword_position, ICALMODERTN 0xFF);
+    keyword_position = find_previous_keyword(&sdcard_calendar, "BEGIN", ICALOFFSET keyword_position, ICALOFFSET -1, ICALMODERTN 0xFF);
     /*-A return_offset_mode byte, most common is 0xFF, indicating:
             -0xFF: Mode is start of keyword, means return value byte-offset is the first byte of the sequence of the keyword
             -0x11: Mode is end of keyword, means return value byte-offset is the first byte after the end of the keyword
@@ -92,13 +92,19 @@ void setup()
             -0x00: Mode is till end of the line (CR-LF sequence) 
         */
         calendar_str_print(data);  //printing the string
-        Serial.print('\n');
         vPortFree(data);
     }
     Calendar myCalendar;
-    if(!intialize_calendar(&sdcard_calendar, &myCalendar))
+    if(!initialize_calendar(&sdcard_calendar, &myCalendar))
     {
-        calendar_str_print(myCalendar.agenda_name);  //printing the string
+        calendar_str_print(myCalendar.agenda_name);
+        calendar_str_print(myCalendar.timezone.time_zone_id);
+
+        calendar_str_print(myCalendar.timezone.daylight_time_zone);
+        Serial.println(myCalendar.timezone.daylight_offset);
+
+        calendar_str_print(myCalendar.timezone.standard_time_zone);
+        Serial.println(myCalendar.timezone.standard_offset);
     }
     Serial.println("ENDING SERIAL CONNECTION");
     sdcard_calendar.close();

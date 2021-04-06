@@ -5,7 +5,7 @@
 
 
 //DEFINE STATEMENT SECTION START---------------------------------------------------------------------------------------------------------------------------------------------------
-    //#define PRINTOUTDEBUG  //Used so the printing function will replace whitespace with identifiers to make string output debug easier, comment out for no debug, 
+    #define PRINTOUTDEBUG  //Used so the printing function will replace whitespace with identifiers to make string output debug easier, comment out for no debug, 
 
     #define NEF 9999  //No-more-events is a return long value for when no events could be found that match the timestamp and tolerance given, different than EOF 
 
@@ -17,6 +17,12 @@
 
     #define ICALMODERTN    //Just a nice way of indicating if an argument or parameter is mode of return value
     #define ICALMODEOPR    //Just a nice way of indicating if an argument or parameter is mode of operation to find the return value
+    #define ICALOFFSET     //Just a nice way of indicating if an argument or parameter is a byte offset
+
+
+    #define NEXTLINE 0x00   //blah blah blah read below
+    #define FIRSTCHAR 0xFF
+    #define NEXTCHAR 0x11
 //DEFINE STATEMENT SECTION END-----------------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -40,8 +46,9 @@
     {
         char time_zone_id[MAX_NAME_SIZE];       //contains the time-zone id of the calendar, no standard used but, some server-side libaries exist for use of this
 
+        byte daylight_status;                   //If 1 then daylight saving occurs, if 0 no daylight savings
         char daylight_time_zone [MAX_TZ_SIZE];  //Time zone name (MST, PST, etc) of the daylight savings timezone
-        int daylight_offset;                    //The numerical time offset, from UTC time, that daylight savings is in
+        int daylight_offset;                    //The numerical time offset, from UTC time, that daylight savings is in -0700 would be 7 hours behind utc
         char standard_time_zone [MAX_TZ_SIZE];  //Time zone name (MST, MDT, etc) of the non-daylight savings timezone
         int standard_offset;                    //The numerical time offset, from UTC time, that standard time is in
 
@@ -53,9 +60,8 @@
     typedef struct UserCalendar
     {
         char agenda_name[MAX_NAME_SIZE];        //The name of the calendar,  like who tf needs a long ass calendar name 
-        long timezone_properties;               //Tells us the timezone settings for the entire agenda
-        byte event_precedence[4];               //The ints within the array related to the indices of the events, this is the order in which the events occur
         TimeZoneInfo timezone;                  //A struc containing the timezone information about the Calendar
+        byte event_precedence[4];               //The ints within the array related to the indices of the events, this is the order in which the events occur
         CalendarEvent *jobs[4];                 //An array of CalendarEvent pointers that point to dynamically allocated or statically allocated CalendarEvent strucs
 
     } Calendar;
@@ -86,10 +92,12 @@
     */
 
 
-    long find_next_keyword(File *file, const char *keyword, const long file_byte_offset, ICALMODERTN const byte return_offset_mode);
+    long find_next_keyword(File *file, const char *keyword, const long file_byte_offset, long max_byte_offset, ICALMODERTN const byte return_offset_mode);
     /* 
     REQUIRES:
         -A file_byte_offset which is the byte location/offset within the SD card File
+        -A max_byte_offset which is the maximum file byte offset to be searched up to, 
+            -PASS -1 IF NO MAX OFFSET DESIRED
         -A SD card class file address which is initialized and opened
         -The address to string constant or char array that is NULL TERMINATED and contains the desired keyword to be found
         -A return_offset_mode byte, most common is 0xFF, indicating:
@@ -99,17 +107,21 @@
     PROMISES:
         -Upon sucess to return a long containing the file_byte_offset of the first char of the keyword specified that 
         occurs first after the input file_byte_offset
-        -Upon failure to return EOF
+        -Upon error to return EOF
                 -Possible failures include:
                 -Invaild file_byte_offset
                 -End of file before occurance of the keyword
+        -Upon failure to find keyword with the max_byte_offset
+            =Return -2
     */
 
 
-    long find_previous_keyword(File *file, const char *keyword, const long file_byte_offset, ICALMODERTN const byte return_offset_mode);
+    long find_previous_keyword(File *file, const char *keyword, const long file_byte_offset, long min_byte_offset, ICALMODERTN const byte return_offset_mode);
     /* 
     REQUIRES:
         -A file_byte_offset which is the byte location/offset within the SD card File that the function will read backwards from
+        -A min_byte_offset which is the minimum file byte offset to be searched back up to, 
+            -PASS -1 IF NO MIN OFFSET DESIRED
         -A SD card class file address which is initialized and opened
         -The address to string constant or char array that is NULL TERMINATED and contains the desired keyword to be found
         -A return_offset_mode byte, most common is 0xFF, indicating:
@@ -118,10 +130,12 @@
             -0x00: Mode is next line after keyword, means return value byte-offset is the first byte of the next line after the keyword occurance line
     PROMISES:
         -Upon sucess to return a long containing the file_byte_offset of byte per the specified mode
-        -Upon failure to return EOF
+        -Upon Error to return EOF
                 -Possible failures include:
                 -Invaild file_byte_offset
                 -Begining of file before occurance of the keyword
+        -Upon failure to find keyword after the min_byte_offset
+            =Return -2
     */
 
 
@@ -144,7 +158,7 @@
     */
 
 
-    byte intialize_calendar(File *file, Calendar *user_calendar);
+    byte initialize_calendar(File *file, Calendar *user_calendar);
     /* 
     REQUIRES:
         -A SD card class file address which is initialized and opened
@@ -170,16 +184,26 @@
     */
 
 
-
-   byte calendar_str_to_int(const char * str_num, const int num_length, int *int_pointer);
-       /* 
+   void calendar_str_to_int(const char * str_num, int num_length, int *int_pointer);
+    /* 
     REQUIRES:
         -A pointer to a charcter array that is numerical, a NO CHECK IS PERFORMED
         -A length of the number that starts at the address passed as a pointer
+        -IF num_length is -1 then the string will be read until it's nulltermination
         -A pointer to an int to fill
     PROMISES:
-        -Return value of 0 indicates a success, -1 failure
         -To attempt to convert the string within the character array to a base 10 int
+    */
+
+
+   void calendar_char_copy(const char * str, char *dest);
+    /* 
+    REQUIRES:
+        -A pointer to a character array that is to be modified(dest), of large enough size to fit the intended string
+        -A static string (str) to use
+    PROMISES:
+        -To fill the dest chararcter array with the provided string,
+        -To Null terminate the string
     */
 //FUNCTION DECLARATION SECTION END-------------------------------------------------------------------------------------------------------------------------------------------------
 
