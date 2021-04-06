@@ -20,9 +20,12 @@
     #define ICALOFFSET     //Just a nice way of indicating if an argument or parameter is a byte offset
 
 
-    #define NEXTLINE 0x00   //blah blah blah read below
+    #define NEXTLINE 0x00   //blah blah blah read below for what the modes mean
     #define FIRSTCHAR 0xFF
     #define NEXTCHAR 0x11
+
+    #define ONELINE 0x00
+    #define MULTILINE 0xFF
 //DEFINE STATEMENT SECTION END-----------------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -31,15 +34,21 @@
 //CLASS/STRUCT DECLARATION SECTION START-------------------------------------------------------------------------------------------------------------------------------------------
     typedef struct Event
     {
-        int event_properties;                   //Encodes properties such as alarm?.....local or UTC......priority....maybe other?
-        char event_name[MAX_NAME_SIZE];         //The event name 
+        //Sequence of events isn't consider, simply the order inwhich they are present within the .ical file is used for sequence
+        //Repeated/reoccuring events are implemented, perhaps if there is enough time
         char event_summary[MAX_SUMMARY_SIZE];   //The summary of the event
 
-        char event_location[MAX_LOCATION_SIZE];
+        char event_location[MAX_LOCATION_SIZE]; //The location of the event
 
-        int event_dmy;              //The day, month, year of the event in a certain encoding, can be bitwise accessed for parts
-        int event_time[3];          //Event time specified: time-hour, time-minute, time-seconds, can be local or UTC 
-        int event_alarm_time;       //The end time of alarm/due date if used; is an offset from the event-time
+        byte date_format;           //If 1 then alternate string date used, 0 normally
+        int event_start_date;       //Start date of event
+        int event_start_time;       //Start time, on the date, of the event
+
+        int event_end_date;         //End date of event, typically same day as start
+        int event_end_time;         //End time, on date of end, of the event
+
+        int event_alarm_day;       //The alarm time of alarm/due date if used, otherwise begining of event
+        int event_alarm_time;      //The end time of alarm/due date if used, otherwise begining of event
     } CalendarEvent;
 
     typedef struct TimeZoneProperties
@@ -54,7 +63,7 @@
 
         //In the actual produc there should be more info like when daylight savings happens but parsing and interpreting this other info is tediuous
         //Instead it's easier to upload this info to a server and have it grab some time, so this may or may not be implemented in the prototype
-        //Soooo,  an excercise left to the reader: Try parsing "RRULE:FREQ=YEARLY;BYMONTH=11;BYDAY=1SU" in a function that can accurately change the time for daylight savings
+        //Soooo, an excercise left to the reader: Try parsing "RRULE:FREQ=YEARLY;BYMONTH=11;BYDAY=1SU" in a function that can accurately change the time for daylight savings
     } TimeZoneInfo;
 
     typedef struct UserCalendar
@@ -168,6 +177,24 @@
             -Name
             -Timezone id
             -Day light savings crap
+        -Returns 0 if success, -1 otherwise
+        -THREAD SAFE WITH pvPortMalloc() / vPortFree(), (used internally with the function)
+    */
+
+
+    byte initialize_event(File *file, CalendarEvent *user_event, ICALOFFSET const long event_byte_offset);
+    /* 
+    REQUIRES:
+        -A SD card class file address which is initialized and opened
+        -A pointer to a created CalendarEvent
+        -An byte-offset value for which the event begins at: "BEGIN:VEVENT" within the SD card file
+    PROMISES:
+        -To attempt to fill in the CalendarEvent's
+            -Summary
+            -Location
+            -Event start info
+            -Event end info
+            -Event alarm info
         -Returns 0 if success, -1 otherwise
         -THREAD SAFE WITH pvPortMalloc() / vPortFree(), (used internally with the function)
     */

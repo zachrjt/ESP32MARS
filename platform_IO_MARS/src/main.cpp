@@ -66,31 +66,18 @@ void setup()
         return;
     }
     //6.5858 seconds to go through 150000 lines/ 600,730 byte
-    long keyword_position = find_next_keyword(&sdcard_calendar, "-//D2L//NONSGML ",ICALOFFSET 0, ICALOFFSET -1, ICALMODERTN 0x00);
-    /*-A return_offset_mode byte, most common is 0xFF, indicating:
-            -0xFF: Mode is start of keyword, means return value byte-offset is the first byte of the sequence of the keyword
-            -0x11: Mode is end of keyword, means return value byte-offset is the first byte after the end of the keyword
-            -0x00: Mode is next line after keyword, means return value byte-offset is the first byte of the next line after the keyword occurance line
-    */
+    long keyword_position = find_next_keyword(&sdcard_calendar, "ENEL 2nd Year Integrated",ICALOFFSET 0, ICALOFFSET -1, ICALMODERTN NEXTLINE);
+
     //0.27 seconds to find a previous keyword 
-    keyword_position = find_previous_keyword(&sdcard_calendar, "BEGIN", ICALOFFSET keyword_position, ICALOFFSET -1, ICALMODERTN 0xFF);
-    /*-A return_offset_mode byte, most common is 0xFF, indicating:
-            -0xFF: Mode is start of keyword, means return value byte-offset is the first byte of the sequence of the keyword
-            -0x11: Mode is end of keyword, means return value byte-offset is the first byte after the end of the keyword
-            -0x00: Mode is next line after keyword, means return value byte-offset is the first byte of the next line after the keyword occurance line
-    */
+    keyword_position = find_previous_keyword(&sdcard_calendar, "BEGIN:VEVENT", ICALOFFSET keyword_position, ICALOFFSET -1, ICALMODERTN FIRSTCHAR);
+
     if (keyword_position == EOF)
     {
         Serial.println("An error was encountered");
     }
     else
     {
-        char *data = parse_data_string(&sdcard_calendar, keyword_position, ICALMODERTN 0xFF);
-        /*
-        -A return_string_mode byte, most common is 0xFF indicating:
-            -0xFF: Mode is till end of string so it can return multi-line strings
-            -0x00: Mode is till end of the line (CR-LF sequence) 
-        */
+        char *data = parse_data_string(&sdcard_calendar, keyword_position, ICALMODERTN MULTILINE);
         calendar_str_print(data);  //printing the string
         vPortFree(data);
     }
@@ -105,6 +92,15 @@ void setup()
 
         calendar_str_print(myCalendar.timezone.standard_time_zone);
         Serial.println(myCalendar.timezone.standard_offset);
+    }
+    CalendarEvent myEvent;
+
+    if(!initialize_event(&sdcard_calendar, &myEvent, keyword_position))
+    {
+        calendar_str_print(myEvent.event_summary);
+        calendar_str_print(myEvent.event_location);
+        Serial.println(myEvent.event_start_date);
+        Serial.println(myEvent.event_start_time);
     }
     Serial.println("ENDING SERIAL CONNECTION");
     sdcard_calendar.close();
