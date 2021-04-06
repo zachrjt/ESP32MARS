@@ -1,6 +1,6 @@
 #ifndef ICAL_LIBARY_H
     #define ICAL_LIBARY_H
-
+    //https://www.youtube.com/watch?v=y8OnoxKotPQ is best way I can sum up the .ical libary 
 
 
 
@@ -40,15 +40,29 @@
 
         char event_location[MAX_LOCATION_SIZE]; //The location of the event
 
-        byte date_format;           //If 1 then alternate string date used, 0 normally
-        int event_start_date;       //Start date of event
-        int event_start_time;       //Start time, on the date, of the event
+        byte date_format;           //If 1 then only date is present, 2 for TZID event time, 0 normally for UTC times (needed for wacko 250 edge cases in u of c calendar)
+        char event_time_zone_id[MAX_TZ_SIZE];   //normally NA but in mode 2 it holds a TZID EVENT TIME, we are going to only use date however for these cases no time
 
-        int event_end_date;         //End date of event, typically same day as start
-        int event_end_time;         //End time, on date of end, of the event
+        int event_start_date_code;  //Start date of event in utc parts: 2021 04 06(used for internal comparison)
+        int event_start_year;       //Start date year
+        int event_start_month;      //Start date month
+        int event_start_day;        //Start date day
 
-        int event_alarm_day;       //The alarm time of alarm/due date if used, otherwise begining of event
-        int event_alarm_time;      //The end time of alarm/due date if used, otherwise begining of event
+        int event_start_time_code;  //Start time of event in utc parts: 03 27 43 (used for internal comparison)
+        int event_start_hour;       //Start time hour
+        int event_start_minute;     //Start date minute
+        int event_start_second;     //Start date seconds
+
+        int event_end_date_code;  //End date of event in utc parts: 2021 04 06(used for internal comparison)
+        int event_end_year;       //End date year
+        int event_end_month;      //End date month
+        int event_end_day;        //End date day
+
+        int event_end_time_code;  //End time of event in utc parts: 03 27 43 (used for internal comparison)
+        int event_end_hour;       //End time hour
+        int event_end_minute;     //End date minute
+        int event_end_second;     //End date seconds
+
     } CalendarEvent;
 
     typedef struct TimeZoneProperties
@@ -74,6 +88,7 @@
         CalendarEvent *jobs[4];                 //An array of CalendarEvent pointers that point to dynamically allocated or statically allocated CalendarEvent strucs
 
     } Calendar;
+
 //CLASS/STRUCT DECLARATION SECTION END---------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -192,9 +207,9 @@
         -To attempt to fill in the CalendarEvent's
             -Summary
             -Location
-            -Event start info
+            -Time/date format status
+            -Event start info(we assume start is when the alarm is, at least for the prototype)
             -Event end info
-            -Event alarm info
         -Returns 0 if success, -1 otherwise
         -THREAD SAFE WITH pvPortMalloc() / vPortFree(), (used internally with the function)
     */
@@ -211,12 +226,14 @@
     */
 
 
-   void calendar_str_to_int(const char * str_num, int num_length, int *int_pointer);
+   void calendar_str_to_int(const char * str_num, int num_length, const char end_char, int *int_pointer);
     /* 
     REQUIRES:
         -A pointer to a charcter array that is numerical, a NO CHECK IS PERFORMED
         -A length of the number that starts at the address passed as a pointer
-        -IF num_length is -1 then the string will be read until it's nulltermination
+        -end_char is the basically a replacement for a null-termination so if you want to print utc timestamps like 202012T22123Z, it easier
+        -Set end char to '\0' other wise
+        -IF num_length is -1 then the string will be read until it's nulltermination or end_char if applicable
         -A pointer to an int to fill
     PROMISES:
         -To attempt to convert the string within the character array to a base 10 int

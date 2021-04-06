@@ -99,8 +99,22 @@ void setup()
     {
         calendar_str_print(myEvent.event_summary);
         calendar_str_print(myEvent.event_location);
-        Serial.println(myEvent.event_start_date);
-        Serial.println(myEvent.event_start_time);
+
+        Serial.println(myEvent.event_start_date_code);
+        Serial.print("The event is on: ");
+        Serial.print(myEvent.event_start_year);
+        Serial.print("/");
+        Serial.print(myEvent.event_start_month);
+        Serial.print("/");
+        Serial.println(myEvent.event_start_day);
+        
+        Serial.println(myEvent.event_start_time_code);
+        Serial.print("At time: ");
+        Serial.print(myEvent.event_start_hour);
+        Serial.print(":");
+        Serial.print(myEvent.event_start_minute);
+        Serial.print(".");
+        Serial.println(myEvent.event_start_minute);
     }
     Serial.println("ENDING SERIAL CONNECTION");
     sdcard_calendar.close();
