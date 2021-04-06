@@ -4,146 +4,99 @@
 
 #include "ical_libary.h"  //Associated header file
 
-long find_keyword(File *file, const char *keyword, const long file_byte_offset, ICALMODE const byte return_offset_mode)
+long find_next_keyword(File *file, const char *keyword, const long file_byte_offset, ICALMODERTN const byte return_offset_mode)
 {
-    long keyword_byte_offset = file_byte_offset; //The byte offset to returned, of the first character of the keyword we're looking for
-    int text_buffer_index = 0;                   //Array index of our line text buffer
+    long current_byte_offset = file_byte_offset; //The byte offset to returned, of the first character of the keyword we're looking for
+
     int keyword_index = 0;                       //Pointer index of our keyword string
     int keyword_length = 0;                      //The length of the keyword
-    int keyword_state = 0;                       //State of if the keyword has been found
-
     for (int i = 0; keyword[i] != '\0'; i++, keyword_length++); //Finding the length of keyword passed, I know C++ has strings but, I dont feel like learning them
-    int maxbuffer_length = (77 - (keyword_length));             //The maximum buffer length is 75 with the end CR-LF, but if we havent found the 
-
-    char text_buffer[maxbuffer_length] = {};    //A line text buffer, used to recieve data from the file consisting of up to one line...
 
     char buffer_byte = '\0';                    //Initializing a buffer byte to read bytes in from the file
 
     if (!file->seek(file_byte_offset)) //Going to the specified position within the file
     {
-        keyword_byte_offset = EOF; //Specifed position could not be seeked out since invalid, returning EOF
+        current_byte_offset = EOF; //Specifed position could not be seeked out since invalid, returning EOF
+        return current_byte_offset;
     }
 
-    while ((text_buffer_index != EOF) && (file->available())) //if available is not true then EOF
+    while (1) //if file-> is not true then we have reached the end of the file or an error, return EOF
     {
-        text_buffer_index = 0; //reseting text buffer index value
-        keyword_index = 0;     //Reseting keyword pattern index value
-        buffer_byte = '\0';    //Clearing buffer byte
+        buffer_byte = file->read();     
 
-        for (text_buffer_index = 0; text_buffer_index < maxbuffer_length; text_buffer_index++)
+        if (buffer_byte == -1)             //read() method of File will return -1/EOF if no more characters could be read, ie EOF
         {
-            buffer_byte = file->read();
-            if (buffer_byte == -1)             //read() method of File will return -1/EOF if no more characters could be read, ie EOF
-            {
-                keyword_byte_offset = EOF;     //Return EOF indicating error during keyword parsing
-                break;
-            }
-            else if (buffer_byte == '\r')      //If the current buffer byte is CR...
-            {
-                if (file->peek() != '\n')      //Check if the next byte is LF...
+            current_byte_offset = EOF;     //Return EOF indicating error during keyword parsing
+            return current_byte_offset;
+        }
+        else                               //Not an error nor a CR so a regular char byte
+        {
+            current_byte_offset++;
+            if(buffer_byte == keyword[keyword_index++])    //If the current byte matches the first/next character in the keyword
+            {   
+                if (keyword_index == keyword_length)        //If a keyword match was found, ie reached end of keyword string;
                 {
-                    keyword_byte_offset = EOF; //Since the next character was not LF, it indicates a bad .ical file since...
-                                               //..any CR in an .ical file cannot be without LF, return error
-                }
-                else
-                {
-                    keyword_byte_offset++;
-                }
-
-                break;                         //Otherwise no error, but end of line need to parse next line
-            }
-            else if('\0' != buffer_byte)             //Not an error nor a CR so a regular char byte
-            {
-                keyword_byte_offset++;
-                text_buffer[text_buffer_index] = buffer_byte;   //Setting current byte in text buffer to the read byte
-
-                if (buffer_byte == keyword[keyword_index++])    //If the current byte matches the first/next character in the keyword
-                {   
-                    if (keyword_index == keyword_length)        //If a keyword match was found, ie reached end of keyword string;
+                    if (ICALMODERTN return_offset_mode == 0x00)
                     {
-                        if (ICALMODE return_offset_mode == 0x00)
+                        //Could implement a recursive call to itself with a different mode to find the CR-LF sequence in mode 0x11 but, that would 
+                        //take up more stack space and instructions
+                        while(1)
                         {
-                            //Could implement a recursive call to itself with a different mode to find the CR-LF sequence in mode 0x11 but, that would 
-                            //take up more stack space and instructions
-                            while(file->available())
+                            buffer_byte = file->read();
+                            if (buffer_byte == -1)             //read() method of File will return -1/EOF if no more characters could be read, ie EOF
                             {
-                                buffer_byte = file->read();
-                                if (buffer_byte == -1)             //read() method of File will return -1/EOF if no more characters could be read, ie EOF
+                                current_byte_offset = EOF;     //Return EOF indicating error during keyword parsing
+                                return current_byte_offset;
+                            }
+                            else
+                            {
+                                current_byte_offset++;             //successful read increment byte offset
+                                if (buffer_byte == '\r')
                                 {
-                                    keyword_byte_offset = EOF;     //Return EOF indicating error during keyword parsing
-                                    break;
-                                }
-                                else
-                                {
-                                    keyword_byte_offset++;             //successful read increment byte offset
-                                    if (buffer_byte == '\r')
+                                    if (file->peek() == '\n')      //Check if the next byte is LF...
                                     {
-                                        if (file->peek() == '\n')      //Check if the next byte is LF...
-                                        {
-                                            keyword_byte_offset++;     //increment the byte offset and break so it can be returned
-                                            break;                     //return to keyword return section
-                                        }
+                                        current_byte_offset++;     //increment the byte offset and break so it can be returned
+                                        break;                     //return to keyword return section
                                     }
                                 }
                             }
                         }
-                        else if (ICALMODE return_offset_mode == 0x11)
-                        {
-                            //Returning the byte offset of the first byte after the keyword (mode 0x11), dont have to do anything
-                        }
-                        else //ICALMODE return_offset_mode should have a value of 0xFF since it can only have 3 modes but we'll ignore that
-                        {
-                            keyword_byte_offset -= keyword_index;   //Returning the byte offset for the first byte of the keyword (mode 0xFF)
-                        }
-                        text_buffer_index++;
-                        keyword_state = 1;
-                        break;              
                     }
-                }
-                else
-                {
-                    keyword_index = 0;  //Keyword pattern broken or not even found yet
+                    else if (ICALMODERTN return_offset_mode == 0x11)
+                    {
+                        //Returning the byte offset of the first byte after the keyword (mode 0x11), dont have to do anything
+                    }
+                    else //ICALMODE return_offset_mode should have a value of 0xFF since it can only have 3 modes but we'll ignore that
+                    {
+                        current_byte_offset -= keyword_index;   //Returning the byte offset for the first byte of the keyword (mode 0xFF)
+                    }
+                    break;              
                 }
             }
-        }
-        if (keyword_byte_offset == EOF)
-        {
-            break;
-        }
-        else
-        {   
-            //For testing
-            /*for (int i = 0; i < text_buffer_index; i++)
+            else
             {
-                Serial.print(text_buffer[i]);
-            }
-            Serial.print('\n');*/
-            if(keyword_state == 1)
-            {
-                break;
+                keyword_index = 0;  //Keyword pattern broken or not even found yet
             }
         }
     }
-    return keyword_byte_offset; //Since no key value was found in the entire file return EOF
+    return current_byte_offset; //Since no key value was found in the entire file return EOF
 }
 
-char *parse_data_string(File *file, const long file_byte_offset, ICALMODE const byte return_string_mode)
+char *parse_data_string(File *file, const long file_byte_offset, ICALMODERTN const byte return_string_mode)
 {
     long current_file_byte_offset = file_byte_offset;
     int max_text_buffer_index = 77;
     int text_buffer_index = 0;
-    //int buffer_state = 0;                                      //state indicates if a CRLF sequence was found, happens on every ical line
     char *text_buffer = (char *)(pvPortMalloc(sizeof(char) * (max_text_buffer_index))); //the maximum length of a line in a ical file is 77 with the CR-LF sequence, 
     if (!file->seek(file_byte_offset))                         //going to the specified position
     {
         return NULL; //specifed position could not be seeked out
     }
-    //buffer_state = 0;
     char buffer_byte = '\0';
 
-    while ((text_buffer_index < max_text_buffer_index) && (file->available()))
+    while ((text_buffer_index < max_text_buffer_index))
     {
-        if ((ICALMODE return_string_mode == 0xFF) && (text_buffer_index == (max_text_buffer_index - 1)))  //text buffer may need to be larger for multi-line strings
+        if ((ICALMODERTN return_string_mode == 0xFF) && (text_buffer_index == (max_text_buffer_index - 1)))  //text buffer may need to be larger for multi-line strings
         {                                                                                                 //We check the ICALMODE since this is only needed for mode 0xFF
             char *temp_buffer = (char *)(pvPortMalloc((sizeof(char) * (75 + max_text_buffer_index))));
             for (int i = 0; i <= text_buffer_index; i++)
@@ -170,7 +123,7 @@ char *parse_data_string(File *file, const long file_byte_offset, ICALMODE const 
                 if (text_buffer[(-1 + text_buffer_index)] == '\r')   //If the last byte was CR
                 {
                     //Means we encountered a CR-LF sequence
-                    if((ICALMODE return_string_mode == 0xFF) && ((file->peek() == '\t') || (file->peek() == ' ')))//if the next byte is a whitespace character
+                    if((ICALMODERTN return_string_mode == 0xFF) && ((file->peek() == '\t') || (file->peek() == ' ')))//if the next byte is a whitespace character
                     {                                                                                             //it means the string is multi-line(if mode 0xFF)
                         file->read();   //discard white space and allow for the function to continue reading data
                         current_file_byte_offset++; //increment file byte offset
@@ -193,12 +146,103 @@ char *parse_data_string(File *file, const long file_byte_offset, ICALMODE const 
     return text_buffer;
 }
 
-long *find_event(File *file, const long start_offset_byte, long date, long time, long tolerance)
+long *find_event(File *file, const long start_offset_byte, const long *read_sector_table, long date, long time, long tolerance)
 {
+    //This needs some basic operations and calls to find_event_limits
+    //First needs the creation/function to make a read_sector_table 
+        //Read sector table basically is a table of byte offset ranges that are valid to read from, it makes read the file after intialization muchhhhh easier
+            //We wont need to re-read 150000 lines and any lines/events that have already happened can be skipped over and dont need to be parsed
     return 0;
 }
 
 int intialize_calendar(File *file, Calendar *user_calendar)
 {
     return 0;
+    //This function just needs some basic text parsing for the name and time zone id calling the parse string and find keyword funcs
+}
+
+long *find_event_limits(File *file, const long middle_offset_byte, ICALMODERTN const byte event_mode)
+{
+    //This function should be similar to find keyword except it has to work backwards in a loop looking for the event begin then
+        //skip back to the passed middle_offset_byte and work forwards in a loop for an event end
+                //note in both cases we should also check for the opposite incase we are given a bad byte offset value
+                //the use of find keyword can work but, only in the forwards direction, coding it in the reverse is possible but might be tricky, if so it would replace this function
+    return 0;
+}
+
+
+long find_previous_keyword(File *file, const char *keyword, const long file_byte_offset, ICALMODERTN const byte return_offset_mode)
+{
+    long current_byte_offset = file_byte_offset; //The byte offset to returned, of the first character of the keyword we're looking for
+
+    int keyword_length = 0;                      //The length of the keyword
+    for (int i = 0; keyword[i] != '\0'; i++, keyword_length++); //Finding the length of keyword passed
+    int keyword_index = keyword_length-1;         //Pointer index of our keyword string, in mode 0x00 (reverse) starts at max and decreases
+
+    char buffer_byte = '\0';                    //Initializing a buffer byte to read bytes in from the file
+    if (!file->seek(file_byte_offset)) //Going to the specified position within the file
+    {
+        current_byte_offset = EOF; //Specifed position could not be seeked out since invalid, returning EOF
+        return current_byte_offset;
+    }
+
+    while (1)
+    {
+        file->seek(current_byte_offset);   //Need to read backwards seek previous byte, there is no way to use read and go backwards
+
+        buffer_byte = file->read();
+        if (buffer_byte == -1)             //read() method of File will return -1/EOF if no more characters could be read, ie EOF
+        {
+            current_byte_offset = EOF;     //Return EOF indicating error during keyword parsing
+            return current_byte_offset;
+        }
+        else                               //Not an error nor a CR so a regular char byte         
+        {
+            current_byte_offset--;         //Success so we decrement the current_byte_offset so next time we read the previous byte
+            if(buffer_byte == keyword[keyword_index--]) //Does the current byte match the current on in the keyword pattern
+            {
+                if (keyword_index == 0)        //If a keyword match was found, ie reached end of keyword string;
+                {
+                    if (ICALMODERTN return_offset_mode == 0x00)//Returning the byte offset of the first line after keyword (mode 0x00)
+                    {
+                        while(1)
+                        {
+                            buffer_byte = file->read();
+                            if (buffer_byte == -1)             //read() method of File will return -1/EOF if no more characters could be read, ie EOF
+                            {
+                                current_byte_offset = EOF;     //Return EOF indicating error during keyword parsing
+                                return current_byte_offset;
+                            }
+                            else
+                            {
+                                current_byte_offset++;             //successful read increment byte offset
+                                if (buffer_byte == '\r')           //Checking if current byte is CR
+                                {
+                                    if (file->peek() == '\n')      //Check if the next byte is LF
+                                    {
+                                        current_byte_offset +=2;   //return byte after CR-LF sequence
+                                        break;                     //return to keyword return section
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else if (ICALMODERTN return_offset_mode == 0x11)
+                    {
+                        current_byte_offset += keyword_length;//Returning the byte offset of the first byte after the keyword (mode 0x11)
+                    }
+                    else //ICALMODE return_offset_mode should have a value of 0xFF since it can only have 3 modes but we'll ignore that
+                    {
+                        //Returning the byte offset for the first byte of the keyword (mode 0xFF), so don't need to do anything
+                    }
+                    break;   
+                }
+            }
+            else
+            {
+                keyword_index = keyword_length - 1;     //Either the keyword pattern streak was lost or no match to the keyword yet
+            }
+        }
+    }
+    return current_byte_offset;            //Since no key value was found in the entire file return EOF
 }

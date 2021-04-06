@@ -12,7 +12,8 @@
     #define MAX_SUMMARY_SIZE 77 //The maximimum array length of a character array containing a event summary
     #define MAX_LOCATION_SIZE 77 //The maximimum array length of a character array containing a event summary
 
-    #define ICALMODE    //Just a nice way of indicating if an argument or parameter is not a value but a mode of operation for the intended function
+    #define ICALMODERTN    //Just a nice way of indicating if an argument or parameter is mode of return value
+    #define ICALMODEOPR    //Just a nice way of indicating if an argument or parameter is mode of operation to find the return value
 //DEFINE STATEMENT SECTION END-----------------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -47,7 +48,7 @@
 
 
 //FUNCTION DECLARATION SECTION START-----------------------------------------------------------------------------------------------------------------------------------------------
-    char *parse_data_string(File *file, const long file_byte_offset, ICALMODE const byte return_string_mode);
+    char *parse_data_string(File *file, const long file_byte_offset, ICALMODERTN const byte return_string_mode);
     /* 
     REQUIRES:
         -A file_byte_offset which is the byte location/offset within the SD card File
@@ -68,7 +69,7 @@
     */
 
 
-    long find_keyword(File *file, const char *keyword, const long file_byte_offset, ICALMODE const byte return_offset_mode);
+    long find_next_keyword(File *file, const char *keyword, const long file_byte_offset, ICALMODERTN const byte return_offset_mode);
     /* 
     REQUIRES:
         -A file_byte_offset which is the byte location/offset within the SD card File
@@ -85,7 +86,25 @@
                 -Possible failures include:
                 -Invaild file_byte_offset
                 -End of file before occurance of the keyword
-        -THREAD SAFE WITH pvPortMalloc() / vPortFree()
+    */
+
+
+    long find_previous_keyword(File *file, const char *keyword, const long file_byte_offset, ICALMODERTN const byte return_offset_mode);
+    /* 
+    REQUIRES:
+        -A file_byte_offset which is the byte location/offset within the SD card File that the function will read backwards from
+        -A SD card class file address which is initialized and opened
+        -The address to string constant or char array that is NULL TERMINATED and contains the desired keyword to be found
+        -A return_offset_mode byte, most common is 0xFF, indicating:
+            -0xFF: Mode is start of keyword, means return value byte-offset is the first byte of the sequence of the keyword
+            -0x11: Mode is end of keyword, means return value byte-offset is the first byte after the end of the keyword
+            -0x00: Mode is next line after keyword, means return value byte-offset is the first byte of the next line after the keyword occurance line
+    PROMISES:
+        -Upon sucess to return a long containing the file_byte_offset of byte per the specified mode
+        -Upon failure to return EOF
+                -Possible failures include:
+                -Invaild file_byte_offset
+                -Begining of file before occurance of the keyword
     */
 
 
@@ -117,7 +136,7 @@
             -2)The first byte of the line after the event's END:VEVENT of the event specified
         -Upon failure to return:
             -1)EOF in both the 1st and 2nd element of the array if failure
-            =2)NEF in both the 1st and 2nd element if no event could be found with the specified arguments
+            -2)NEF in both the 1st and 2nd element if no event could be found with the specified arguments
     */
 //FUNCTION DECLARATION SECTION END-------------------------------------------------------------------------------------------------------------------------------------------------
 
