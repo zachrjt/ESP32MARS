@@ -5,12 +5,15 @@
 
 
 //DEFINE STATEMENT SECTION START---------------------------------------------------------------------------------------------------------------------------------------------------
+    //#define PRINTOUTDEBUG  //Used so the printing function will replace whitespace with identifiers to make string output debug easier, comment out for no debug, 
+
     #define NEF 9999  //No-more-events is a return long value for when no events could be found that match the timestamp and tolerance given, different than EOF 
 
     //77 is the maximum number of bytes/characters allowed in a single row of a .ical file, including the CR-LF terminating sequence
-    #define MAX_NAME_SIZE 77    //The maximimum array length of a character array containing a name
-    #define MAX_SUMMARY_SIZE 77 //The maximimum array length of a character array containing a event summary
-    #define MAX_LOCATION_SIZE 77 //The maximimum array length of a character array containing a event summary
+    #define MAX_NAME_SIZE 75    //The maximimum array length of a character array containing a name
+    #define MAX_SUMMARY_SIZE 75 //The maximimum array length of a character array containing a event summary
+    #define MAX_LOCATION_SIZE 75 //The maximimum array length of a character array containing a location name
+    #define MAX_TZ_SIZE 35  //The maximum array length of a character array containing time-zone property strings, dont need to be as long
 
     #define ICALMODERTN    //Just a nice way of indicating if an argument or parameter is mode of return value
     #define ICALMODEOPR    //Just a nice way of indicating if an argument or parameter is mode of operation to find the return value
@@ -22,24 +25,38 @@
 //CLASS/STRUCT DECLARATION SECTION START-------------------------------------------------------------------------------------------------------------------------------------------
     typedef struct Event
     {
-        int event_properties;       //Encodes properties such as alarm?.....local or UTC......priority....maybe other?
-        char event_name[MAX_NAME_SIZE];        //The event name 
-        char event_summary[MAX_SUMMARY_SIZE];     //The summary of the event
+        int event_properties;                   //Encodes properties such as alarm?.....local or UTC......priority....maybe other?
+        char event_name[MAX_NAME_SIZE];         //The event name 
+        char event_summary[MAX_SUMMARY_SIZE];   //The summary of the event
 
         char event_location[MAX_LOCATION_SIZE];
 
         int event_dmy;              //The day, month, year of the event in a certain encoding, can be bitwise accessed for parts
         int event_time[3];          //Event time specified: time-hour, time-minute, time-seconds, can be local or UTC 
-        int event_alarm_0time;       //The end time of alarm/due date if used; is an offset from the event-time
+        int event_alarm_time;       //The end time of alarm/due date if used; is an offset from the event-time
     } CalendarEvent;
+
+    typedef struct TimeZoneProperties
+    {
+        char time_zone_id[MAX_NAME_SIZE];       //contains the time-zone id of the calendar, no standard used but, some server-side libaries exist for use of this
+
+        char daylight_time_zone [MAX_TZ_SIZE];  //Time zone name (MST, PST, etc) of the daylight savings timezone
+        int daylight_offset;                    //The numerical time offset, from UTC time, that daylight savings is in
+        char standard_time_zone [MAX_TZ_SIZE];  //Time zone name (MST, MDT, etc) of the non-daylight savings timezone
+        int standard_offset;                    //The numerical time offset, from UTC time, that standard time is in
+
+        //In the actual produc there should be more info like when daylight savings happens but parsing and interpreting this other info is tediuous
+        //Instead it's easier to upload this info to a server and have it grab some time, so this may or may not be implemented in the prototype
+        //Soooo,  an excercise left to the reader: Try parsing "RRULE:FREQ=YEARLY;BYMONTH=11;BYDAY=1SU" in a function that can accurately change the time for daylight savings
+    } TimeZoneInfo;
 
     typedef struct UserCalendar
     {
-        char agenda_name[MAX_NAME_SIZE];       //The name of the calendar,  like who tf needs a long ass calendar name 
-        long timezone_properties;    //Tells us the timezone settings for the entire agenda
-        byte event_precedence[4];    //The ints within the array related to the indices of the events, this is the order in which the events occur
-
-        CalendarEvent *jobs[4];     //An array of CalendarEvent pointers that point to dynamically allocated or statically allocated CalendarEvent strucs
+        char agenda_name[MAX_NAME_SIZE];        //The name of the calendar,  like who tf needs a long ass calendar name 
+        long timezone_properties;               //Tells us the timezone settings for the entire agenda
+        byte event_precedence[4];               //The ints within the array related to the indices of the events, this is the order in which the events occur
+        TimeZoneInfo timezone;                  //A struc containing the timezone information about the Calendar
+        CalendarEvent *jobs[4];                 //An array of CalendarEvent pointers that point to dynamically allocated or statically allocated CalendarEvent strucs
 
     } Calendar;
 //CLASS/STRUCT DECLARATION SECTION END---------------------------------------------------------------------------------------------------------------------------------------------
@@ -108,19 +125,6 @@
     */
 
 
-    int intialize_calendar(File *file, Calendar *user_calendar);
-    /* 
-    REQUIRES:
-        -A SD card class file address which is initialized and opened
-        -A pointer to a created Calendar structure
-    PROMISES:
-        -To attempt to fill in the Calendar's:
-            -Name
-            -Timezone id
-        -Returns 0 if success, -1 otherwise
-    */
-
-
    long *find_event(File *file, const long start_offset_byte, const long *read_sector_table, long date, long time, long tolerance);
     /* 
     REQUIRES:
@@ -137,6 +141,47 @@
         -Upon failure to return:
             -1)EOF in both the 1st and 2nd element of the array if failure
             -2)NEF in both the 1st and 2nd element if no event could be found with the specified arguments
+    */
+
+
+    int intialize_calendar(File *file, Calendar *user_calendar);
+    /* 
+    REQUIRES:
+        -A SD card class file address which is initialized and opened
+        -A pointer to a created Calendar structure
+    PROMISES:
+        -To attempt to fill in the Calendar's:
+            -Name
+            -Timezone id
+            -Day light savings crap
+        -Returns 0 if success, -1 otherwise
+    */
+
+
+   void calendar_str_print(const char * char_array);
+    /* 
+    REQUIRES:
+        -A pointer to a charcter array THAT IS NULL TERMINATED
+        -A Serial port to be open, a check is performed however
+    PROMISES:
+        -To attempt to serial print the content within the character array up to the termination Null char
+        -DEBUGMODE define will affect output
+    */
+
+
+
+   void calendar_str_to_num(const char * str_num, const byte length, long *long_pointer, int *int_pointer, byte *byte_pointer);
+       /* 
+    REQUIRES:
+        -A pointer to a charcter array that is numerical, a NO CHECK IS PERFORMED
+        -A length of the number that starts at the address passed as a pointer, length must fit in a byte
+        -ONE pointer to either:
+            -long
+            -int
+            -byte
+        -The others should point to NULL
+    PROMISES:
+        -To attempt to convert the string within the character array to a base 10 number and fit it in the variable passed as a non-NULL pointer
     */
 //FUNCTION DECLARATION SECTION END-------------------------------------------------------------------------------------------------------------------------------------------------
 

@@ -81,46 +81,25 @@ void setup()
     */
     if (keyword_position == EOF)
     {
-        Serial.println("Could not find specified keyvalue within the file");
+        Serial.println("An error was encountered");
     }
     else
     {
-        Serial.println("THE KEYWORD IS AT THIS POS:-------------------------------------------------------------------");
-        Serial.println(keyword_position);
-        Serial.println("----------------------------------------------------------------------------------------------");
-
         char *data = parse_data_string(&sdcard_calendar, keyword_position, ICALMODERTN 0xFF);
         /*
         -A return_string_mode byte, most common is 0xFF indicating:
             -0xFF: Mode is till end of string so it can return multi-line strings
             -0x00: Mode is till end of the line (CR-LF sequence) 
         */
-        for (int i = 0; data[i] != '\0' ; i++)
-        {
-            if(data[i] == '\t')//Replacing real text horizontal tabs with \t sequence to better recognize function return strings
-            {
-                Serial.print('\\');
-                Serial.print('t');
-            }
-            else if(data[i] == ' ')//Replacing real text spaces with underscores to better recognize function return strings
-            {
-                Serial.print('_');
-            }
-            else if(data[i] == '\\' && data[1 + i] == 'n' && 0)//Replacing intext newline \n with actual newlines, DISABLED CURRENTLY
-            {
-                Serial.println();
-                i++;
-            }
-            else
-            {
-                Serial.print(data[i]);
-            }
-        }
+        calendar_str_print(data);  //printing the string
         Serial.print('\n');
         vPortFree(data);
     }
-
-    //Calendar myCalendar;
+    Calendar myCalendar;
+    if(!intialize_calendar(&sdcard_calendar, &myCalendar))
+    {
+        calendar_str_print(myCalendar.agenda_name);  //printing the string
+    }
     Serial.println("ENDING SERIAL CONNECTION");
     sdcard_calendar.close();
     SD.end();

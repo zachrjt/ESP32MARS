@@ -4,6 +4,71 @@
 
 #include "ical_libary.h"  //Associated header file
 
+char *parse_data_string(File *file, const long file_byte_offset, ICALMODERTN const byte return_string_mode)
+{
+    long current_file_byte_offset = file_byte_offset;
+    int max_text_buffer_index = 77;
+    int text_buffer_index = 0;
+    char *text_buffer = (char *)(pvPortMalloc(sizeof(char) * (max_text_buffer_index))); //the maximum length of a line in a ical file is 77 with the CR-LF sequence, 
+    if (!file->seek(file_byte_offset))                         //going to the specified position
+    {
+        return NULL; //specifed position could not be seeked out
+    }
+    char buffer_byte = '\0';
+
+    while ((text_buffer_index < max_text_buffer_index))
+    {
+        if ((ICALMODERTN return_string_mode == 0xFF) && (text_buffer_index == (max_text_buffer_index - 1)))  //text buffer may need to be larger for multi-line strings
+        {                                                                                                 //We check the ICALMODE since this is only needed for mode 0xFF
+            char *temp_buffer = (char *)(pvPortMalloc((sizeof(char) * (75 + max_text_buffer_index))));
+            for (int i = 0; i <= text_buffer_index; i++)
+            {
+                temp_buffer[i] = text_buffer[i];
+            }
+            vPortFree(text_buffer);
+            text_buffer = temp_buffer;
+            max_text_buffer_index += 75;
+        }
+
+        buffer_byte = file->read();
+        if (buffer_byte == -1) //read returns -1 if EOF or other error
+        {
+            vPortFree(text_buffer); //if EOF bad .ical format since all lines
+            return NULL;
+        }
+        else
+        {
+            current_file_byte_offset++; //incrementing the byte offset to match the position
+            text_buffer[text_buffer_index] = buffer_byte;
+            if (buffer_byte == '\n') //If the current buffer byte is LF
+            {
+                if (text_buffer[(-1 + text_buffer_index)] == '\r')   //If the last byte was CR
+                {
+                    //Means we encountered a CR-LF sequence
+                    if((ICALMODERTN return_string_mode == 0xFF) && ((file->peek() == '\t') || (file->peek() == ' ')))//if the next byte is a whitespace character
+                    {                                                                                             //it means the string is multi-line(if mode 0xFF)
+                        file->read();   //discard white space and allow for the function to continue reading data
+                        current_file_byte_offset++; //increment file byte offset
+                        text_buffer_index = text_buffer_index - 2;    //rewrite over the CR-LF sequence with the upcoming string data, -2 since the next line increments by 1 anyways
+                    }
+                    else //the next character was not a whitespace so end of string, regardless of mode
+                    {
+                        //Serial.print("found end of line at ");       //For debugging purposes
+                        //Serial.println(current_file_byte_offset);    //For debugging purposes
+                        text_buffer_index = text_buffer_index - 1;    //rewrite over the CR-LF sequence with null characters ending string 
+                        break;  //breaking to null terminate string and return it 
+                    }
+                }
+            }
+            text_buffer_index++;//incrementing text_buffer index
+        }
+    }
+    text_buffer[text_buffer_index++] = '\0';  //adding null character to terminate string
+    //Serial.println(max_text_buffer_index);  //For debugging purposes
+    return text_buffer;
+}
+
+
 long find_next_keyword(File *file, const char *keyword, const long file_byte_offset, ICALMODERTN const byte return_offset_mode)
 {
     long current_byte_offset = file_byte_offset; //The byte offset to returned, of the first character of the keyword we're looking for
@@ -82,94 +147,6 @@ long find_next_keyword(File *file, const char *keyword, const long file_byte_off
     return current_byte_offset; //Since no key value was found in the entire file return EOF
 }
 
-char *parse_data_string(File *file, const long file_byte_offset, ICALMODERTN const byte return_string_mode)
-{
-    long current_file_byte_offset = file_byte_offset;
-    int max_text_buffer_index = 77;
-    int text_buffer_index = 0;
-    char *text_buffer = (char *)(pvPortMalloc(sizeof(char) * (max_text_buffer_index))); //the maximum length of a line in a ical file is 77 with the CR-LF sequence, 
-    if (!file->seek(file_byte_offset))                         //going to the specified position
-    {
-        return NULL; //specifed position could not be seeked out
-    }
-    char buffer_byte = '\0';
-
-    while ((text_buffer_index < max_text_buffer_index))
-    {
-        if ((ICALMODERTN return_string_mode == 0xFF) && (text_buffer_index == (max_text_buffer_index - 1)))  //text buffer may need to be larger for multi-line strings
-        {                                                                                                 //We check the ICALMODE since this is only needed for mode 0xFF
-            char *temp_buffer = (char *)(pvPortMalloc((sizeof(char) * (75 + max_text_buffer_index))));
-            for (int i = 0; i <= text_buffer_index; i++)
-            {
-                temp_buffer[i] = text_buffer[i];
-            }
-            vPortFree(text_buffer);
-            text_buffer = temp_buffer;
-            max_text_buffer_index += 75;
-        }
-
-        buffer_byte = file->read();
-        if (buffer_byte == -1) //read returns -1 if EOF or other error
-        {
-            vPortFree(text_buffer); //if EOF bad .ical format since all lines
-            return NULL;
-        }
-        else
-        {
-            current_file_byte_offset++; //incrementing the byte offset to match the position
-            text_buffer[text_buffer_index] = buffer_byte;
-            if (buffer_byte == '\n') //If the current buffer byte is LF
-            {
-                if (text_buffer[(-1 + text_buffer_index)] == '\r')   //If the last byte was CR
-                {
-                    //Means we encountered a CR-LF sequence
-                    if((ICALMODERTN return_string_mode == 0xFF) && ((file->peek() == '\t') || (file->peek() == ' ')))//if the next byte is a whitespace character
-                    {                                                                                             //it means the string is multi-line(if mode 0xFF)
-                        file->read();   //discard white space and allow for the function to continue reading data
-                        current_file_byte_offset++; //increment file byte offset
-                        text_buffer_index = text_buffer_index - 2;    //rewrite over the CR-LF sequence with the upcoming string data, -2 since the next line increments by 1 anyways
-                    }
-                    else //the next character was not a whitespace so end of string, regardless of mode
-                    {
-                        //Serial.print("found end of line at ");       //For debugging purposes
-                        //Serial.println(current_file_byte_offset);    //For debugging purposes
-                        text_buffer_index = text_buffer_index - 1;    //rewrite over the CR-LF sequence with null characters ending string 
-                        break;  //breaking to null terminate string and return it 
-                    }
-                }
-            }
-            text_buffer_index++;//incrementing text_buffer index
-        }
-    }
-    text_buffer[text_buffer_index++] = '\0';  //adding null character to terminate string
-    //Serial.println(max_text_buffer_index);  //For debugging purposes
-    return text_buffer;
-}
-
-long *find_event(File *file, const long start_offset_byte, const long *read_sector_table, long date, long time, long tolerance)
-{
-    //This needs some basic operations and calls to find_event_limits
-    //First needs the creation/function to make a read_sector_table 
-        //Read sector table basically is a table of byte offset ranges that are valid to read from, it makes read the file after intialization muchhhhh easier
-            //We wont need to re-read 150000 lines and any lines/events that have already happened can be skipped over and dont need to be parsed
-    return 0;
-}
-
-int intialize_calendar(File *file, Calendar *user_calendar)
-{
-    return 0;
-    //This function just needs some basic text parsing for the name and time zone id calling the parse string and find keyword funcs
-}
-
-long *find_event_limits(File *file, const long middle_offset_byte, ICALMODERTN const byte event_mode)
-{
-    //This function should be similar to find keyword except it has to work backwards in a loop looking for the event begin then
-        //skip back to the passed middle_offset_byte and work forwards in a loop for an event end
-                //note in both cases we should also check for the opposite incase we are given a bad byte offset value
-                //the use of find keyword can work but, only in the forwards direction, coding it in the reverse is possible but might be tricky, if so it would replace this function
-    return 0;
-}
-
 
 long find_previous_keyword(File *file, const char *keyword, const long file_byte_offset, ICALMODERTN const byte return_offset_mode)
 {
@@ -245,4 +222,82 @@ long find_previous_keyword(File *file, const char *keyword, const long file_byte
         }
     }
     return current_byte_offset;            //Since no key value was found in the entire file return EOF
+}
+
+
+
+long *find_event(File *file, const long start_offset_byte, const long *read_sector_table, long date, long time, long tolerance)
+{
+    //This needs some basic operations and calls to find_event_limits
+    //First needs the creation/function to make a read_sector_table 
+        //Read sector table basically is a table of byte offset ranges that are valid to read from, it makes read the file after intialization muchhhhh easier
+            //We wont need to re-read 150000 lines and any lines/events that have already happened can be skipped over and dont need to be parsed
+    return 0;
+}
+
+
+int intialize_calendar(File *file, Calendar *user_calendar)
+{
+    //This function just needs some basic text parsing for the name and time zone id calling the parse string and find keyword funcs
+    long working_byte_offset = 0;
+    working_byte_offset = find_next_keyword(file, "X-WR-CALNAME:", working_byte_offset, ICALMODERTN 0x11); //Find byte-offset of start of calendar name
+    if(working_byte_offset == EOF)
+    {
+        return -1;  //Failure could not find calendar name keyword
+    }
+    char *working_string_pointer = NULL;
+    working_string_pointer = parse_data_string(file, working_byte_offset, 0x00);    //Parse name line for name
+    if (working_string_pointer == NULL)
+    {
+        return -1;  //Failure could not parse calendar name
+    }
+    for(int i = 0; (working_string_pointer[i] != '\0') && (i < MAX_NAME_SIZE); i++)
+    {
+        user_calendar->agenda_name[i] = working_string_pointer[i];  //Moving calendar name from heap data to the calendar object 
+    }
+    vPortFree(working_string_pointer);  //freeing name from heap
+    return 0;
+}
+
+void calendar_str_print(const char * char_array)
+{
+    //This is used as a debugging function to print string data to the serial console to test features and debug processes
+    if(!Serial)    //check if serial port is available, ie forgot to edit out debug code elsewhere and this code is called on un-plugged TTgo
+    {
+        return;
+    }
+
+    #ifdef PRINTOUTDEBUG
+        for (int i = 0; char_array[i] != '\0' ; i++)
+        {
+        
+            if(char_array[i] == '\t')//Replacing real text horizontal tabs with \t sequence to better recognize function return strings
+            {
+                Serial.print('\\');
+                Serial.print('t');
+            }
+            else if(char_array[i] == ' ')//Replacing real text spaces with underscores to better recognize function return strings
+            {
+                Serial.print('_');
+            }
+            else
+            {
+                Serial.print(char_array[i]);
+            }
+        }
+        Serial.print('\n');
+    #endif  // #ifdef ICAL_LIBARY_H
+
+    #ifndef PRINTOUTDEBUG
+        for (int i = 0; char_array[i] != '\0' ; i++)
+        {
+            Serial.print(char_array[i]);
+        }
+        Serial.print('\n');
+    #endif  // #ifndef ICAL_LIBARY_H
+}
+
+void calendar_str_to_num(const char * str_num, byte length, long *long_pointer, int *int_pointer, byte *byte_pointer)
+{
+    
 }
