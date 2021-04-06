@@ -477,26 +477,29 @@ byte initialize_event(File *file, CalendarEvent *user_event, ICALOFFSET const lo
     working_byte_offset = find_next_keyword(file, "DTSTART:", ICALOFFSET event_byte_offset, ICALOFFSET max_byte_offset, ICALMODERTN NEXTCHAR);  //looking for DTSTART string
     if(max_byte_offset == EOF)
     {
-        return -1;  //Error during search for DTSTART:
+        return -1;  //Critical Error during search for DTSTART:
     }
     else if(working_byte_offset == -2)//could not find DTSTART:, likely because non-utc usage look for DTSTART;VALUE=DATE:
     {
         working_byte_offset = find_next_keyword(file, "DTSTART;VALUE=DATE:", ICALOFFSET event_byte_offset, ICALOFFSET max_byte_offset, ICALMODERTN NEXTCHAR);  //looking for DTSTART string
         if(max_byte_offset == EOF)
         {
-            return -1;  //Error during search for DTSTART;VALUE=DATE:
+            return -1;  //Critical Error during search for DTSTART;VALUE=DATE
         }
         else if(max_byte_offset == -2)
         {
-            user_event->date_format = 1;//Since we could not parse the date we set the alternative date format state byte to 1
+            //Could not find DTSTART;VALUE=
         }
         else
         {
-            //So non-utc was used, giving us only a date code, we assume that the event starts on the date
+            //So DTSTART;VALUE= we assume that the event starts on the date at 00:00.00 time
+            user_event->date_format = 1;    //Setting date format state to 1
+
         }
     }
     else//DTSTART was UTC so we can parse info much more easily
     {
+        user_event->date_format = 0;
         working_string_pointer = parse_data_string(file, working_byte_offset, ONELINE); //Parse line for DTSTART utc string
         if (working_string_pointer == NULL)
         {
