@@ -20,7 +20,8 @@
     #define ICALOFFSET     //Just a nice way of indicating if an argument or parameter is a byte offset
     
     #define EVENTSTACKSIZE  4 //The number of events being managed by the calendar at any given time
-
+    #define SECTORTABLESIZE 1024    //The number of elements within the sector_table
+    
     #define NEXTLINE 0x00   //Used for the keyword finding functions
     #define FIRSTCHAR 0xFF  //Used for the keyword finding functions
     #define NEXTCHAR 0x11   //Used for the keyword finding functions
@@ -168,25 +169,6 @@
     */
 
 
-   long *find_event(File *file, const long start_offset_byte, const long *read_sector_table, long date, long time, long tolerance);
-    /* 
-    REQUIRES:
-        -A file_byte_offset which is the starting point to look for events
-        -An address to a read_sector_table which contains revelant byte offset ranges to read from
-        -A SD card class file address which is initialized and opened
-        -A long-utc-date for which the event should start on/after 
-        -A long-utc-time for which the event should start on/after within the provided tolerance after
-        -A long tolerance which is for how long after this long time and date, in hours, the event should be within
-    PROMISES:
-        -Upon success to return a pointer to a 2-long array containing:
-            -1)The file_byte_offset of the event's BEGIN:VEVENT that is within the specified time range
-            -2)The first byte of the line after the event's END:VEVENT of the event specified
-        -Upon failure to return:
-            -1)EOF in both the 1st and 2nd element of the array if failure
-            -2)NEF in both the 1st and 2nd element if no event could be found with the specified arguments
-    */
-
-
     byte initialize_calendar(File *file, Calendar *user_calendar);
     /* 
     REQUIRES:
@@ -217,6 +199,44 @@
             -Event end info
         -Returns 0 if success, -1 otherwise
         -THREAD SAFE WITH pvPortMalloc() / vPortFree(), (used internally with the function)
+    */
+
+
+   long *find_event(File *file, const long *read_sector_table, long date, long time, long tolerance);
+    /* 
+    REQUIRES:
+        -A SD card class file address which is initialized and opened
+        -A sector table to look for relevant events
+        -A long-utc-date code for which the event should start on/after 
+        -A long-utc-time code for which the event should start on/after within the provided tolerance after
+        -A long tolerance which is for how long after this long time and date, in hours, the event should be within
+    PROMISES:
+        -Upon success to return a pointer to the BEGIN:VEVENT byte
+        -Upon failure to return:
+            -If failure during search EOF
+            -If no event could be found within the read_sector_table regions -2
+    */
+
+
+   byte initialize_sector_table(File *file, long *sector_table);
+    /* 
+    REQUIRES:
+        -A SD card class file address which is initialized and opened
+        -A sector table to add offsets to
+    PROMISES:
+        -Upon success to return 0
+        -Upon failure to return -1
+    */
+
+
+   void update_sector_table(long *sector_table, const long event_start, const long event_end);
+    /* 
+    REQUIRES:
+        -A sector table to edit
+        -A event_start byte offset and a related event_end byte offset
+        -The event offsets specified to belong to an event that we are flushing since it has passed
+    PROMISES:
+        -To update the sector table to be continous relevant sectors of SD card data
     */
 
 

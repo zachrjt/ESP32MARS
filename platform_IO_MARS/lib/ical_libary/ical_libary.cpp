@@ -11,9 +11,12 @@ char *parse_data_string(File *file, const long file_byte_offset, long max_byte_o
     int max_text_buffer_index = 77;
     int text_buffer_index = 0;
     char *text_buffer = (char *)(pvPortMalloc(sizeof(char) * (max_text_buffer_index))); //the maximum length of a line in a ical file is 77 with the CR-LF sequence, 
-    if (!file->seek(file_byte_offset))                         //going to the specified position
+    if (file->position() != file_byte_offset)//Are already at the specified posistion?
     {
-        return NULL; //specifed position could not be seeked out
+        if (!file->seek(file_byte_offset)) //going to the specified position
+        {
+            return NULL; //specifed position could not be seeked out
+        }
     }
     char buffer_byte = '\0';
 
@@ -90,10 +93,13 @@ long find_next_keyword(File *file, const char *keyword, const long file_byte_off
 
     char buffer_byte = '\0';                    //Initializing a buffer byte to read bytes in from the file
 
-    if (!file->seek(file_byte_offset)) //Going to the specified position within the file
+    if (file->position() != file_byte_offset)//Are already at the specified posistion?
     {
-        current_byte_offset = EOF; //Specifed position could not be seeked out since invalid, returning EOF
-        return current_byte_offset;
+        if (!file->seek(file_byte_offset)) //Going to the specified position within the file
+        {
+            current_byte_offset = EOF; //Specifed position could not be seeked out since invalid, returning EOF
+            return current_byte_offset;
+        }
     }
 
     while (1)
@@ -183,10 +189,13 @@ long find_previous_keyword(File *file, const char *keyword, const long file_byte
     int keyword_index = keyword_length-1;         //Pointer index of our keyword string, in mode 0x00 (reverse) starts at max and decreases
 
     char buffer_byte = '\0';                    //Initializing a buffer byte to read bytes in from the file
-    if (!file->seek(file_byte_offset)) //Going to the specified position within the file
+    if (file->position() != file_byte_offset)//Are already at the specified posistion?
     {
-        current_byte_offset = EOF; //Specifed position could not be seeked out since invalid, returning EOF
-        return current_byte_offset;
+        if (!file->seek(file_byte_offset)) //Going to the specified position within the file
+        {
+            current_byte_offset = EOF; //Specifed position could not be seeked out since invalid, returning EOF
+            return current_byte_offset;
+        }
     }
 
     while (1)
@@ -253,17 +262,6 @@ long find_previous_keyword(File *file, const char *keyword, const long file_byte
         }
     }
     return current_byte_offset;            //Since no key value was found in the entire file return EOF
-}
-
-
-
-long *find_event(File *file, const long start_offset_byte, const long *read_sector_table, long date, long time, long tolerance)
-{
-    //This needs some basic operations and calls to find_event_limits
-    //First needs the creation/function to make a read_sector_table 
-        //Read sector table basically is a table of byte offset ranges that are valid to read from, it makes read the file after intialization muchhhhh easier
-            //We wont need to re-read 150000 lines and any lines/events that have already happened can be skipped over and dont need to be parsed
-    return 0;
 }
 
 
@@ -715,6 +713,41 @@ byte initialize_event(File *file, CalendarEvent *user_event, ICALOFFSET const lo
     }
     //Checking the start and end time section--------------------------------------------------------------------------------------------------------------------------------------
     return 0;
+}
+
+
+long *find_event(File *file, const long start_offset_byte, const long *read_sector_table, long date, long time, long tolerance)
+{
+    //This needs some basic operations and calls to find_event_limits
+    //First needs the creation/function to make a read_sector_table 
+        //Read sector table basically is a table of byte offset ranges that are valid to read from, it makes read the file after intialization muchhhhh easier
+            //We wont need to re-read 150000 lines and any lines/events that have already happened can be skipped over and dont need to be parsed
+    return 0;
+}
+
+byte initialize_sector_table(File *file, long *sector_table)
+{
+    //This function should parse through the entire sd card file
+    //While doing so it should examine each event and look at its start date stamps
+    //If the date stamp is less than a current date stamp it should consider the event(the byte offset range between the BEGIN and END) to be irrelevant
+    //These irrelevant byte offset ranges should lump together in the sector table
+    //Such that the sector table contains all the RELEVANT ranges of byte offsets in order that contain data/events that are after, or on the current date 
+    //unfortunalety any reoccuring events might be discarded since I never, and will not, implemented RRULE parsing for reoccurance of date stamps
+    
+
+    //The sector table element are ranges that are valid between partners so: between [0] and [1] are good, but not between [1] and [2]
+    //but between [2] and [3], so there are an even number of sector table oofset
+
+    //There will be 1024 sector table elements allowing for a maximum of 512 regions that are "relevant"
+    //If there is not enough room the last element pair should contain the next relevant byte-offset to the end of the file
+
+    //As events are completed the sector table should be updated 
+    return 0;
+}
+
+void update_sector_table(long *sector_table, const long event_start, const long event_end)
+{
+    //This function should update the sector table for when an event passes/finished
 }
 
 
