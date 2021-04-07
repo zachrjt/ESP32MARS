@@ -66,7 +66,7 @@ void setup()
         return;
     }
     //6.5858 seconds to go through 150000 lines/ 600,730 byte
-    long keyword_position = find_next_keyword(&sdcard_calendar, "6606-57709@d2l.ucalgary.ca",ICALOFFSET 0, ICALOFFSET -1, ICALMODERTN NEXTLINE);
+    long keyword_position = find_next_keyword(&sdcard_calendar, "Additional Quiz 4 - Availability Ends",ICALOFFSET 0, ICALOFFSET -1, ICALMODERTN NEXTLINE);
 
     //0.27 seconds to find a previous keyword 
     keyword_position = find_previous_keyword(&sdcard_calendar, "BEGIN:VEVENT", ICALOFFSET keyword_position, ICALOFFSET -1, ICALMODERTN FIRSTCHAR);
@@ -84,39 +84,14 @@ void setup()
     Calendar myCalendar;
     if(!initialize_calendar(&sdcard_calendar, &myCalendar))
     {
-        calendar_str_print(myCalendar.agenda_name);
-        calendar_str_print(myCalendar.timezone.time_zone_id);
-
-        calendar_str_print(myCalendar.timezone.daylight_time_zone);
-        Serial.println(myCalendar.timezone.daylight_offset);
-
-        calendar_str_print(myCalendar.timezone.standard_time_zone);
-        Serial.println(myCalendar.timezone.standard_offset);
+        print_calendar(&myCalendar);
     }
     CalendarEvent myEvent;
 
     if(!initialize_event(&sdcard_calendar, &myEvent, keyword_position))
     {
-        calendar_str_print(myEvent.event_summary);
-        calendar_str_print(myEvent.event_location);
-
-        calendar_str_print(myEvent.event_time_zone_id);
-
-        Serial.println(myEvent.event_start_date_code);
-        Serial.print("The event is on: ");
-        Serial.print(myEvent.event_start_year);
-        Serial.print("/");
-        Serial.print(myEvent.event_start_month);
-        Serial.print("/");
-        Serial.println(myEvent.event_start_day);
-        
-        Serial.println(myEvent.event_start_time_code);
-        Serial.print("At time: ");
-        Serial.print(myEvent.event_start_hour);
-        Serial.print(":");
-        Serial.print(myEvent.event_start_minute);
-        Serial.print(".");
-        Serial.println(myEvent.event_start_minute);
+        Serial.print("Event: ");
+        print_event(&myEvent);  //printing my event
     }
     Serial.println("ENDING SERIAL CONNECTION");
     sdcard_calendar.close();

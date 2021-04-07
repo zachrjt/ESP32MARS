@@ -18,7 +18,8 @@
     #define ICALMODERTN    //Just a nice way of indicating if an argument or parameter is mode of return value
     #define ICALMODEOPR    //Just a nice way of indicating if an argument or parameter is mode of operation to find the return value
     #define ICALOFFSET     //Just a nice way of indicating if an argument or parameter is a byte offset
-
+    
+    #define EVENTSTACKSIZE  4 //The number of events being managed by the calendar at any given time
 
     #define NEXTLINE 0x00   //Used for the keyword finding functions
     #define FIRSTCHAR 0xFF  //Used for the keyword finding functions
@@ -42,8 +43,7 @@
         char event_location[MAX_LOCATION_SIZE]; //The location of the event
 
         byte date_format;           //If 1 then only date is present, 2 for TZID event time, 0 normally for UTC times (needed for wacko 250 edge cases in u of c calendar)
-        char event_time_zone_id[MAX_TZ_SIZE];   //normally "UTC" but in mode 2 it holds a TZID EVENT TIME like America/Edmonton:, Date for mode 1
-
+        char event_time_zone_id[MAX_TZ_SIZE];   //normally "UTC" but in mode 2 it holds a TZID EVENT TIME like America/Edmonton:, LOCAL for mode 1
         int event_start_date_code;  //Start date of event in utc parts: 2021 04 06(used for internal comparison)
         int event_start_year;       //Start date year
         int event_start_month;      //Start date month
@@ -53,6 +53,9 @@
         int event_start_hour;       //Start time hour
         int event_start_minute;     //Start date minute
         int event_start_second;     //Start date seconds
+
+        byte alarm_status = 0;    //If the end and start time are the same we consider it to be an alarm and set this byte high
+                                  //or if there is no end time specified in the considered formats (2 edges cases present within the u of c calendar)
 
         int event_end_date_code;  //End date of event in utc parts: 2021 04 06(used for internal comparison)
         int event_end_year;       //End date year
@@ -83,11 +86,11 @@
 
     typedef struct UserCalendar
     {
-        char agenda_name[MAX_NAME_SIZE];        //The name of the calendar,  like who tf needs a long ass calendar name 
-        TimeZoneInfo timezone;                  //A struc containing the timezone information about the Calendar
-        byte event_precedence[4];               //The ints within the array related to the indices of the events, this is the order in which the events occur
-        CalendarEvent *jobs[4];                 //An array of CalendarEvent pointers that point to dynamically allocated or statically allocated CalendarEvent strucs
-
+        char agenda_name[MAX_NAME_SIZE];                     //The name of the calendar, like who tf needs a multi-line calendar name 
+        TimeZoneInfo timezone;                               //A struc containing the timezone information about the Calendar
+        int event_precedence[EVENTSTACKSIZE];               //The ints within the array related to the indices of the events, this is the order in which the events occur
+        byte event_intialization = 0;                        //Indicates if events are present within the jobs array
+        CalendarEvent *jobs[EVENTSTACKSIZE];                 //An array of CalendarEvent pointers that point to dynamically allocated or statically allocated CalendarEvent strucs
     } Calendar;
 
 //CLASS/STRUCT DECLARATION SECTION END---------------------------------------------------------------------------------------------------------------------------------------------
@@ -250,6 +253,24 @@
     PROMISES:
         -To fill the dest chararcter array with the provided string,
         -To Null terminate the string
+    */
+
+
+    void print_event(CalendarEvent *user_event);
+    /* 
+    REQUIRES:
+        -A pointer to an initialized Event
+    PROMISES:
+        -To Serial print out information about the event
+    */
+
+
+   void print_calendar(Calendar *user_calendar);
+    /* 
+    REQUIRES:
+        -A pointer to an initializaed Calendar 
+    PROMISES:
+        -To Serial print out information about the calendar
     */
 //FUNCTION DECLARATION SECTION END-------------------------------------------------------------------------------------------------------------------------------------------------
 
