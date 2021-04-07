@@ -12,10 +12,10 @@
 #define BUTTON_1_PIN        36
 #define BUTTON_2_PIN        37
 
-#define SD_MOSI 26
-#define SD_MISO 32
-#define SD_SPICLK 25
-#define SD_SPICS 33
+#define SD_MOSI 25
+#define SD_MISO 33
+#define SD_SPICLK 32
+#define SD_SPICS 26
 
 #define PIC_MOSI 12
 #define PIC_MISO 13
@@ -51,7 +51,7 @@ uint8_t Time0R = 76;     //Used for debugging GetTimeFromPIC
 uint8_t Time1R = 32;
 uint8_t Time2R = 64;
 
-uint8_t AlarmFlag = 1;
+uint8_t AlarmFlag = 0;
 
 void setup()
 {
@@ -80,8 +80,7 @@ void loop()
 {
   btn1.loop();
   btn2.loop();
-  //getTimefromPIC1();
-  sendTimetoPIC1();
+  //sendTimetoPIC1();
   sendAlarmFlagtoPIC2();
 }
 
@@ -90,9 +89,13 @@ void sendTimetoPIC1(void)
   digitalWrite(PIC1_SPICS, LOW);
   PIC1_SPI.beginTransaction(PICSPISettings);
 
-  PIC1_SPI.transfer(Time0);
-  PIC1_SPI.transfer(Time1);
-  PIC1_SPI.transfer(Time2);
+  Time0R = PIC1_SPI.transfer(Time0);
+  Time1R = PIC1_SPI.transfer(Time1);
+  Time2R = PIC1_SPI.transfer(Time2);
+
+  Serial.println(Time0R);
+  Serial.println(Time1R);
+  Serial.println(Time2R);
 
   PIC1_SPI.endTransaction();
   digitalWrite(PIC1_SPICS, HIGH);
@@ -103,13 +106,13 @@ void  getTimefromPIC1(void)
   digitalWrite(PIC1_SPICS, LOW);
   PIC1_SPI.beginTransaction(PICSPISettings);
 
-  PIC1_SPI.transfer(0);
+  //PIC1_SPI.transfer(0);
 
   //delay(1000);
 
-  Time0R = PIC1_SPI.transfer(0);
-  Time1R = PIC1_SPI.transfer(0);
-  Time2R = PIC1_SPI.transfer(0);
+  Time0R = PIC1_SPI.transfer(1);
+  Time1R = PIC1_SPI.transfer(1);
+  Time2R = PIC1_SPI.transfer(1);
 
   Serial.println(Time0R);
   Serial.println(Time1R);
@@ -144,11 +147,13 @@ void pressed(Button2& btn) {
       //Set up new Alarm event 5 minutes from now here
       sendAlarmFlagtoPIC2();
       delay(1000);
-      AlarmFlag = 1; 
+      AlarmFlag = 1;
+      sendAlarmFlagtoPIC2();
     }
     else      ///This is just for debugging
     {
-      //AlarmFlag = 1;
+      AlarmFlag = 1;
+      sendTimetoPIC1();
     }
   }
   else if (btn ==  btn2)
@@ -157,9 +162,12 @@ void pressed(Button2& btn) {
     if (AlarmFlag)
     {
       AlarmFlag = 0;
+      sendAlarmFlagtoPIC2();
 
       //Update event(?) here (not sure if needed)
     }
+
+    getTimefromPIC1();
   }
 }
 
