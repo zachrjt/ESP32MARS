@@ -59,14 +59,14 @@ void setup()
     }
     Serial.println("Mounted SD card");
 
-    File sdcard_calendar = SD.open("/ical_simple.ics");
+    File sdcard_calendar = SD.open("/uofc_calendar.ics");
     if (!sdcard_calendar)
     {
         Serial.println("Could not open file");
         return;
     }
     //6.5858 seconds to go through 150000 lines/ 600,730 byte
-    long keyword_position = find_next_keyword(&sdcard_calendar, "ENEL 2nd Year Integrated",ICALOFFSET 0, ICALOFFSET -1, ICALMODERTN NEXTLINE);
+    long keyword_position = find_next_keyword(&sdcard_calendar, "6606-57709@d2l.ucalgary.ca",ICALOFFSET 0, ICALOFFSET -1, ICALMODERTN NEXTLINE);
 
     //0.27 seconds to find a previous keyword 
     keyword_position = find_previous_keyword(&sdcard_calendar, "BEGIN:VEVENT", ICALOFFSET keyword_position, ICALOFFSET -1, ICALMODERTN FIRSTCHAR);
@@ -77,7 +77,7 @@ void setup()
     }
     else
     {
-        char *data = parse_data_string(&sdcard_calendar, keyword_position, ICALMODERTN MULTILINE);
+        char *data = parse_data_string(&sdcard_calendar, keyword_position, ICALOFFSET NOEND, ICALMODERTN MULTILINE);
         calendar_str_print(data);  //printing the string
         vPortFree(data);
     }
@@ -99,6 +99,8 @@ void setup()
     {
         calendar_str_print(myEvent.event_summary);
         calendar_str_print(myEvent.event_location);
+
+        calendar_str_print(myEvent.event_time_zone_id);
 
         Serial.println(myEvent.event_start_date_code);
         Serial.print("The event is on: ");

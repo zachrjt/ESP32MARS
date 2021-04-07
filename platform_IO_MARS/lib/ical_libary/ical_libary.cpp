@@ -4,7 +4,7 @@
 
 #include "ical_libary.h"  //Associated header file
 
-char *parse_data_string(File *file, const long file_byte_offset, ICALMODERTN const byte return_string_mode)
+char *parse_data_string(File *file, const long file_byte_offset, long max_byte_offset, ICALMODERTN const byte return_string_mode)
 {
     long current_file_byte_offset = file_byte_offset;
     int max_text_buffer_index = 77;
@@ -16,7 +16,12 @@ char *parse_data_string(File *file, const long file_byte_offset, ICALMODERTN con
     }
     char buffer_byte = '\0';
 
-    while ((text_buffer_index < max_text_buffer_index))
+    if (max_byte_offset == -1)   //pass -1 if we dont want to specifiy A maximum
+    {
+        max_byte_offset = 2147483647;   //maximum value possible
+    }
+
+    while ((text_buffer_index < max_text_buffer_index) && (current_file_byte_offset < max_byte_offset))
     {
         if ((ICALMODERTN return_string_mode == 0xFF) && (text_buffer_index == (max_text_buffer_index - 1)))  //text buffer may need to be larger for multi-line strings
         {                                                                                                 //We check the ICALMODE since this is only needed for mode 0xFF
@@ -266,20 +271,20 @@ byte initialize_calendar(File *file, Calendar *user_calendar)
     //This function just needs some basic text parsing for the name and time zone id calling the parse string and find keyword funcs
     //Grabing name section---------------------------------------------------------------------------------------------------------------------------------------------------------
     long working_byte_offset = 0;
-    const long max_byte_offset = find_next_keyword(file, "BEGIN:VEVENT", ICALOFFSET 0, ICALOFFSET -1, ICALMODERTN FIRSTCHAR);//Find where the first event starts
+    const long max_cal_byte_offset = find_next_keyword(file, "BEGIN:VEVENT", ICALOFFSET 0, ICALOFFSET -1, ICALMODERTN FIRSTCHAR);//Find where the first event starts
                                                                                                                   //Which is the end of revelant calendar settings
     
-    working_byte_offset = find_next_keyword(file, "X-WR-CALNAME:", ICALOFFSET working_byte_offset, ICALOFFSET max_byte_offset, ICALMODERTN NEXTCHAR); //Find byte-offset of start of calendar name
+    working_byte_offset = find_next_keyword(file, "X-WR-CALNAME:", ICALOFFSET working_byte_offset, ICALOFFSET max_cal_byte_offset, ICALMODERTN NEXTCHAR); //Find byte-offset of start of calendar name
     if(working_byte_offset == EOF)
     {
         return -1;  //Failure could not find calendar name keyword
     }
     else if(working_byte_offset == -2)  //could not fine name property within start and first event
     {
-        calendar_char_copy("Unknown\0", user_calendar->agenda_name); //since the calendar name wasnt specified setting it to "unknown"
+        calendar_char_copy("Unknown", user_calendar->agenda_name); //since the calendar name wasnt specified setting it to "unknown"
     }
     char *working_string_pointer = NULL;
-    working_string_pointer = parse_data_string(file, working_byte_offset, ONELINE);    //Parse name line for name
+    working_string_pointer = parse_data_string(file, working_byte_offset, NOEND, ONELINE);    //Parse name line for name
     if (working_string_pointer == NULL)
     {
         return -1;  //Failure could not parse calendar name
@@ -290,10 +295,10 @@ byte initialize_calendar(File *file, Calendar *user_calendar)
 
     //Grabing timezone section-----------------------------------------------------------------------------------------------------------------------------------------------------
     //Timezone id section
-    working_byte_offset = find_next_keyword(file, "TZID:", ICALOFFSET 0, ICALOFFSET max_byte_offset, ICALMODERTN NEXTCHAR);
+    working_byte_offset = find_next_keyword(file, "TZID:", ICALOFFSET 0, ICALOFFSET max_cal_byte_offset, ICALMODERTN NEXTCHAR);
     if(working_byte_offset == -2) //-2 implies the function could not find the keyword between 0 and the first event, so not specified
     {
-        calendar_char_copy("Unknown\0", user_calendar->timezone.time_zone_id); //No timezone id string specified so setting to "Unknown"
+        calendar_char_copy("Unknown", user_calendar->timezone.time_zone_id); //No timezone id string specified so setting to "Unknown"
     }
     else if(working_byte_offset == EOF)
     {
@@ -301,7 +306,7 @@ byte initialize_calendar(File *file, Calendar *user_calendar)
     }
     else
     {
-        working_string_pointer = parse_data_string(file, working_byte_offset, ONELINE);    //Parse for time zone id
+        working_string_pointer = parse_data_string(file, working_byte_offset, NOEND, ONELINE);    //Parse for time zone id
         if (working_string_pointer == NULL)
         {
             return -1;  //Failure could not parse timezone id string data
@@ -311,7 +316,7 @@ byte initialize_calendar(File *file, Calendar *user_calendar)
     }
 
     //Daylight savings section
-    working_byte_offset = find_next_keyword(file, "BEGIN:DAYLIGHT", ICALOFFSET 0, ICALOFFSET max_byte_offset, ICALMODERTN NEXTLINE);    //looking for beginning of daylight info
+    working_byte_offset = find_next_keyword(file, "BEGIN:DAYLIGHT", ICALOFFSET 0, ICALOFFSET max_cal_byte_offset, ICALMODERTN NEXTLINE);    //looking for beginning of daylight info
     if(working_byte_offset == -2) //-2 implies the function could not find the keyword between 0 and the first event, so not specified
     {
         user_calendar->timezone.daylight_status = 0; //No daylight savings found setting byte to 0
@@ -323,7 +328,7 @@ byte initialize_calendar(File *file, Calendar *user_calendar)
     else    //The daylight saving info beginning was found
     {
         const long daylight_start = working_byte_offset;   //setting the starting byte offset to the BEGIN:DAYLIGHT
-        const long daylight_end = find_next_keyword(file, "END:DAYLIGHT", ICALOFFSET daylight_start, ICALOFFSET max_byte_offset, ICALMODERTN FIRSTCHAR); //finding the end of the daylight savings
+        const long daylight_end = find_next_keyword(file, "END:DAYLIGHT", ICALOFFSET daylight_start, ICALOFFSET max_cal_byte_offset, ICALMODERTN FIRSTCHAR); //finding the end of the daylight savings
         user_calendar->timezone.daylight_status = 1; //Daylight savings found setting byte to enable daylight savings
 
         //looking for the daylight savings numerical offset
@@ -332,7 +337,7 @@ byte initialize_calendar(File *file, Calendar *user_calendar)
         {
             return -1;  //error daylight savings but no specified offset
         }                                                                                           
-        working_string_pointer = parse_data_string(file, working_byte_offset, 0x00);    //parse the time zone offset
+        working_string_pointer = parse_data_string(file, working_byte_offset, NOEND,  NEXTLINE);    //parse the time zone offset
         if(working_string_pointer == NULL)
         {
             return -1;  //error during parsing daylight saving offset value
@@ -348,11 +353,11 @@ byte initialize_calendar(File *file, Calendar *user_calendar)
         }
         else if(working_byte_offset == -2)//could not find within daylight, ie not specified
         {
-            calendar_char_copy("Unknown\0", user_calendar->timezone.daylight_time_zone); //since the daylight savings time zone id wasnt specified setting it to unknown
+            calendar_char_copy("Unknown", user_calendar->timezone.daylight_time_zone); //since the daylight savings time zone id wasnt specified setting it to unknown
         }
         else    //found timezone name parsing data
         {
-            working_string_pointer = parse_data_string(file, working_byte_offset, ONELINE);    //parsing the string data of the timezone id for daylight savings
+            working_string_pointer = parse_data_string(file, working_byte_offset, NOEND, ONELINE);    //parsing the string data of the timezone id for daylight savings
             if(working_string_pointer == NULL)
             {
                 return -1;  //error during parsing daylight time zone id
@@ -363,7 +368,7 @@ byte initialize_calendar(File *file, Calendar *user_calendar)
     }
     
     //Standard (non-daylight savings section
-    working_byte_offset = find_next_keyword(file, "BEGIN:STANDARD", ICALOFFSET 0, ICALOFFSET max_byte_offset, ICALMODERTN NEXTLINE);    //looking for beginning of daylight info
+    working_byte_offset = find_next_keyword(file, "BEGIN:STANDARD", ICALOFFSET 0, ICALOFFSET max_cal_byte_offset, ICALMODERTN NEXTLINE);    //looking for beginning of daylight info
     if(working_byte_offset == -2) //-2 implies the function could not find the keyword between 0 and the first event, so not specified
     {
         user_calendar->timezone.daylight_status = 0; //No standard found daylight savings setting byte to 0
@@ -375,7 +380,7 @@ byte initialize_calendar(File *file, Calendar *user_calendar)
     else    //The standard info beginning was found
     {
         const long standard_start = working_byte_offset;   //setting the starting byte offset to the BEGIN:STANDARD
-        const long standard_end = find_next_keyword(file, "END:STANDARD", ICALOFFSET standard_start, ICALOFFSET max_byte_offset, ICALMODERTN FIRSTCHAR); //finding the end of the standard 
+        const long standard_end = find_next_keyword(file, "END:STANDARD", ICALOFFSET standard_start, ICALOFFSET max_cal_byte_offset, ICALMODERTN FIRSTCHAR); //finding the end of the standard 
         user_calendar->timezone.daylight_status = 1; //Standard found setting byte to enable daylight savings
 
         //looking for the daylight savings numerical offset
@@ -384,7 +389,7 @@ byte initialize_calendar(File *file, Calendar *user_calendar)
         {
             return -1;  //error standard time present but no specified offset
         }                                                                                           
-        working_string_pointer = parse_data_string(file, working_byte_offset, 0x00);    //parse the time zone offset
+        working_string_pointer = parse_data_string(file, working_byte_offset, NOEND, NEXTLINE);    //parse the time zone offset
         calendar_str_to_int(working_string_pointer, -1, '\0', &user_calendar->timezone.standard_offset);  //put the timezone offset string data into the calendar.timezone struct as an int
         vPortFree(working_string_pointer);  //freeing the heap offset data
 
@@ -396,11 +401,11 @@ byte initialize_calendar(File *file, Calendar *user_calendar)
         }
         else if(working_byte_offset == -2)//could not find within daylight, ie not specified
         {
-            calendar_char_copy("Unknown\0", user_calendar->timezone.standard_time_zone); //since the standard time zone id wasnt specified setting it to unknown
+            calendar_char_copy("Unknown", user_calendar->timezone.standard_time_zone); //since the standard time zone id wasnt specified setting it to unknown
         }
         else    //found timezone name parsing data
         {
-            working_string_pointer = parse_data_string(file, working_byte_offset, ONELINE);    //parsing the string data of the timezone of standard time
+            working_string_pointer = parse_data_string(file, working_byte_offset, NOEND, ONELINE);    //parsing the string data of the timezone of standard time
             if(working_string_pointer == NULL)
             {
                 return -1;  //error during parsing standard time zone id
@@ -421,26 +426,27 @@ byte initialize_event(File *file, CalendarEvent *user_event, ICALOFFSET const lo
     {
         return -1;
     }
-    const long max_byte_offset = find_next_keyword(file, "END:VEVENT", ICALOFFSET event_byte_offset, ICALOFFSET -1, ICALMODERTN FIRSTCHAR); //Find end of event
-    if(max_byte_offset < 0)
+    const long max_event_byte_offset = find_next_keyword(file, "END:VEVENT", ICALOFFSET event_byte_offset, ICALOFFSET -1, ICALMODERTN FIRSTCHAR); //Find end of event
+    if(max_event_byte_offset < 0)
     {
-        return -1;  //Error or failure to find end of event returning error code
+        return -1;  //Error or failure to find end of event, returning error code
     }
     //Grabing summary section------------------------------------------------------------------------------------------------------------------------------------------------------
-    long working_byte_offset = 0;
+    long working_byte_offset = 0;//Used to find keyword locally
+    long extra_byte_offset = 0;//Extra one used to find keywords locally
     char *working_string_pointer = NULL;
-    working_byte_offset = find_next_keyword(file, "SUMMARY:", ICALOFFSET event_byte_offset, ICALOFFSET max_byte_offset, ICALMODERTN NEXTCHAR);  //looking for summary info
-    if(max_byte_offset == EOF)
+    working_byte_offset = find_next_keyword(file, "SUMMARY:", ICALOFFSET event_byte_offset, ICALOFFSET max_event_byte_offset, ICALMODERTN NEXTCHAR);  //looking for summary info
+    if(working_byte_offset == EOF)
     {
         return -1;  //Error during search for event summary
     }
-    else if(working_byte_offset == -2)  //could not fine summary property within event byte offset range
+    else if(working_byte_offset == -2)  //could not find summary property within event byte offset range
     {
-        calendar_char_copy("Event\0", user_event->event_summary); //since the event summary wasnt specified setting it to "Event"
+        calendar_char_copy("Event", user_event->event_summary); //since the event summary wasnt specified setting it to "Event"
     }
     else
     {
-        working_string_pointer = parse_data_string(file, working_byte_offset, ONELINE);    //Parse summary line for summary string
+        working_string_pointer = parse_data_string(file, working_byte_offset, (working_byte_offset + 1 + MAX_SUMMARY_SIZE), MULTILINE);    //Parse summary line for summary string
         if (working_string_pointer == NULL)
         {
             return -1;  //Failure could not parse event summary
@@ -451,18 +457,18 @@ byte initialize_event(File *file, CalendarEvent *user_event, ICALOFFSET const lo
     //Grabing summary section------------------------------------------------------------------------------------------------------------------------------------------------------
     
     //Grabing location section-----------------------------------------------------------------------------------------------------------------------------------------------------
-    working_byte_offset = find_next_keyword(file, "LOCATION:", ICALOFFSET event_byte_offset, ICALOFFSET max_byte_offset, ICALMODERTN NEXTCHAR);  //looking for location string
-    if(max_byte_offset == EOF)
+    working_byte_offset = find_next_keyword(file, "LOCATION:", ICALOFFSET event_byte_offset, ICALOFFSET max_event_byte_offset, ICALMODERTN NEXTCHAR);  //looking for location string
+    if(working_byte_offset == EOF)
     {
         return -1;  //Error during search for event location
     }
     else if(working_byte_offset == -2)  //could not find location property within event byte offset range
     {
-        calendar_char_copy("Everywhere\0", user_event->event_summary); //since the calendar location wasnt specified setting it to "Everywhere"
+        calendar_char_copy("Everywhere", user_event->event_location); //since the calendar location wasnt specified setting it to "Everywhere"
     }
     else
     {
-        working_string_pointer = parse_data_string(file, working_byte_offset, ONELINE); //Parse line for location string
+        working_string_pointer = parse_data_string(file, working_byte_offset, (working_byte_offset + 1 + MAX_LOCATION_SIZE), MULTILINE); //Parse line for location string
         if (working_string_pointer == NULL)
         {
             return -1;  //Failure could not parse event location 
@@ -474,33 +480,89 @@ byte initialize_event(File *file, CalendarEvent *user_event, ICALOFFSET const lo
 
     //Grabing times section--------------------------------------------------------------------------------------------------------------------------------------------------------
     //Grabing the start
-    working_byte_offset = find_next_keyword(file, "DTSTART:", ICALOFFSET event_byte_offset, ICALOFFSET max_byte_offset, ICALMODERTN NEXTCHAR);  //looking for DTSTART string
-    if(max_byte_offset == EOF)
+    working_byte_offset = find_next_keyword(file, "DTSTART:", ICALOFFSET event_byte_offset, ICALOFFSET max_event_byte_offset, ICALMODERTN NEXTCHAR);  //looking for DTSTART string
+    if(working_byte_offset == EOF)
     {
         return -1;  //Critical Error during search for DTSTART:
     }
     else if(working_byte_offset == -2)//could not find DTSTART:, likely because non-utc usage look for DTSTART;VALUE=DATE:
     {
-        working_byte_offset = find_next_keyword(file, "DTSTART;VALUE=DATE:", ICALOFFSET event_byte_offset, ICALOFFSET max_byte_offset, ICALMODERTN NEXTCHAR);  //looking for DTSTART string
-        if(max_byte_offset == EOF)
+        working_byte_offset = find_next_keyword(file, "DTSTART;VALUE=DATE:", ICALOFFSET event_byte_offset, ICALOFFSET max_event_byte_offset, ICALMODERTN NEXTCHAR);//look for DTSTART;..
+        if(working_byte_offset == EOF)
         {
             return -1;  //Critical Error during search for DTSTART;VALUE=DATE
         }
-        else if(max_byte_offset == -2)
+        else if(working_byte_offset == -2) //Could not find DTSTART;VALUE=, trying DTSTART;TZID=
         {
-            //Could not find DTSTART;VALUE=
+            working_byte_offset = find_next_keyword(file, "DTSTART;TZID=", ICALOFFSET event_byte_offset, ICALOFFSET max_event_byte_offset, ICALMODERTN NEXTCHAR);  //looking for DTSTART;TZID= string
+            if(working_byte_offset < 0)
+            {
+                return -1;  //Critical Error during search for DTSTART;TZID= or could not find, might be other format that I'm not considering
+            }
+            else
+            {
+                //So DTSTART;TZID=
+                user_event->date_format = 2;    //Setting date format state to 2 since its a TZID time stamp
+                extra_byte_offset = find_next_keyword(file, ":", ICALOFFSET working_byte_offset, ICALOFFSET max_event_byte_offset, ICALMODERTN NEXTCHAR);
+                if(extra_byte_offset < 0)
+                {
+                    return -1; //Error while trying to search for timezone id UTC stamp should be there
+                }
+                else
+                {
+                    //grabbing time zone id string, extra is decremented one since it is the byte offset after the colon not at the colon
+                    working_string_pointer = parse_data_string(file, working_byte_offset, (-1 + extra_byte_offset), ONELINE);  //looking for the tzid string in DTSTART;TZID= "America/Edmonton" :20210215T000000
+                    if (working_string_pointer == NULL)
+                    {
+                        return -1;  //Failure could not parse time zone id string
+                    }
+                    calendar_char_copy(working_string_pointer, user_event->event_time_zone_id);//copying the heap timezoneid into the struc timezone field
+                    vPortFree(working_string_pointer);  //freeing the heap timezoneid
+
+                    //grabbing the utc timestamp after the timezone id
+                    working_string_pointer = parse_data_string(file, extra_byte_offset, NOEND, ONELINE);  //grabing the timestamp in DTSTART;TZID=America/Edmonton: 20210215T000000
+                    if (working_string_pointer == NULL)
+                    {
+                        return -1;  //Failure could not parse timestamp from TZID line
+                    }
+                    //pulling out the date stuff
+                    calendar_str_to_int(working_string_pointer, -1, 'T', &user_event->event_start_date_code);    //grabbing date stamp code into year|month|day into event struc
+                    calendar_str_to_int(working_string_pointer, 4,'\0', &user_event->event_start_year); //transfering the year
+                    calendar_str_to_int(&(working_string_pointer[4]), 2,'\0', &user_event->event_start_month); //transfering the month
+                    calendar_str_to_int(&(working_string_pointer[6]), -1,'T', &user_event->event_start_day); //transfering the day
+
+                    //pulling out the time stuff
+                    calendar_str_to_int(&(working_string_pointer[9]), -1, '\0', &user_event->event_start_time_code); //transfering the time stamp hour|minute|second into event struc
+                    calendar_str_to_int(&(working_string_pointer[9]), 2,'\0', &user_event->event_start_hour); //transfering the hour
+                    calendar_str_to_int(&(working_string_pointer[11]), 2,'\0', &user_event->event_start_minute); //transfering the minute
+                    calendar_str_to_int(&(working_string_pointer[13]), -1,'\0', &user_event->event_start_second); //transfering the second  UNLIKE UTC TIME STAMP NOT 'Z' terminated
+                    vPortFree(working_string_pointer);  //freeing the heap timezoneid
+                }   
+            }
         }
         else
         {
             //So DTSTART;VALUE= we assume that the event starts on the date at 00:00.00 time
             user_event->date_format = 1;    //Setting date format state to 1
-
+            calendar_char_copy("DATE", user_event->event_time_zone_id);//copying the mode 1 : "Date" into the struc timezone field
+            working_string_pointer = parse_data_string(file, working_byte_offset, NOEND, ONELINE); //Parse line for the date stamp
+            if (working_string_pointer == NULL)
+            {
+                return -1;  //Failure could not non-utc date stamp
+            }
+            //This format of datestamp only had a date no time, used for edge 248 cases
+            calendar_str_to_int(working_string_pointer, -1, '\0', &user_event->event_start_date_code); //transfering the datestamp year|month|day into event struc
+            calendar_str_to_int(working_string_pointer, 4,'\0', &user_event->event_start_year); //transfering the year into the event struc
+            calendar_str_to_int(&(working_string_pointer[4]), 2,'\0', &user_event->event_start_month); //transfering the year into the event struc
+            calendar_str_to_int(&(working_string_pointer[6]), -1,'\0', &user_event->event_start_day); //transfering the year into the event struc
+            vPortFree(working_string_pointer); //freeing the date stamp off the heap
         }
     }
     else//DTSTART was UTC so we can parse info much more easily
     {
-        user_event->date_format = 0;
-        working_string_pointer = parse_data_string(file, working_byte_offset, ONELINE); //Parse line for DTSTART utc string
+        user_event->date_format = 0;    //Normal utc code setting time format byte to 0
+        calendar_char_copy("UTC", user_event->event_time_zone_id);    //Since UTC copying UTC string into the time zone id string
+        working_string_pointer = parse_data_string(file, working_byte_offset, NOEND, ONELINE); //Parse line for DTSTART utc string
         if (working_string_pointer == NULL)
         {
             return -1;  //Failure could not parse event start utc string  20210326 T 211332 Z
@@ -516,37 +578,100 @@ byte initialize_event(File *file, CalendarEvent *user_event, ICALOFFSET const lo
         calendar_str_to_int(&(working_string_pointer[9]), 2,'\0', &user_event->event_start_hour); //transfering the hour
         calendar_str_to_int(&(working_string_pointer[11]), 2,'\0', &user_event->event_start_minute); //transfering the minute
         calendar_str_to_int(&(working_string_pointer[13]), -1,'Z', &user_event->event_start_second); //transfering the second
-        vPortFree(working_string_pointer);  //freeing location from heap
+        vPortFree(working_string_pointer);  //freeing DTSTART line from heap
     }
 
     //grabing the end
-    working_byte_offset = find_next_keyword(file, "DTEND:", ICALOFFSET event_byte_offset, ICALOFFSET max_byte_offset, ICALMODERTN NEXTCHAR);  //looking for DTEND string
-    if(max_byte_offset == EOF)
+    working_byte_offset = find_next_keyword(file, "DTEND:", ICALOFFSET event_byte_offset, ICALOFFSET max_event_byte_offset, ICALMODERTN NEXTCHAR);  //looking for DTEND string
+    if(working_byte_offset == EOF)
     {
-        return -1;  //Error during search for DTEND:
+        return -1;  //Critical Error during search for DTEND:
     }
     else if(working_byte_offset == -2)//could not find DTEND:, likely because non-utc usage look for DTEND;VALUE=DATE:
     {
-        working_byte_offset = find_next_keyword(file, "DTEND;VALUE=DATE:", ICALOFFSET event_byte_offset, ICALOFFSET max_byte_offset, ICALMODERTN NEXTCHAR);  //looking for DTEND;... string
-        if(max_byte_offset == EOF)
+        working_byte_offset = find_next_keyword(file, "DTEND;VALUE=DATE:", ICALOFFSET event_byte_offset, ICALOFFSET max_event_byte_offset, ICALMODERTN NEXTCHAR);//look for DTSTART;..
+        if(working_byte_offset == EOF)
         {
-            return -1;  //Error during search for DTEND;VALUE=DATE:
+            return -1;  //Critical Error during search for DTEND;VALUE=DATE
         }
-        else if(max_byte_offset == -2)
+        else if(working_byte_offset == -2) //Could not find DTSTART;VALUE=, trying DTEND;TZID=
         {
-            user_event->date_format = 1;//Since we could not parse the date we set the alternative date format state byte to 1
+            working_byte_offset = find_next_keyword(file, "DTEND;TZID=", ICALOFFSET event_byte_offset, ICALOFFSET max_event_byte_offset, ICALMODERTN NEXTCHAR);  //looking for DTEND;TZID= string
+            if(working_byte_offset == EOF)
+            {
+                return -1;  //Critical Error during search for DTEND;TZID= 
+            }
+            else if(working_byte_offset == -2)
+            {
+                //For some reason 2 events dont have a end time, if end time is zero consider it to be an event of infinsimal duration
+            }
+            else
+            {
+                //So DTEND;TZID=
+                user_event->date_format = 2;    //Setting date format state to 2 since its a TZID time stamp
+                extra_byte_offset = find_next_keyword(file, ":", ICALOFFSET working_byte_offset, ICALOFFSET max_event_byte_offset, ICALMODERTN NEXTCHAR);
+                if(extra_byte_offset < 0)
+                {
+                    return -1; //Error while trying to search for timezone id UTC stamp should be there
+                }
+                else
+                {
+                    //grabbing time zone id string, extra is decremented one since it is the byte offset after the colon not at the colon
+                    working_string_pointer = parse_data_string(file, working_byte_offset, (-1 + extra_byte_offset), ONELINE);  //looking for the tzid string in DTEND;TZID= "America/Edmonton" :20210215T000000
+                    if (working_string_pointer == NULL)
+                    {
+                        return -1;  //Failure could not parse time zone id string
+                    }
+                    calendar_char_copy(working_string_pointer, user_event->event_time_zone_id);//copying the heap timezoneid into the struc timezone field
+                    vPortFree(working_string_pointer);  //freeing the heap timezoneid
+
+                    //grabbing the utc timestamp after the timezone id
+                    working_string_pointer = parse_data_string(file, extra_byte_offset, NOEND, ONELINE);  //grabing the timestamp in DTEND;TZID=America/Edmonton: 20210215T000000
+                    if (working_string_pointer == NULL)
+                    {
+                        return -1;  //Failure could not parse timestamp from TZID line
+                    }
+                    //pulling out the date stuff
+                    calendar_str_to_int(working_string_pointer, -1, 'T', &user_event->event_start_date_code);    //grabbing date stamp code into year|month|day into event struc
+                    calendar_str_to_int(working_string_pointer, 4,'\0', &user_event->event_start_year); //transfering the year
+                    calendar_str_to_int(&(working_string_pointer[4]), 2,'\0', &user_event->event_start_month); //transfering the month
+                    calendar_str_to_int(&(working_string_pointer[6]), -1,'T', &user_event->event_start_day); //transfering the day
+
+                    //pulling out the time stuff
+                    calendar_str_to_int(&(working_string_pointer[9]), -1, '\0', &user_event->event_start_time_code); //transfering the time stamp hour|minute|second into event struc
+                    calendar_str_to_int(&(working_string_pointer[9]), 2,'\0', &user_event->event_start_hour); //transfering the hour
+                    calendar_str_to_int(&(working_string_pointer[11]), 2,'\0', &user_event->event_start_minute); //transfering the minute
+                    calendar_str_to_int(&(working_string_pointer[13]), -1,'\0', &user_event->event_start_second); //transfering the second  UNLIKE UTC TIME STAMP NOT 'Z' terminated
+                    vPortFree(working_string_pointer);  //freeing the heap timezoneid
+                }   
+            }
         }
         else
         {
-            //So non-utc was used, giving us only a date code, we assume that the event starts on the date
+            //So DTSTART;VALUE= we assume that the event starts on the date at 00:00.00 time
+            user_event->date_format = 1;    //Setting date format state to 1
+            calendar_char_copy("DATE", user_event->event_time_zone_id);//copying the mode 1 : "Date" into the struc timezone field
+            working_string_pointer = parse_data_string(file, working_byte_offset, NOEND, ONELINE); //Parse line for the date stamp
+            if (working_string_pointer == NULL)
+            {
+                return -1;  //Failure could not non-utc date stamp
+            }
+            //This format of datestamp only had a date no time, used for edge 248 cases
+            calendar_str_to_int(working_string_pointer, -1, '\0', &user_event->event_start_date_code); //transfering the datestamp year|month|day into event struc
+            calendar_str_to_int(working_string_pointer, 4,'\0', &user_event->event_start_year); //transfering the year into the event struc
+            calendar_str_to_int(&(working_string_pointer[4]), 2,'\0', &user_event->event_start_month); //transfering the year into the event struc
+            calendar_str_to_int(&(working_string_pointer[6]), -1,'\0', &user_event->event_start_day); //transfering the year into the event struc
+            vPortFree(working_string_pointer); //freeing the date stamp off the heap
         }
     }
     else//DTSTART was UTC so we can parse info much more easily
     {
-        working_string_pointer = parse_data_string(file, working_byte_offset, ONELINE); //Parse line for location string
+        user_event->date_format = 0;    //Normal utc code setting time format byte to 0
+        calendar_char_copy("UTC", user_event->event_time_zone_id);    //Since UTC copying UTC string into the time zone id string
+        working_string_pointer = parse_data_string(file, working_byte_offset, NOEND, ONELINE); //Parse line for DTSTART utc string
         if (working_string_pointer == NULL)
         {
-            return -1;  //Failure could not parse event location  20210326 T 211332 Z
+            return -1;  //Failure could not parse event start utc string  20210326 T 211332 Z
         }
         //transfering the start date
         calendar_str_to_int(working_string_pointer, -1,'T', &user_event->event_start_date_code); //transfering the utc year|month|day into event struc
@@ -559,7 +684,7 @@ byte initialize_event(File *file, CalendarEvent *user_event, ICALOFFSET const lo
         calendar_str_to_int(&(working_string_pointer[9]), 2,'\0', &user_event->event_start_hour); //transfering the hour
         calendar_str_to_int(&(working_string_pointer[11]), 2,'\0', &user_event->event_start_minute); //transfering the minute
         calendar_str_to_int(&(working_string_pointer[13]), -1,'Z', &user_event->event_start_second); //transfering the second
-        vPortFree(working_string_pointer);  //freeing location from heap
+        vPortFree(working_string_pointer);  //freeing DTSTART line from heap
     }
     //Grabing times section--------------------------------------------------------------------------------------------------------------------------------------------------------
     

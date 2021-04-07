@@ -5,14 +5,14 @@
 
 
 //DEFINE STATEMENT SECTION START---------------------------------------------------------------------------------------------------------------------------------------------------
-    #define PRINTOUTDEBUG  //Used so the printing function will replace whitespace with identifiers to make string output debug easier, comment out for no debug, 
+    //#define PRINTOUTDEBUG  //Used so the printing function will replace whitespace with identifiers to make string output debug easier, comment out for no debug, 
 
     #define NEF 9999  //No-more-events is a return long value for when no events could be found that match the timestamp and tolerance given, different than EOF 
 
     //77 is the maximum number of bytes/characters allowed in a single row of a .ical file, including the CR-LF terminating sequence
-    #define MAX_NAME_SIZE 75    //The maximimum array length of a character array containing a name
-    #define MAX_SUMMARY_SIZE 75 //The maximimum array length of a character array containing a event summary
-    #define MAX_LOCATION_SIZE 75 //The maximimum array length of a character array containing a location name
+    #define MAX_NAME_SIZE 77    //The maximimum array length of a character array containing a name
+    #define MAX_SUMMARY_SIZE 154 //The maximimum array length of a character array containing a event summary
+    #define MAX_LOCATION_SIZE 154 //The maximimum array length of a character array containing a location name
     #define MAX_TZ_SIZE 35  //The maximum array length of a character array containing time-zone property strings, dont need to be as long
 
     #define ICALMODERTN    //Just a nice way of indicating if an argument or parameter is mode of return value
@@ -20,12 +20,13 @@
     #define ICALOFFSET     //Just a nice way of indicating if an argument or parameter is a byte offset
 
 
-    #define NEXTLINE 0x00   //blah blah blah read below for what the modes mean
-    #define FIRSTCHAR 0xFF
-    #define NEXTCHAR 0x11
+    #define NEXTLINE 0x00   //Used for the keyword finding functions
+    #define FIRSTCHAR 0xFF  //Used for the keyword finding functions
+    #define NEXTCHAR 0x11   //Used for the keyword finding functions
 
-    #define ONELINE 0x00
-    #define MULTILINE 0xFF
+    #define ONELINE 0x00     //Used for the parse_data function 
+    #define MULTILINE 0xFF  //Used for the parse_data function 
+    #define NOEND -1    //Used for the parse_data function 
 //DEFINE STATEMENT SECTION END-----------------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -41,7 +42,7 @@
         char event_location[MAX_LOCATION_SIZE]; //The location of the event
 
         byte date_format;           //If 1 then only date is present, 2 for TZID event time, 0 normally for UTC times (needed for wacko 250 edge cases in u of c calendar)
-        char event_time_zone_id[MAX_TZ_SIZE];   //normally NA but in mode 2 it holds a TZID EVENT TIME, we are going to only use date however for these cases no time
+        char event_time_zone_id[MAX_TZ_SIZE];   //normally "UTC" but in mode 2 it holds a TZID EVENT TIME like America/Edmonton:, Date for mode 1
 
         int event_start_date_code;  //Start date of event in utc parts: 2021 04 06(used for internal comparison)
         int event_start_year;       //Start date year
@@ -95,7 +96,7 @@
 
 
 //FUNCTION DECLARATION SECTION START-----------------------------------------------------------------------------------------------------------------------------------------------
-    char *parse_data_string(File *file, const long file_byte_offset, ICALMODERTN const byte return_string_mode);
+    char *parse_data_string(File *file, const long file_byte_offset, long max_byte_offset, ICALMODERTN const byte return_string_mode);
     /* 
     REQUIRES:
         -A file_byte_offset which is the byte location/offset within the SD card File
@@ -103,6 +104,7 @@
         -A return_string_mode byte, most common is 0xFF indicating:
             -0xFF: Mode is till end of string so it can return multi-line strings
             -0x00: Mode is till end of the line (CR-LF sequence) 
+        -A long containing the max byte offset we search to, if not appliacable use -1 or NOEND
     PROMISES:
         -Upon sucess to return a pointer to a heap allocated character array which contains the string or multi-line string that is on the line/lines following 
         the file_byte_offset given
