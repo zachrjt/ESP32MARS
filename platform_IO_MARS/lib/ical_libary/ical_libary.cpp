@@ -1193,18 +1193,103 @@ byte initialize_sector_table(File *file, Calendar *user_calendar, const int curr
                 {   
                     continue;   //The start date format must be in another format, this event is useless since we dont know how to parse it anyways, consider irrelevant re-loop for next event
                 }
-                
             }
         }
     }
-
-
     return return_value_code;
 }
 
+
 void update_sector_table(long *sector_table, const long event_start, const long event_end)
 {
-    //This function should update the sector table for when an event passes/finished
+    long temp_copy[SECTORTABLESIZE];//A copy of the original use for editing locally
+    //zero out temp
+    for(int i = 0; i < SECTORTABLESIZE; i++)
+    {
+        temp_copy[i] = 0;
+    }
+
+    int top_slice_index = 0;
+    int bottom_slice_index = 0;
+    for(int i = 0; i < (SECTORTABLESIZE/2);i+=2)//look for the sector slice that the event is in/bounded on
+    {
+        if((sector_table[i] <= event_start) && (sector_table[(i + 1)] >= event_end))
+        {
+            top_slice_index = i;
+            bottom_slice_index = (i + 1);
+        }
+    }
+
+    if(sector_table[top_slice_index] == event_start)
+    {
+        if(sector_table[bottom_slice_index] == event_end)
+        {
+            //The event start and end were already sector bounds, just need to remove them from array and shorten it
+            for(int i = 0; i < top_slice_index; i++)
+            {
+                temp_copy[i] = sector_table[i];
+            }
+            for(int i = top_slice_index; i < (SECTORTABLESIZE-2); i++)
+            {
+                temp_copy[i] = sector_table[i+2];///since temp is now 2 elements shorter
+            }
+        }
+        else
+        {
+            //Bottom slice is less than the next sector start bound so we can replace the starting sector bound with the event end sector bound
+            for(int i = 0; i < top_slice_index; i++)
+            {
+                temp_copy[i] = sector_table[i];
+            }
+            temp_copy[top_slice_index] = event_end;//Copy event end into original sector start
+            for(int i = bottom_slice_index; i < SECTORTABLESIZE; i++)
+            {
+                temp_copy[i] = sector_table[i];
+            }
+        }
+    }
+    else
+    {
+        if(sector_table[bottom_slice_index] == event_end)
+        {
+            //The event start was not a sector bound but the end was so replace original sector end with event start
+            for(int i = 0; i < bottom_slice_index; i++)
+            {
+                temp_copy[i] = sector_table[i];
+            }
+            temp_copy[bottom_slice_index] = event_start;
+            for(int i = (1 + bottom_slice_index); i < SECTORTABLESIZE; i++)
+            {
+                temp_copy[i] = sector_table[i];
+            }
+        }
+        else
+        {
+            //Event is not bounded on any sector so a new sector must be made(basically cutting in half the old sector)
+            for(int i = 0; i <= top_slice_index; i++)
+            {
+                temp_copy[i] = sector_table[i];
+            }
+            temp_copy[bottom_slice_index] = event_start;
+
+            //making another element
+            temp_copy[(1 + bottom_slice_index)] = event_end;//new sector start
+            for(int i = (2 + bottom_slice_index); i < SECTORTABLESIZE; i++)
+            {
+                temp_copy[i] = sector_table[i-2];
+            }
+            //Data might be lost so checking end of sector_table to see if was full
+            if(sector_table[SECTORTABLESIZE-1] == NOEND)
+            {
+                temp_copy[SECTORTABLESIZE-1] = NOEND; //setting the end to NOEND so even though a sector is lost we can still access all relevant data, altough slower
+            }
+        }
+    }
+    //copying temp into the actual sector table
+    for(int i = 0; i < SECTORTABLESIZE; i++)
+    {
+        sector_table[i] = temp_copy[i];
+    }
 }
 
 
