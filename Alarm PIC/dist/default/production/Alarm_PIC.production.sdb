@@ -1,0 +1,355 @@
+[p GLOBOPT AUTOSTATIC IEEE_FLT IEEE_DBL LFSROK EMI_WORD ]
+[d version 1.1 ]
+[d edition pro ]
+[d chip 18F27Q43 ]
+[d frameptr 1249 ]
+"4 C:\Program Files\Microchip\xc8\v2_31\pic\sources\c99\common\fleq.c
+[v ___fleq __fleq `(b  1 e 0 0 ]
+"62 C:\Program Files\Microchip\xc8\v2_31\pic\sources\c99\common\float.c
+[v ___ftpack __ftpack `(f  1 e 4 0 ]
+"86 C:\Program Files\Microchip\xc8\v2_31\pic\sources\c99\common\ftadd.c
+[v ___ftadd __ftadd `(f  1 e 4 0 ]
+"54 C:\Program Files\Microchip\xc8\v2_31\pic\sources\c99\common\ftdiv.c
+[v ___ftdiv __ftdiv `(f  1 e 4 0 ]
+"62 C:\Program Files\Microchip\xc8\v2_31\pic\sources\c99\common\ftmul.c
+[v ___ftmul __ftmul `(f  1 e 4 0 ]
+"19 C:\Program Files\Microchip\xc8\v2_31\pic\sources\c99\common\ftsub.c
+[v ___ftsub __ftsub `(f  1 e 4 0 ]
+"10 C:\Program Files\Microchip\xc8\v2_31\pic\sources\c99\common\sprcadd.c
+[v ___fladd __fladd `(d  1 e 4 0 ]
+"245
+[v ___flsub __flsub `(d  1 e 4 0 ]
+"11 C:\Program Files\Microchip\xc8\v2_31\pic\sources\c99\common\sprcdiv.c
+[v ___fldiv __fldiv `(d  1 e 4 0 ]
+"8 C:\Program Files\Microchip\xc8\v2_31\pic\sources\c99\common\sprcmul.c
+[v ___flmul __flmul `(d  1 e 4 0 ]
+"15 C:\Program Files\Microchip\xc8\v2_31\pic\sources\c99\common\Umul32.c
+[v ___lmul __lmul `(ul  1 e 4 0 ]
+"91 C:\Program Files\Microchip\xc8\v2_31\pic\sources\c99\common\Umul64.c
+[v ___omul __omul `(uo  1 e 8 0 ]
+"71 C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\encm369_pic18.c
+[v _ClockSetup ClockSetup `(v  1 e 1 0 ]
+"89
+[v _SPIInitialize SPIInitialize `(v  1 e 1 0 ]
+"118
+[v _GpioSetup GpioSetup `(v  1 e 1 0 ]
+"151
+[v _SysTickSetup SysTickSetup `(v  1 e 1 0 ]
+"186
+[v _SystemSleep SystemSleep `(v  1 e 1 0 ]
+"75 C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\interrupts.c
+[v _InterruptSetup InterruptSetup `(v  1 e 1 0 ]
+"90
+[v _SW_ISR SW_ISR `IIH(v  1 e 1 0 ]
+"97
+[v _DEFAULT_ISR DEFAULT_ISR `IIL(v  1 e 1 0 ]
+"116
+[v _TMR1_ISR TMR1_ISR `IIH(v  1 e 1 0 ]
+"151
+[v _TMR2_ISR TMR2_ISR `IIH(v  1 e 1 0 ]
+"169
+[v _SPI1RX_ISR SPI1RX_ISR `IIH(v  1 e 1 0 ]
+"34 C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\main.c
+[v _main main `(v  1 e 1 0 ]
+"147 C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
+[v _InterruptTimerXus InterruptTimerXus `(v  1 e 1 0 ]
+"204
+[v _UserAppInitialize UserAppInitialize `(v  1 e 1 0 ]
+"238
+[v _UserAppRun UserAppRun `(v  1 e 1 0 ]
+"3158 C:/Users/marce/.mchp_packs/Microchip/PIC18F-Q_DFP/1.9.175/xc8\pic\include\proc\pic18f27q43.h
+[v _DAC1DATL DAC1DATL `VEuc  1 e 1 @125 ]
+"3236
+[v _DAC1CON DAC1CON `VEuc  1 e 1 @127 ]
+"3339
+[v _SPI1RXB SPI1RXB `VEuc  1 e 1 @128 ]
+"3526
+[v _SPI1CON0 SPI1CON0 `VEuc  1 e 1 @132 ]
+[s S24 . 1 `uc 1 BMODE 1 0 :1:0 
+`uc 1 MST 1 0 :1:1 
+`uc 1 LSBF 1 0 :1:2 
+`uc 1 . 1 0 :4:3 
+`uc 1 EN 1 0 :1:7 
+]
+"3547
+[s S30 . 1 `uc 1 SPI1BMODE 1 0 :1:0 
+`uc 1 SPI1MST 1 0 :1:1 
+`uc 1 SPI1LSBF 1 0 :1:2 
+`uc 1 . 1 0 :4:3 
+`uc 1 SPI1SPIEN 1 0 :1:7 
+]
+[u S36 . 1 `S24 1 . 1 0 `S30 1 . 1 0 ]
+[v _SPI1CON0bits SPI1CON0bits `VES36  1 e 1 @132 ]
+"3592
+[v _SPI1CON1 SPI1CON1 `VEuc  1 e 1 @133 ]
+"3694
+[v _SPI1CON2 SPI1CON2 `VEuc  1 e 1 @134 ]
+"9933
+[v _RC7PPS RC7PPS `VEuc  1 e 1 @536 ]
+"13187
+[v _SPI1SCKPPS SPI1SCKPPS `VEuc  1 e 1 @618 ]
+"13253
+[v _SPI1SDIPPS SPI1SDIPPS `VEuc  1 e 1 @619 ]
+"13319
+[v _SPI1SSPPS SPI1SSPPS `VEuc  1 e 1 @620 ]
+"22235
+[v _TMR0L TMR0L `VEuc  1 e 1 @792 ]
+"22373
+[v _TMR0H TMR0H `VEuc  1 e 1 @793 ]
+"22627
+[v _T0CON0 T0CON0 `VEuc  1 e 1 @794 ]
+[s S175 . 1 `uc 1 OUTPS 1 0 :4:0 
+`uc 1 MD16 1 0 :1:4 
+`uc 1 OUT 1 0 :1:5 
+`uc 1 . 1 0 :1:6 
+`uc 1 EN 1 0 :1:7 
+]
+"22655
+[s S181 . 1 `uc 1 T0OUTPS 1 0 :4:0 
+`uc 1 T0MD16 1 0 :1:4 
+`uc 1 T0OUT 1 0 :1:5 
+`uc 1 . 1 0 :1:6 
+`uc 1 T0EN 1 0 :1:7 
+]
+[s S187 . 1 `uc 1 OUTPS0 1 0 :1:0 
+`uc 1 OUTPS1 1 0 :1:1 
+`uc 1 OUTPS2 1 0 :1:2 
+`uc 1 OUTPS3 1 0 :1:3 
+`uc 1 T016BIT 1 0 :1:4 
+]
+[u S193 . 1 `S175 1 . 1 0 `S181 1 . 1 0 `S187 1 . 1 0 ]
+[v _T0CON0bits T0CON0bits `VES193  1 e 1 @794 ]
+"22725
+[v _T0CON1 T0CON1 `VEuc  1 e 1 @795 ]
+"22867
+[v _TMR1L TMR1L `VEuc  1 e 1 @796 ]
+"22937
+[v _TMR1H TMR1H `VEuc  1 e 1 @797 ]
+"23007
+[v _T1CON T1CON `VEuc  1 e 1 @798 ]
+[s S230 . 1 `uc 1 ON 1 0 :1:0 
+`uc 1 RD16 1 0 :1:1 
+`uc 1 NOT_SYNC 1 0 :1:2 
+`uc 1 . 1 0 :1:3 
+`uc 1 CKPS 1 0 :2:4 
+]
+"23043
+[s S236 . 1 `uc 1 TMR1ON 1 0 :1:0 
+`uc 1 T1RD16 1 0 :1:1 
+`uc 1 NOT_T1SYNC 1 0 :1:2 
+`uc 1 . 1 0 :1:3 
+`uc 1 T1CKPS0 1 0 :1:4 
+`uc 1 T1CKPS1 1 0 :1:5 
+]
+[s S243 . 1 `uc 1 . 1 0 :4:0 
+`uc 1 CKPS0 1 0 :1:4 
+`uc 1 CKPS1 1 0 :1:5 
+]
+[s S247 . 1 `uc 1 . 1 0 :1:0 
+`uc 1 RD161 1 0 :1:1 
+]
+[u S250 . 1 `S230 1 . 1 0 `S236 1 . 1 0 `S243 1 . 1 0 `S247 1 . 1 0 ]
+[v _T1CONbits T1CONbits `VES250  1 e 1 @798 ]
+"23197
+[v _T1GCON T1GCON `VEuc  1 e 1 @799 ]
+"23601
+[v _T1CLK T1CLK `VEuc  1 e 1 @801 ]
+"23805
+[v _T2PR T2PR `VEuc  1 e 1 @803 ]
+"23843
+[v _T2CON T2CON `VEuc  1 e 1 @804 ]
+"24117
+[v _T2CLKCON T2CLKCON `VEuc  1 e 1 @806 ]
+"37918
+[v _ANSELA ANSELA `VEuc  1 e 1 @1024 ]
+"38414
+[v _ANSELB ANSELB `VEuc  1 e 1 @1032 ]
+"38910
+[v _ANSELC ANSELC `VEuc  1 e 1 @1040 ]
+[s S96 . 1 `uc 1 SPI1RXIE 1 0 :1:0 
+`uc 1 SPI1TXIE 1 0 :1:1 
+`uc 1 SPI1IE 1 0 :1:2 
+`uc 1 TMR2IE 1 0 :1:3 
+`uc 1 TMR1IE 1 0 :1:4 
+`uc 1 TMR1GIE 1 0 :1:5 
+`uc 1 CCP1IE 1 0 :1:6 
+`uc 1 TMR0IE 1 0 :1:7 
+]
+"44013
+[u S105 . 1 `S96 1 . 1 0 ]
+"44013
+"44013
+[v _PIE3bits PIE3bits `VES105  1 e 1 @1185 ]
+[s S380 . 1 `uc 1 SWIF 1 0 :1:0 
+`uc 1 HLVDIF 1 0 :1:1 
+`uc 1 OSFIF 1 0 :1:2 
+`uc 1 CSWIF 1 0 :1:3 
+`uc 1 . 1 0 :1:4 
+`uc 1 CLC1IF 1 0 :1:5 
+`uc 1 . 1 0 :1:6 
+`uc 1 IOCIF 1 0 :1:7 
+]
+"44728
+[u S389 . 1 `S380 1 . 1 0 ]
+"44728
+"44728
+[v _PIR0bits PIR0bits `VES389  1 e 1 @1198 ]
+[s S74 . 1 `uc 1 SPI1RXIF 1 0 :1:0 
+`uc 1 SPI1TXIF 1 0 :1:1 
+`uc 1 SPI1IF 1 0 :1:2 
+`uc 1 TMR2IF 1 0 :1:3 
+`uc 1 TMR1IF 1 0 :1:4 
+`uc 1 TMR1GIF 1 0 :1:5 
+`uc 1 CCP1IF 1 0 :1:6 
+`uc 1 TMR0IF 1 0 :1:7 
+]
+"44887
+[u S83 . 1 `S74 1 . 1 0 ]
+"44887
+"44887
+[v _PIR3bits PIR3bits `VES83  1 e 1 @1201 ]
+"45585
+[v _LATA LATA `VEuc  1 e 1 @1214 ]
+"45647
+[v _LATB LATB `VEuc  1 e 1 @1215 ]
+"45709
+[v _LATC LATC `VEuc  1 e 1 @1216 ]
+"45840
+[v _TRISA TRISA `VEuc  1 e 1 @1222 ]
+"45902
+[v _TRISB TRISB `VEuc  1 e 1 @1223 ]
+"45964
+[v _TRISC TRISC `VEuc  1 e 1 @1224 ]
+[s S330 . 1 `uc 1 INT0EDG 1 0 :1:0 
+`uc 1 INT1EDG 1 0 :1:1 
+`uc 1 INT2EDG 1 0 :1:2 
+`uc 1 . 1 0 :2:3 
+`uc 1 IPEN 1 0 :1:5 
+`uc 1 GIEL 1 0 :1:6 
+`uc 1 GIE 1 0 :1:7 
+]
+"46384
+[s S338 . 1 `uc 1 . 1 0 :7:0 
+`uc 1 GIEH 1 0 :1:7 
+]
+"46384
+[u S341 . 1 `S330 1 . 1 0 `S338 1 . 1 0 ]
+"46384
+"46384
+[v _INTCON0bits INTCON0bits `VES341  1 e 1 @1238 ]
+"13 C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\main.c
+[v _G_u32SystemTime1ms G_u32SystemTime1ms `VEul  1 e 4 0 ]
+"14
+[v _G_u32SystemTime1s G_u32SystemTime1s `VEul  1 e 4 0 ]
+"15
+[v _G_u8SystemFlags G_u8SystemFlags `VEuc  1 e 1 0 ]
+"33 C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
+[v _G_u8UserAppFlags G_u8UserAppFlags `VEuc  1 e 1 0 ]
+"34
+[v _G_u8UserAppTimePeriodHi G_u8UserAppTimePeriodHi `VEuc  1 e 1 0 ]
+"35
+[v _G_u8UserAppTimePeriodLo G_u8UserAppTimePeriodLo `VEuc  1 e 1 0 ]
+"36
+[v _G_u8UserAppAlarmFlag G_u8UserAppAlarmFlag `VEuc  1 e 1 0 ]
+"37
+[v _G_au8UserAppsinTable G_au8UserAppsinTable `[256]uc  1 e 256 0 ]
+"34 C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\main.c
+[v _main main `(v  1 e 1 0 ]
+{
+"69
+} 0
+"238 C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
+[v _UserAppRun UserAppRun `(v  1 e 1 0 ]
+{
+"240
+[v UserAppRun@au16Note au16Note `[12]us  1 s 24 au16Note ]
+"241
+[v UserAppRun@au16Length au16Length `[12]us  1 s 24 au16Length ]
+"242
+[v UserAppRun@u16TimeKeep u16TimeKeep `us  1 s 2 u16TimeKeep ]
+"243
+[v UserAppRun@u16NoteLength u16NoteLength `us  1 s 2 u16NoteLength ]
+"244
+[v UserAppRun@u16NotePeriod u16NotePeriod `us  1 s 2 u16NotePeriod ]
+"246
+[v UserAppRun@u8MusicIndex u8MusicIndex `uc  1 s 1 u8MusicIndex ]
+"247
+[v UserAppRun@u8NoteSwitch u8NoteSwitch `uc  1 s 1 u8NoteSwitch ]
+"248
+[v UserAppRun@PastAlarmFlag PastAlarmFlag `uc  1 s 1 PastAlarmFlag ]
+"295
+} 0
+"147
+[v _InterruptTimerXus InterruptTimerXus `(v  1 e 1 0 ]
+{
+"149
+[v InterruptTimerXus@u16Temp u16Temp `us  1 a 2 4 ]
+"147
+[v InterruptTimerXus@u16TimeXus_ u16TimeXus_ `us  1 p 2 1 ]
+[v InterruptTimerXus@bContinuous_ bContinuous_ `a  1 p 1 3 ]
+"182
+} 0
+"204
+[v _UserAppInitialize UserAppInitialize `(v  1 e 1 0 ]
+{
+"223
+} 0
+"186 C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\encm369_pic18.c
+[v _SystemSleep SystemSleep `(v  1 e 1 0 ]
+{
+"191
+} 0
+"151
+[v _SysTickSetup SysTickSetup `(v  1 e 1 0 ]
+{
+"169
+} 0
+"89
+[v _SPIInitialize SPIInitialize `(v  1 e 1 0 ]
+{
+"104
+} 0
+"75 C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\interrupts.c
+[v _InterruptSetup InterruptSetup `(v  1 e 1 0 ]
+{
+"87
+} 0
+"118 C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\encm369_pic18.c
+[v _GpioSetup GpioSetup `(v  1 e 1 0 ]
+{
+"136
+} 0
+"71
+[v _ClockSetup ClockSetup `(v  1 e 1 0 ]
+{
+"75
+} 0
+"97 C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\interrupts.c
+[v _DEFAULT_ISR DEFAULT_ISR `IIL(v  1 e 1 0 ]
+{
+"103
+[v DEFAULT_ISR@u32UnhandledCounter u32UnhandledCounter `ul  1 s 4 u32UnhandledCounter ]
+"110
+} 0
+"90
+[v _SW_ISR SW_ISR `IIH(v  1 e 1 0 ]
+{
+"94
+} 0
+"116
+[v _TMR1_ISR TMR1_ISR `IIH(v  1 e 1 0 ]
+{
+"118
+[v TMR1_ISR@u8Index u8Index `uc  1 s 1 u8Index ]
+"147
+} 0
+"151
+[v _TMR2_ISR TMR2_ISR `IIH(v  1 e 1 0 ]
+{
+"167
+} 0
+"169
+[v _SPI1RX_ISR SPI1RX_ISR `IIH(v  1 e 1 0 ]
+{
+"174
+} 0

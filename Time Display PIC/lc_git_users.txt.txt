@@ -1,0 +1,8 @@
+firstname,lastname,email,git_username,repository_name
+Zachary,Tigchelaar,zachary.tigchelaar@ucalgary.ca,jzactmbk,2021_ENCM369
+Marcelo,LiGonzales,marcelo.ligonzales@ucalgary.ca,MarceloliGonzales,ENCM369
+John,Santos,john.santos2@ucalgary.ca,JohnVSantos,ENCM369
+Nabiha,Alam,nabiha.alam@ucalgary.ca,NabihaAlam,ENCM369
+Ali,Ahmed,ali.ahmed1@ucalgary.ca,aliahmed2001,ENCM369
+Emily,Knight,emily.knight2@ucalgary.ca,emilyzk,2021_ENCM369
+Madeline,Brown,madeline.brown@ucalgary.ca,madelinebrownn,ENCM369

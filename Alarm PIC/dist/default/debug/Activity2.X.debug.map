@@ -1,0 +1,787 @@
+Microchip MPLAB XC8 Compiler V2.31
+
+Linker command line:
+
+-W-3 --edf=C:\Program Files\Microchip\xc8\v2_31\pic\dat\en_msgs.txt -cn \
+  -h+dist/default/debug\Activity2.X.debug.sym \
+  --cmf=dist/default/debug\Activity2.X.debug.cmf -z -Q18F27Q43 \
+  -oC:\Users\marce\AppData\Local\Temp\s61k.2 --defsym=__MPLAB_BUILD=1 \
+  -Mdist/default/debug/Activity2.X.debug.map -E1 -ver=XC8 Compiler \
+  --acfsm=1493 -ASTACK=0560h-025FFh -pstack=STACK -ACODE=00h-01FFFFh \
+  -ACONST=00h-01FFFFh -ASMALLCONST=02600h-026FFhx474 \
+  -AMEDIUMCONST=02600h-0FFFFh,012600h-01FFFFh -ACOMRAM=0501h-055Fh \
+  -AABS1=0500h-025FFh -ABIGRAM=0501h-025FFh \
+  -ARAM=0560h-05FFh,0600h-06FFhx32 -ABANK5=0560h-05FFh -ABANK6=0600h-06FFh \
+  -ABANK7=0700h-07FFh -ABANK8=0800h-08FFh -ABANK9=0900h-09FFh \
+  -ABANK10=0A00h-0AFFh -ABANK11=0B00h-0BFFh -ABANK12=0C00h-0CFFh \
+  -ABANK13=0D00h-0DFFh -ABANK14=0E00h-0EFFh -ABANK15=0F00h-0FFFh \
+  -ABANK16=01000h-010FFh -ABANK17=01100h-011FFh -ABANK18=01200h-012FFh \
+  -ABANK19=01300h-013FFh -ABANK20=01400h-014FFh -ABANK21=01500h-015FFh \
+  -ABANK22=01600h-016FFh -ABANK23=01700h-017FFh -ABANK24=01800h-018FFh \
+  -ABANK25=01900h-019FFh -ABANK26=01A00h-01AFFh -ABANK27=01B00h-01BFFh \
+  -ABANK28=01C00h-01CFFh -ABANK29=01D00h-01DFFh -ABANK30=01E00h-01EFFh \
+  -ABANK31=01F00h-01FFFh -ABANK32=02000h-020FFh -ABANK33=02100h-021FFh \
+  -ABANK34=02200h-022FFh -ABANK35=02300h-023FFh -ABANK36=02400h-024FFh \
+  -ABANK37=02500h-025FFh -ASFR=00h-0FFhx4,0400h-045Fh,0460h-04FFh \
+  -ACONFIG=0300000h-0300011h -AIDLOC=0200000h-020001Fh \
+  -AEEDATA=0380000h-03803FFh -peeprom_data=EEDATA -preset_vec=00h \
+  -ppowerup=CODE,init -pramtop=02600h -psmallconst=SMALLCONST \
+  -pmediumconst=MEDIUMCONST -pconst=CONST -AFARRAM=00h-00h \
+  -prdata=COMRAM,nvrram=COMRAM,nvbit=COMRAM,rbss=COMRAM,rbit=COMRAM \
+  -pfarbss=FARRAM,fardata=FARRAM,nvFARRAM=FARRAM \
+  -pintsave_regs=BIGRAM,bigbss=BIGRAM,bigdata=BIGRAM -pbss=RAM \
+  -pidata=CODE,irdata=CODE,ibigdata=CODE,ifardata=CODE -prparam=COMRAM \
+  C:\Users\marce\AppData\Local\Temp\s61k.o \
+  dist/default/debug\Activity2.X.debug.o 
+
+Object code version is 3.11
+
+Machine type is 18F27Q43
+
+
+
+                Name                               Link     Load   Length Selector   Space Scale
+C:\Users\marce\AppData\Local\Temp\s61k.o
+                idloc                            200000   200000       20        0       5
+                config                           300000   300000        A        0       4
+                init                              1FFFC    1FFFC        4     FFFE       0
+                reset_vec                             0        0        4        0       0
+dist/default/debug\Activity2.X.debug.o
+                idloc                            200000   200000       20        0       5
+                config                           300000   300000        A        0       4
+                text7                             1FE84    1FE84        2     FF42       0
+                text6                             1FE94    1FE94       16     FF4A       0
+                text5                             1FEAA    1FEAA       22     FF55       0
+                text4                             1FE86    1FE86        2     FF43       0
+                text3                             1FE88    1FE88        C     FF44       0
+                text2                             1FF4C    1FF4C       B0     FFA6       0
+                text1                             1FF18    1FF18       34     FF8C       0
+                text0                             1FECC    1FECC       26     FF66       0
+                cstackCOMRAM                        50E      50E        6      501       1
+                dataCOMRAM                          514      514        1      501       1
+                bssCOMRAM                           501      501        D      501       1
+                cinit                             1FEF2    1FEF2       26     FF79       0
+                idataCOMRAM                       1FE83    1FE83        1    1FE83       0
+
+TOTAL           Name                               Link     Load   Length     Space
+        CLASS   STACK          
+
+        CLASS   CODE           
+                init                              1FFFC    1FFFC        4         0
+                reset_vec                             0        0        4         0
+                text7                             1FE84    1FE84        2         0
+                text6                             1FE94    1FE94       16         0
+                text5                             1FEAA    1FEAA       22         0
+                text4                             1FE86    1FE86        2         0
+                text3                             1FE88    1FE88        C         0
+                text2                             1FF4C    1FF4C       B0         0
+                text1                             1FF18    1FF18       34         0
+                text0                             1FECC    1FECC       26         0
+                cinit                             1FEF2    1FEF2       26         0
+                idataCOMRAM                       1FE83    1FE83        1         0
+
+        CLASS   CONST          
+
+        CLASS   SMALLCONST     
+
+        CLASS   MEDIUMCONST    
+
+        CLASS   COMRAM         
+                cstackCOMRAM                        50E      50E        6         1
+                dataCOMRAM                          514      514        1         1
+                bssCOMRAM                           501      501        D         1
+
+        CLASS   ABS1           
+
+        CLASS   BIGRAM         
+
+        CLASS   RAM            
+
+        CLASS   BANK5          
+
+        CLASS   BANK6          
+
+        CLASS   BANK7          
+
+        CLASS   BANK8          
+
+        CLASS   BANK9          
+
+        CLASS   BANK10         
+
+        CLASS   BANK11         
+
+        CLASS   BANK12         
+
+        CLASS   BANK13         
+
+        CLASS   BANK14         
+
+        CLASS   BANK15         
+
+        CLASS   BANK16         
+
+        CLASS   BANK17         
+
+        CLASS   BANK18         
+
+        CLASS   BANK19         
+
+        CLASS   BANK20         
+
+        CLASS   BANK21         
+
+        CLASS   BANK22         
+
+        CLASS   BANK23         
+
+        CLASS   BANK24         
+
+        CLASS   BANK25         
+
+        CLASS   BANK26         
+
+        CLASS   BANK27         
+
+        CLASS   BANK28         
+
+        CLASS   BANK29         
+
+        CLASS   BANK30         
+
+        CLASS   BANK31         
+
+        CLASS   BANK32         
+
+        CLASS   BANK33         
+
+        CLASS   BANK34         
+
+        CLASS   BANK35         
+
+        CLASS   BANK36         
+
+        CLASS   BANK37         
+
+        CLASS   SFR            
+
+        CLASS   CONFIG         
+                config                           300000   300000        A         4
+
+        CLASS   IDLOC          
+                idloc                            200000   200000       20         5
+
+        CLASS   EEDATA         
+
+        CLASS   FARRAM         
+
+
+
+SEGMENTS        Name                           Load    Length   Top    Selector   Space  Class
+
+                reset_vec                      000000  000004  000004         0       0  CODE    
+                bssCOMRAM                      000501  000014  000515       501       1  COMRAM  
+                idataCOMRAM                    01FE83  000001  01FE84     1FE83       0  CODE    
+                text7                          01FE84  000002  01FE86      FF42       0  CODE    
+                text4                          01FE86  000002  01FE88      FF43       0  CODE    
+                text3                          01FE88  00000C  01FE94      FF44       0  CODE    
+                text6                          01FE94  000016  01FEAA      FF4A       0  CODE    
+                text5                          01FEAA  000022  01FECC      FF55       0  CODE    
+                text0                          01FECC  000026  01FEF2      FF66       0  CODE    
+                cinit                          01FEF2  000026  01FF18      FF79       0  CODE    
+                text1                          01FF18  000034  01FF4C      FF8C       0  CODE    
+                text2                          01FF4C  0000B0  01FFFC      FFA6       0  CODE    
+                init                           01FFFC  000004  020000      FFFE       0  CODE    
+
+
+UNUSED ADDRESS RANGES
+
+        Name                Unused          Largest block    Delta
+        BANK10           000A00-000AFF              100
+        BANK11           000B00-000BFF              100
+        BANK12           000C00-000CFF              100
+        BANK13           000D00-000DFF              100
+        BANK14           000E00-000EFF              100
+        BANK15           000F00-000FFF              100
+        BANK16           001000-0010FF              100
+        BANK17           001100-0011FF              100
+        BANK18           001200-0012FF              100
+        BANK19           001300-0013FF              100
+        BANK20           001400-0014FF              100
+        BANK21           001500-0015FF              100
+        BANK22           001600-0016FF              100
+        BANK23           001700-0017FF              100
+        BANK24           001800-0018FF              100
+        BANK25           001900-0019FF              100
+        BANK26           001A00-001AFF              100
+        BANK27           001B00-001BFF              100
+        BANK28           001C00-001CFF              100
+        BANK29           001D00-001DFF              100
+        BANK30           001E00-001EFF              100
+        BANK31           001F00-001FFF              100
+        BANK32           002000-0020FF              100
+        BANK33           002100-0021FF              100
+        BANK34           002200-0022FF              100
+        BANK35           002300-0023FF              100
+        BANK36           002400-0024FF              100
+        BANK37           002500-0025FF              100
+        BANK5            000560-0005FF               A0
+        BANK6            000600-0006FF              100
+        BANK7            000700-0007FF              100
+        BANK8            000800-0008FF              100
+        BANK9            000900-0009FF              100
+        BIGRAM           000515-0025FF             20EB
+        CODE             000004-01FE82            1FE7F
+        COMRAM           000515-00055F               4B
+        CONFIG           30000A-300011                8
+        CONST            000004-01FE82            1FE7F
+        EEDATA           380000-3803FF              400
+        MEDIUMCONST      002600-00FFFF             DA00
+                         012600-01FE82             D883
+        RAM              000560-0025FF              100
+        SFR              000000-0004FF              100
+        SMALLCONST       002600-01FE82              100
+        STACK            000560-0025FF             20A0
+
+                                  Symbol Table
+
+?___awmod                   cstackCOMRAM 00050E
+UserAppRun@u8Add            dataCOMRAM   000514
+_ANSELA                     (abs)        000400
+_ClockSetup                 text7        01FE84
+_DAC1CON                    (abs)        00007F
+_DAC1DATL                   (abs)        00007D
+_G_u32SystemFlags           bssCOMRAM    000501
+_G_u32SystemTime1ms         bssCOMRAM    000509
+_G_u32SystemTime1s          bssCOMRAM    000505
+_G_u8UserAppFlags           bssCOMRAM    00050D
+_GpioSetup                  text6        01FE94
+_LATA                       (abs)        0004BE
+_PIR3                       (abs)        0004B1
+_SysTickSetup               text5        01FEAA
+_SystemSleep                text4        01FE86
+_T0CON0                     (abs)        00031A
+_T0CON1                     (abs)        00031B
+_TMR0H                      (abs)        000319
+_TMR0L                      (abs)        000318
+_TRISA                      (abs)        0004C6
+_UserAppInitialize          text3        01FE88
+_UserAppRun                 text1        01FF18
+__HRAM                      (abs)        000000
+__Habs1                     abs1         000000
+__Hbank10                   bank10       000000
+__Hbank11                   bank11       000000
+__Hbank12                   bank12       000000
+__Hbank13                   bank13       000000
+__Hbank14                   bank14       000000
+__Hbank15                   bank15       000000
+__Hbank16                   bank16       000000
+__Hbank17                   bank17       000000
+__Hbank18                   bank18       000000
+__Hbank19                   bank19       000000
+__Hbank20                   bank20       000000
+__Hbank21                   bank21       000000
+__Hbank22                   bank22       000000
+__Hbank23                   bank23       000000
+__Hbank24                   bank24       000000
+__Hbank25                   bank25       000000
+__Hbank26                   bank26       000000
+__Hbank27                   bank27       000000
+__Hbank28                   bank28       000000
+__Hbank29                   bank29       000000
+__Hbank30                   bank30       000000
+__Hbank31                   bank31       000000
+__Hbank32                   bank32       000000
+__Hbank33                   bank33       000000
+__Hbank34                   bank34       000000
+__Hbank35                   bank35       000000
+__Hbank36                   bank36       000000
+__Hbank37                   bank37       000000
+__Hbank5                    bank5        000000
+__Hbank6                    bank6        000000
+__Hbank7                    bank7        000000
+__Hbank8                    bank8        000000
+__Hbank9                    bank9        000000
+__Hbigbss                   bigbss       000000
+__Hbigdata                  bigdata      000000
+__Hbigram                   bigram       000000
+__Hbss                      bss          000000
+__HbssCOMRAM                bssCOMRAM    000000
+__Hcinit                    cinit        000000
+__Hclrtext                  clrtext      000000
+__Hcomram                   comram       000000
+__Hconfig                   config       30000A
+__Hconst                    const        000000
+__HcstackCOMRAM             cstackCOMRAM 000000
+__Hdata                     data         000000
+__HdataCOMRAM               dataCOMRAM   000000
+__Heeprom_data              eeprom_data  000000
+__Hfarbss                   farbss       000000
+__Hfardata                  fardata      000000
+__Hibigdata                 ibigdata     000000
+__Hidata                    idata        000000
+__HidataCOMRAM              idataCOMRAM  000000
+__Hidloc                    idloc        200020
+__Hifardata                 ifardata     000000
+__Hinit                     init         020000
+__Hintsave_regs             intsave_regs 000000
+__Hirdata                   irdata       000000
+__Hmediumconst              mediumconst  000000
+__HnvFARRAM                 nvFARRAM     000000
+__Hnvbit                    nvbit        000000
+__Hnvrram                   nvrram       000000
+__Hparam                    rparam       000000
+__Hpowerup                  powerup      000000
+__Hram                      ram          000000
+__Hramtop                   ramtop       002600
+__Hrbit                     rbit         000000
+__Hrbss                     rbss         000000
+__Hrdata                    rdata        000000
+__Hreset_vec                reset_vec    000004
+__Hrparam                   rparam       000000
+__Hsfr                      sfr          000000
+__Hsmallconst               smallconst   000000
+__Hspace_0                  (abs)        020000
+__Hspace_1                  (abs)        000515
+__Hspace_2                  (abs)        000000
+__Hspace_4                  (abs)        60000A
+__Hstack                    stack        000000
+__Hstruct                   struct       000000
+__Htemp                     temp         000000
+__Htext                     text         000000
+__Htext0                    text0        000000
+__Htext1                    text1        000000
+__Htext2                    text2        000000
+__Htext3                    text3        000000
+__Htext4                    text4        000000
+__Htext5                    text5        000000
+__Htext6                    text6        000000
+__Htext7                    text7        000000
+__LRAM                      (abs)        000001
+__Labs1                     abs1         000000
+__Lbank10                   bank10       000000
+__Lbank11                   bank11       000000
+__Lbank12                   bank12       000000
+__Lbank13                   bank13       000000
+__Lbank14                   bank14       000000
+__Lbank15                   bank15       000000
+__Lbank16                   bank16       000000
+__Lbank17                   bank17       000000
+__Lbank18                   bank18       000000
+__Lbank19                   bank19       000000
+__Lbank20                   bank20       000000
+__Lbank21                   bank21       000000
+__Lbank22                   bank22       000000
+__Lbank23                   bank23       000000
+__Lbank24                   bank24       000000
+__Lbank25                   bank25       000000
+__Lbank26                   bank26       000000
+__Lbank27                   bank27       000000
+__Lbank28                   bank28       000000
+__Lbank29                   bank29       000000
+__Lbank30                   bank30       000000
+__Lbank31                   bank31       000000
+__Lbank32                   bank32       000000
+__Lbank33                   bank33       000000
+__Lbank34                   bank34       000000
+__Lbank35                   bank35       000000
+__Lbank36                   bank36       000000
+__Lbank37                   bank37       000000
+__Lbank5                    bank5        000000
+__Lbank6                    bank6        000000
+__Lbank7                    bank7        000000
+__Lbank8                    bank8        000000
+__Lbank9                    bank9        000000
+__Lbigbss                   bigbss       000000
+__Lbigdata                  bigdata      000000
+__Lbigram                   bigram       000000
+__Lbss                      bss          000000
+__LbssCOMRAM                bssCOMRAM    000000
+__Lcinit                    cinit        000000
+__Lclrtext                  clrtext      000000
+__Lcomram                   comram       000000
+__Lconfig                   config       000000
+__Lconst                    const        000000
+__LcstackCOMRAM             cstackCOMRAM 000000
+__Ldata                     data         000000
+__LdataCOMRAM               dataCOMRAM   000000
+__Leeprom_data              eeprom_data  000000
+__Lfarbss                   farbss       000000
+__Lfardata                  fardata      000000
+__Libigdata                 ibigdata     000000
+__Lidata                    idata        000000
+__LidataCOMRAM              idataCOMRAM  000000
+__Lidloc                    idloc        000000
+__Lifardata                 ifardata     000000
+__Linit                     init         01FFFC
+__Lintsave_regs             intsave_regs 000000
+__Lirdata                   irdata       000000
+__Lmediumconst              mediumconst  000000
+__LnvFARRAM                 nvFARRAM     000000
+__Lnvbit                    nvbit        000000
+__Lnvrram                   nvrram       000000
+__Lparam                    rparam       000000
+__Lpowerup                  powerup      000000
+__Lram                      ram          000000
+__Lramtop                   ramtop       002600
+__Lrbit                     rbit         000000
+__Lrbss                     rbss         000000
+__Lrdata                    rdata        000000
+__Lreset_vec                reset_vec    000000
+__Lrparam                   rparam       000000
+__Lsfr                      sfr          000000
+__Lsmallconst               smallconst   000000
+__Lspace_0                  (abs)        000000
+__Lspace_1                  (abs)        000000
+__Lspace_2                  (abs)        000000
+__Lspace_4                  (abs)        000000
+__Lstack                    stack        000000
+__Lstruct                   struct       000000
+__Ltemp                     temp         000000
+__Ltext                     text         000000
+__Ltext0                    text0        000000
+__Ltext1                    text1        000000
+__Ltext2                    text2        000000
+__Ltext3                    text3        000000
+__Ltext4                    text4        000000
+__Ltext5                    text5        000000
+__Ltext6                    text6        000000
+__Ltext7                    text7        000000
+__S0                        (abs)        020000
+__S1                        (abs)        000515
+__S2                        (abs)        000000
+__S4                        (abs)        000000
+__S5                        (abs)        000000
+___awmod                    text2        01FF4C
+___awmod@counter            cstackCOMRAM 000512
+___awmod@dividend           cstackCOMRAM 00050E
+___awmod@divisor            cstackCOMRAM 000510
+___awmod@sign               cstackCOMRAM 000513
+___inthi_sp                 stack        000000
+___intlo_sp                 stack        000000
+___param_bank               (abs)        000000
+___rparam_used              (abs)        000001
+___sp                       stack        000000
+__accesstop                 (abs)        000560
+__activetblptr              (abs)        000000
+__end_of_ClockSetup         text7        01FE86
+__end_of_GpioSetup          text6        01FEAA
+__end_of_SysTickSetup       text5        01FECC
+__end_of_SystemSleep        text4        01FE88
+__end_of_UserAppInitialize  text3        01FE94
+__end_of_UserAppRun         text1        01FF4C
+__end_of___awmod            text2        01FFFC
+__end_of__initialization    cinit        01FF12
+__end_of_main               text0        01FEF2
+__initialization            cinit        01FEF2
+__mediumconst               mediumconst  000000
+__pbssCOMRAM                bssCOMRAM    000501
+__pcinit                    cinit        01FEF2
+__pcstackCOMRAM             cstackCOMRAM 00050E
+__pdataCOMRAM               dataCOMRAM   000514
+__pidataCOMRAM              idataCOMRAM  01FE83
+__ptext0                    text0        01FECC
+__ptext1                    text1        01FF18
+__ptext2                    text2        01FF4C
+__ptext3                    text3        01FE88
+__ptext4                    text4        01FE86
+__ptext5                    text5        01FEAA
+__ptext6                    text6        01FE94
+__ptext7                    text7        01FE84
+__ramtop                    ramtop       002600
+__size_of_ClockSetup        (abs)        000000
+__size_of_GpioSetup         (abs)        000000
+__size_of_SysTickSetup      (abs)        000000
+__size_of_SystemSleep       (abs)        000000
+__size_of_UserAppInitialize (abs)        000000
+__size_of_UserAppRun        (abs)        000000
+__size_of___awmod           (abs)        000000
+__size_of_main              (abs)        000000
+__smallconst                smallconst   000000
+_main                       text0        01FECC
+end_of_initialization       cinit        01FF12
+intlevel0                   text         000000
+intlevel1                   text         000000
+intlevel2                   text         000000
+intlevel3                   text         000000
+stackhi                     (abs)        0025FF
+stacklo                     (abs)        000560
+start                       init         01FFFC
+start_initialization        cinit        01FEF2
+
+
+FUNCTION INFORMATION:
+
+ *************** function _main *****************
+ Defined at:
+		line 35 in file "main.c"
+ Parameters:    Size  Location     Type
+		None
+ Auto vars:     Size  Location     Type
+		None
+ Return value:  Size  Location     Type
+                  1    wreg      void 
+ Registers used:
+		wreg, status,2, status,0, prodl, prodh, cstack
+ Tracked objects:
+		On entry : 
+		On exit  : 
+		Unchanged: 
+ Data sizes:     COMRAM   BANK5   BANK6   BANK7   BANK8   BANK9  BANK10  BANK11  BANK12  BANK13  BANK14  BANK15  BANK16  BANK17  BANK18  BANK19  BANK20  BANK21  BANK22  BANK23  BANK24  BANK25  BANK26  BANK27  BANK28  BANK29  BANK30  BANK31  BANK32  BANK33  BANK34  BANK35  BANK36  BANK37
+      Params:         0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0
+      Locals:         0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0
+      Temps:          0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0
+      Totals:         0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0
+Total ram usage:        0 bytes
+ Hardware stack levels required when called:    2
+ This function calls:
+		_ClockSetup
+		_GpioSetup
+		_SysTickSetup
+		_SystemSleep
+		_UserAppInitialize
+		_UserAppRun
+ This function is called by:
+		Startup code after reset
+ This function uses a non-reentrant model
+
+
+ *************** function _UserAppRun *****************
+ Defined at:
+		line 125 in file "user_app.c"
+ Parameters:    Size  Location     Type
+		None
+ Auto vars:     Size  Location     Type
+		None
+ Return value:  Size  Location     Type
+                  1    wreg      void 
+ Registers used:
+		wreg, status,2, status,0, prodl, prodh, cstack
+ Tracked objects:
+		On entry : 
+		On exit  : 
+		Unchanged: 
+ Data sizes:     COMRAM   BANK5   BANK6   BANK7   BANK8   BANK9  BANK10  BANK11  BANK12  BANK13  BANK14  BANK15  BANK16  BANK17  BANK18  BANK19  BANK20  BANK21  BANK22  BANK23  BANK24  BANK25  BANK26  BANK27  BANK28  BANK29  BANK30  BANK31  BANK32  BANK33  BANK34  BANK35  BANK36  BANK37
+      Params:         0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0
+      Locals:         0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0
+      Temps:          0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0
+      Totals:         0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0
+Total ram usage:        0 bytes
+ Hardware stack levels used:    1
+ Hardware stack levels required when called:    1
+ This function calls:
+		___awmod
+ This function is called by:
+		_main
+ This function uses a non-reentrant model
+
+
+ *************** function ___awmod *****************
+ Defined at:
+		line 7 in file "C:\Program Files\Microchip\xc8\v2_31\pic\sources\c99\common\awmod.c"
+ Parameters:    Size  Location     Type
+  dividend        2    0[COMRAM] int 
+  divisor         2    2[COMRAM] int 
+ Auto vars:     Size  Location     Type
+  sign            1    5[COMRAM] unsigned char 
+  counter         1    4[COMRAM] unsigned char 
+ Return value:  Size  Location     Type
+                  2    0[COMRAM] int 
+ Registers used:
+		wreg, status,2, status,0
+ Tracked objects:
+		On entry : 
+		On exit  : 
+		Unchanged: 
+ Data sizes:     COMRAM   BANK5   BANK6   BANK7   BANK8   BANK9  BANK10  BANK11  BANK12  BANK13  BANK14  BANK15  BANK16  BANK17  BANK18  BANK19  BANK20  BANK21  BANK22  BANK23  BANK24  BANK25  BANK26  BANK27  BANK28  BANK29  BANK30  BANK31  BANK32  BANK33  BANK34  BANK35  BANK36  BANK37
+      Params:         4       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0
+      Locals:         2       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0
+      Temps:          0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0
+      Totals:         6       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0
+Total ram usage:        6 bytes
+ Hardware stack levels used:    1
+ This function calls:
+		Nothing
+ This function is called by:
+		_UserAppRun
+ This function uses a non-reentrant model
+
+
+ *************** function _UserAppInitialize *****************
+ Defined at:
+		line 104 in file "user_app.c"
+ Parameters:    Size  Location     Type
+		None
+ Auto vars:     Size  Location     Type
+		None
+ Return value:  Size  Location     Type
+                  1    wreg      void 
+ Registers used:
+		wreg, status,2
+ Tracked objects:
+		On entry : 
+		On exit  : 
+		Unchanged: 
+ Data sizes:     COMRAM   BANK5   BANK6   BANK7   BANK8   BANK9  BANK10  BANK11  BANK12  BANK13  BANK14  BANK15  BANK16  BANK17  BANK18  BANK19  BANK20  BANK21  BANK22  BANK23  BANK24  BANK25  BANK26  BANK27  BANK28  BANK29  BANK30  BANK31  BANK32  BANK33  BANK34  BANK35  BANK36  BANK37
+      Params:         0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0
+      Locals:         0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0
+      Temps:          0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0
+      Totals:         0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0
+Total ram usage:        0 bytes
+ Hardware stack levels used:    1
+ This function calls:
+		Nothing
+ This function is called by:
+		_main
+ This function uses a non-reentrant model
+
+
+ *************** function _SystemSleep *****************
+ Defined at:
+		line 136 in file "encm369_pic18.c"
+ Parameters:    Size  Location     Type
+		None
+ Auto vars:     Size  Location     Type
+		None
+ Return value:  Size  Location     Type
+                  1    wreg      void 
+ Registers used:
+		None
+ Tracked objects:
+		On entry : 
+		On exit  : 
+		Unchanged: 
+ Data sizes:     COMRAM   BANK5   BANK6   BANK7   BANK8   BANK9  BANK10  BANK11  BANK12  BANK13  BANK14  BANK15  BANK16  BANK17  BANK18  BANK19  BANK20  BANK21  BANK22  BANK23  BANK24  BANK25  BANK26  BANK27  BANK28  BANK29  BANK30  BANK31  BANK32  BANK33  BANK34  BANK35  BANK36  BANK37
+      Params:         0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0
+      Locals:         0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0
+      Temps:          0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0
+      Totals:         0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0
+Total ram usage:        0 bytes
+ Hardware stack levels used:    1
+ This function calls:
+		Nothing
+ This function is called by:
+		_main
+ This function uses a non-reentrant model
+
+
+ *************** function _SysTickSetup *****************
+ Defined at:
+		line 114 in file "encm369_pic18.c"
+ Parameters:    Size  Location     Type
+		None
+ Auto vars:     Size  Location     Type
+		None
+ Return value:  Size  Location     Type
+                  1    wreg      void 
+ Registers used:
+		wreg, status,2
+ Tracked objects:
+		On entry : 
+		On exit  : 
+		Unchanged: 
+ Data sizes:     COMRAM   BANK5   BANK6   BANK7   BANK8   BANK9  BANK10  BANK11  BANK12  BANK13  BANK14  BANK15  BANK16  BANK17  BANK18  BANK19  BANK20  BANK21  BANK22  BANK23  BANK24  BANK25  BANK26  BANK27  BANK28  BANK29  BANK30  BANK31  BANK32  BANK33  BANK34  BANK35  BANK36  BANK37
+      Params:         0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0
+      Locals:         0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0
+      Temps:          0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0
+      Totals:         0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0
+Total ram usage:        0 bytes
+ Hardware stack levels used:    1
+ This function calls:
+		Nothing
+ This function is called by:
+		_main
+ This function uses a non-reentrant model
+
+
+ *************** function _GpioSetup *****************
+ Defined at:
+		line 89 in file "encm369_pic18.c"
+ Parameters:    Size  Location     Type
+		None
+ Auto vars:     Size  Location     Type
+		None
+ Return value:  Size  Location     Type
+                  1    wreg      void 
+ Registers used:
+		wreg, status,2
+ Tracked objects:
+		On entry : 
+		On exit  : 
+		Unchanged: 
+ Data sizes:     COMRAM   BANK5   BANK6   BANK7   BANK8   BANK9  BANK10  BANK11  BANK12  BANK13  BANK14  BANK15  BANK16  BANK17  BANK18  BANK19  BANK20  BANK21  BANK22  BANK23  BANK24  BANK25  BANK26  BANK27  BANK28  BANK29  BANK30  BANK31  BANK32  BANK33  BANK34  BANK35  BANK36  BANK37
+      Params:         0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0
+      Locals:         0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0
+      Temps:          0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0
+      Totals:         0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0
+Total ram usage:        0 bytes
+ Hardware stack levels used:    1
+ This function calls:
+		Nothing
+ This function is called by:
+		_main
+ This function uses a non-reentrant model
+
+
+ *************** function _ClockSetup *****************
+ Defined at:
+		line 70 in file "encm369_pic18.c"
+ Parameters:    Size  Location     Type
+		None
+ Auto vars:     Size  Location     Type
+		None
+ Return value:  Size  Location     Type
+                  1    wreg      void 
+ Registers used:
+		None
+ Tracked objects:
+		On entry : 
+		On exit  : 
+		Unchanged: 
+ Data sizes:     COMRAM   BANK5   BANK6   BANK7   BANK8   BANK9  BANK10  BANK11  BANK12  BANK13  BANK14  BANK15  BANK16  BANK17  BANK18  BANK19  BANK20  BANK21  BANK22  BANK23  BANK24  BANK25  BANK26  BANK27  BANK28  BANK29  BANK30  BANK31  BANK32  BANK33  BANK34  BANK35  BANK36  BANK37
+      Params:         0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0
+      Locals:         0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0
+      Temps:          0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0
+      Totals:         0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0
+Total ram usage:        0 bytes
+ Hardware stack levels used:    1
+ This function calls:
+		Nothing
+ This function is called by:
+		_main
+ This function uses a non-reentrant model
+
+
+
+MODULE INFORMATION
+
+Module		Function		Class		Link	Load	Size
+encm369_pic18.c
+		_GpioSetup     		CODE           	1FE94	0000	22
+		_SystemSleep   		CODE           	1FE86	0000	2
+		_SysTickSetup  		CODE           	1FEAA	0000	34
+		_ClockSetup    		CODE           	1FE84	0000	2
+
+encm369_pic18.c estimated size: 60
+
+shared
+		__initialization		CODE           	1FEF2	0000	32
+
+shared estimated size: 32
+
+C:\Program Files\Microchip\xc8\v2_31\pic\sources\c99\common\awmod.c
+		___awmod       		CODE           	1FF4C	0000	176
+
+C:\Program Files\Microchip\xc8\v2_31\pic\sources\c99\common\awmod.c estimated size: 176
+
+main.c
+		_main          		CODE           	1FECC	0000	38
+
+main.c estimated size: 38
+
+user_app.c
+		_UserAppRun    		CODE           	1FF18	0000	52
+		_UserAppInitialize		CODE           	1FE88	0000	12
+
+user_app.c estimated size: 64
+

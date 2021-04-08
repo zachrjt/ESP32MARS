@@ -1,0 +1,121 @@
+[p GLOBOPT AUTOSTATIC IEEE_FLT IEEE_DBL LFSROK EMI_WORD ]
+[d version 1.1 ]
+[d edition pro ]
+[d chip 18F27Q43 ]
+[d frameptr 1249 ]
+"7 C:\Program Files\Microchip\xc8\v2_31\pic\sources\c99\common\awmod.c
+[v ___awmod __awmod `(i  1 e 2 0 ]
+"4 C:\Program Files\Microchip\xc8\v2_31\pic\sources\c99\common\fleq.c
+[v ___fleq __fleq `(b  1 e 0 0 ]
+"62 C:\Program Files\Microchip\xc8\v2_31\pic\sources\c99\common\float.c
+[v ___ftpack __ftpack `(f  1 e 4 0 ]
+"86 C:\Program Files\Microchip\xc8\v2_31\pic\sources\c99\common\ftadd.c
+[v ___ftadd __ftadd `(f  1 e 4 0 ]
+"54 C:\Program Files\Microchip\xc8\v2_31\pic\sources\c99\common\ftdiv.c
+[v ___ftdiv __ftdiv `(f  1 e 4 0 ]
+"62 C:\Program Files\Microchip\xc8\v2_31\pic\sources\c99\common\ftmul.c
+[v ___ftmul __ftmul `(f  1 e 4 0 ]
+"19 C:\Program Files\Microchip\xc8\v2_31\pic\sources\c99\common\ftsub.c
+[v ___ftsub __ftsub `(f  1 e 4 0 ]
+"10 C:\Program Files\Microchip\xc8\v2_31\pic\sources\c99\common\sprcadd.c
+[v ___fladd __fladd `(d  1 e 4 0 ]
+"245
+[v ___flsub __flsub `(d  1 e 4 0 ]
+"11 C:\Program Files\Microchip\xc8\v2_31\pic\sources\c99\common\sprcdiv.c
+[v ___fldiv __fldiv `(d  1 e 4 0 ]
+"8 C:\Program Files\Microchip\xc8\v2_31\pic\sources\c99\common\sprcmul.c
+[v ___flmul __flmul `(d  1 e 4 0 ]
+"15 C:\Program Files\Microchip\xc8\v2_31\pic\sources\c99\common\Umul32.c
+[v ___lmul __lmul `(ul  1 e 4 0 ]
+"91 C:\Program Files\Microchip\xc8\v2_31\pic\sources\c99\common\Umul64.c
+[v ___omul __omul `(uo  1 e 8 0 ]
+"70 C:\Users\marce\OneDrive\Documents\GitHub\ENCM369\Activity2.X\encm369_pic18.c
+[v _ClockSetup ClockSetup `(v  1 e 1 0 ]
+"89
+[v _GpioSetup GpioSetup `(v  1 e 1 0 ]
+"114
+[v _SysTickSetup SysTickSetup `(v  1 e 1 0 ]
+"136
+[v _SystemSleep SystemSleep `(v  1 e 1 0 ]
+"35 C:\Users\marce\OneDrive\Documents\GitHub\ENCM369\Activity2.X\main.c
+[v _main main `(v  1 e 1 0 ]
+"104 C:\Users\marce\OneDrive\Documents\GitHub\ENCM369\Activity2.X\user_app.c
+[v _UserAppInitialize UserAppInitialize `(v  1 e 1 0 ]
+"125
+[v _UserAppRun UserAppRun `(v  1 e 1 0 ]
+"3158 C:/Program Files/Microchip/MPLABX/v5_45/packs/Microchip/PIC18F-Q_DFP/1.8.154/xc8\pic\include\proc\pic18f27q43.h
+[v _DAC1DATL DAC1DATL `VEuc  1 e 1 @125 ]
+"3236
+[v _DAC1CON DAC1CON `VEuc  1 e 1 @127 ]
+"22235
+[v _TMR0L TMR0L `VEuc  1 e 1 @792 ]
+"22373
+[v _TMR0H TMR0H `VEuc  1 e 1 @793 ]
+"22627
+[v _T0CON0 T0CON0 `VEuc  1 e 1 @794 ]
+"22725
+[v _T0CON1 T0CON1 `VEuc  1 e 1 @795 ]
+"37918
+[v _ANSELA ANSELA `VEuc  1 e 1 @1024 ]
+"44870
+[v _PIR3 PIR3 `VEuc  1 e 1 @1201 ]
+"45585
+[v _LATA LATA `VEuc  1 e 1 @1214 ]
+"45840
+[v _TRISA TRISA `VEuc  1 e 1 @1222 ]
+"14 C:\Users\marce\OneDrive\Documents\GitHub\ENCM369\Activity2.X\main.c
+[v _G_u32SystemTime1ms G_u32SystemTime1ms `VEul  1 e 4 0 ]
+"15
+[v _G_u32SystemTime1s G_u32SystemTime1s `VEul  1 e 4 0 ]
+"16
+[v _G_u32SystemFlags G_u32SystemFlags `VEul  1 e 4 0 ]
+"33 C:\Users\marce\OneDrive\Documents\GitHub\ENCM369\Activity2.X\user_app.c
+[v _G_u8UserAppFlags G_u8UserAppFlags `VEuc  1 e 1 0 ]
+"35 C:\Users\marce\OneDrive\Documents\GitHub\ENCM369\Activity2.X\main.c
+[v _main main `(v  1 e 1 0 ]
+{
+"69
+} 0
+"125 C:\Users\marce\OneDrive\Documents\GitHub\ENCM369\Activity2.X\user_app.c
+[v _UserAppRun UserAppRun `(v  1 e 1 0 ]
+{
+"127
+[v UserAppRun@u8Add u8Add `uc  1 s 1 u8Add ]
+"135
+} 0
+"7 C:\Program Files\Microchip\xc8\v2_31\pic\sources\c99\common\awmod.c
+[v ___awmod __awmod `(i  1 e 2 0 ]
+{
+"10
+[v ___awmod@sign sign `uc  1 a 1 5 ]
+[v ___awmod@counter counter `uc  1 a 1 4 ]
+"7
+[v ___awmod@dividend dividend `i  1 p 2 0 ]
+[v ___awmod@divisor divisor `i  1 p 2 2 ]
+"34
+} 0
+"104 C:\Users\marce\OneDrive\Documents\GitHub\ENCM369\Activity2.X\user_app.c
+[v _UserAppInitialize UserAppInitialize `(v  1 e 1 0 ]
+{
+"110
+} 0
+"136 C:\Users\marce\OneDrive\Documents\GitHub\ENCM369\Activity2.X\encm369_pic18.c
+[v _SystemSleep SystemSleep `(v  1 e 1 0 ]
+{
+"139
+} 0
+"114
+[v _SysTickSetup SysTickSetup `(v  1 e 1 0 ]
+{
+"119
+} 0
+"89
+[v _GpioSetup GpioSetup `(v  1 e 1 0 ]
+{
+"99
+} 0
+"70
+[v _ClockSetup ClockSetup `(v  1 e 1 0 ]
+{
+"74
+} 0
