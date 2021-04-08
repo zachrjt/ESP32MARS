@@ -85,7 +85,6 @@ void setup()
         print_event(&myEvent);
     }
 
-    /*
     Serial.println();
     long sector_table[SECTORTABLESIZE];
     if(!initialize_sector_table(&sdcard_calendar, &myCalendar, 20210407, 141610, sector_table))
@@ -97,24 +96,25 @@ void setup()
             Serial.print("\t");
             Serial.println(sector_table[i], HEX);
         }
+        
     }
     else
     {
         Serial.println("\nERROR WHILE INITIALIZING SECTOR TABLE\n");
     }
-    */
 
     /*
     for(int i = 0; i < EVENTSTACKSIZE; i++)
     {
         myCalendar.jobs[i] = (CalendarEvent *)(pvPortMalloc(sizeof(CalendarEvent)));
         long next_event = 0;
-        if(!find_event(&sdcard_calendar, sector_table, DATESTAMP, TIMESTAMP))
+        if(!find_event(&sdcard_calendar, &myCalendar, sector_table, &next_event, DATESTAMP, TIMESTAMP))
         {
-            if(!initialize_event(&sdcard_calendar, myCalendar.jobs[i], next_event))
+            if(!initialize_event(&sdcard_calendar, &myCalendar, myCalendar.jobs[i], next_event))
             {
                 myCalendar.event_intialization = 1;//We have initializated an event within the calendar
                 myCalendar.event_precedence[i] = i;
+                print_event(myCalendar.jobs[i]);
                 continue;//All good move onto next event
             }
             else
@@ -128,6 +128,25 @@ void setup()
         }
     }
     */
+    long next_event = 0;
+    CalendarEvent my_other_event;
+    
+    if(!find_event(&sdcard_calendar, &myCalendar, sector_table, &next_event, DATESTAMP, TIMESTAMP))
+    {
+        if(!initialize_event(&sdcard_calendar, &myCalendar, &my_other_event, next_event))
+        {
+            print_event(&my_other_event);
+        }
+        else
+        {
+            Serial.println("Error while trying to intialize event");
+        }
+    }
+    else
+    {
+        Serial.println("Error finding event");
+    }
+    
 
     Serial.println("ENDING SERIAL CONNECTION");
     sdcard_calendar.close();

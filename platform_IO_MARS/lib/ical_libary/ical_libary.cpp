@@ -550,13 +550,127 @@ byte initialize_event(File *file, Calendar *user_calendar, CalendarEvent *user_e
 }
 
 
-long *find_event(File *file, const long *read_sector_table, int date, int time)
+byte find_event(File *file, Calendar *user_calendar, long *sector_table, long *destination_byte_offset, int current_datestamp, int current_timestamp)
 {
     //This needs some basic operations and calls to find_event_limits
     //First needs the creation/function to make a read_sector_table 
         //Read sector table basically is a table of byte offset ranges that are valid to read from, it makes read the file after intialization muchhhhh easier
             //We wont need to re-read 150000 lines and any lines/events that have already happened can be skipped over and dont need to be parsed
-    return 0;
+
+    long found_event_byte_offset = 0;//Storest the nearest event happining/ending soon currently
+    int found_event_timing[4] = {100000000, 10000000, 100000000, 10000000};//Storest the time info: {start-date, start-time, end-date, end-time}
+
+    long working_byte_offset = 0;//The active byte offset being looked at
+    long extra_working_byte_offset = 0;//An extra byte offset to look at
+    int temp_event_timing[4] = {0, 0, 0, 0};
+
+    for(int i = 2; (i < SECTORTABLESIZE) && (sector_table[i] != 0); i+=2)//Look through the entire sector table(All relevant events)
+    {
+        if(Serial)
+        {
+            Serial.print("Looking in sector index: ");
+            Serial.println(i);
+            Serial.println(sector_table[i], HEX);
+            Serial.println(sector_table[(1 + i)], HEX);
+            Serial.print("\t");
+        }
+
+        working_byte_offset = sector_table[i];
+        while(1)//In each one look for all the possible events
+        {
+            if(Serial)
+            {
+                Serial.print(".");
+            }
+            working_byte_offset = find_next_keyword(file, "BEGIN:VEVENT", working_byte_offset, sector_table[(1 + i)], FIRSTCHAR);//find an event 
+            if(working_byte_offset == EOF)
+            {
+                return -1;///Error while parsing shouldn't happen
+            }
+            else if(working_byte_offset == -2)
+            {
+                if(Serial)
+                {
+                    Serial.println("\tNo more events in this sector");
+                }
+                break;//Can not find anymore events within the current sector
+            }
+            else
+            {
+                //Found an event, checking if the timing is good
+                if(!fetch_event_time(file, user_calendar, working_byte_offset, &(temp_event_timing[0]), &(temp_event_timing[1]), &(temp_event_timing[2]), &(temp_event_timing[3])))
+                {
+                    //getting differences between event times and now*(atleast was now but easier to compare to a constant versus a changing value)
+                    //Start times
+                    if(((temp_event_timing[0] <= current_datestamp) && (temp_event_timing[1] <= current_timestamp)) && ((temp_event_timing[2] <= current_datestamp) && (temp_event_timing[3] <= current_timestamp)))
+                    {
+                        //This means that the event we are looking is past and needs to be removed from the sector table
+                        extra_working_byte_offset = find_next_keyword(file, "END:VEVENT", working_byte_offset, sector_table[(1 + i)], NEXTLINE);
+                        if(extra_working_byte_offset < 0)
+                        {
+                            if (Serial)
+                            {
+                                Serial.println("Bad sector");
+                                Serial.println(sector_table[i]);
+                                Serial.println(sector_table[(1 + i)]);
+                            }
+                            return -1; //Critical error cant find the end of the event within the sector
+                        }
+                        else
+                        {
+                            working_byte_offset++;
+                            continue;
+                            //update_sector_table(sector_table, working_byte_offset, extra_working_byte_offset);//remove the event from the table
+                            //Shouldnt matter about the current index of i, update function adjusts for that
+                        }
+                    }
+                    //now compare the current event time with the lowest so far
+                    if(temp_event_timing[0] <= found_event_timing[0])
+                    {
+                        if(temp_event_timing[1] < found_event_timing[1])
+                        {
+                            //This is a new lowest event
+                            found_event_timing[0] = temp_event_timing[0];
+                            found_event_timing[1] = temp_event_timing[1];
+                            found_event_timing[2] = temp_event_timing[2];
+                            found_event_timing[3] = temp_event_timing[3];
+                            found_event_byte_offset = working_byte_offset; 
+                        }
+                        else if(temp_event_timing[1] == found_event_timing[1])
+                        {
+                            if(temp_event_timing[2] <= found_event_timing[2])
+                            {
+                                if(temp_event_timing[3] < found_event_timing[3])
+                                {
+                                    //This is a new lowest event
+                                    found_event_timing[0] = temp_event_timing[0];
+                                    found_event_timing[1] = temp_event_timing[1];
+                                    found_event_timing[2] = temp_event_timing[2];
+                                    found_event_timing[3] = temp_event_timing[3];
+                                    found_event_byte_offset = working_byte_offset; 
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    return -1; //Could not parse the timing of the event, despite being within the sector table implying it's safe to parse
+                }
+            }
+            working_byte_offset++;//increment this so we dont get stuck on first event
+        }
+        if(Serial)
+        {
+            Serial.println();
+        }
+    }
+    if(Serial)
+    {
+        Serial.println(found_event_byte_offset, HEX);
+    }
+    *destination_byte_offset = found_event_byte_offset;//Setting the event to the nearest event, finished the first
+    return 0;//Success
 }
 
 byte fetch_event_time(File *file, Calendar *user_calendar, const long event_byte_offset, int *event_start_date, int *event_start_time, int *event_end_date, int *event_end_time)
@@ -1563,7 +1677,6 @@ void print_event(CalendarEvent *user_event)
             Serial.print(".");
             Serial.println(user_event->event_start_second, DEC);
         }
-
     }
 }
 

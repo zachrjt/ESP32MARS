@@ -22,7 +22,7 @@
     #define ICALMODEOPR    //Just a nice way of indicating if an argument or parameter is mode of operation to find the return value
     #define ICALOFFSET     //Just a nice way of indicating if an argument or parameter is a byte offset
     
-    #define EVENTSTACKSIZE  2//The number of events being managed by the calendar at any given time
+    #define EVENTSTACKSIZE  1//The number of events being managed by the calendar at any given time
     #define SECTORTABLESIZE 256    //The number of elements within the sector_table
     
     #define NEXTLINE 0x00   //Used for the keyword finding functions
@@ -205,18 +205,18 @@
     */
 
 
-   long *find_event(File *file, const long *read_sector_table, int date, int time);
+    byte find_event(File *file, Calendar *user_calendar, long *sector_table, long *destination_byte_offset, const int current_datestamp, const int current_timestamp);
     /* 
     REQUIRES:
         -A SD card class file address which is initialized and opened
         -A sector table to look for relevant events
+        -An initialized calendar
+        -A destination byte offset for which to place the found event byte offset into
         -A int-utc-date code for which the event should start on/after 
         -A int-utc-time code for which the event should start on/after within the provided tolerance after
     PROMISES:
-        -Upon success to return a pointer to the BEGIN:VEVENT byte
-        -Upon failure to return:
-            -If failure during search EOF
-            -If no event could be found within the read_sector_table regions -2
+        -Upon success to return 0
+        -Upon failure to return -1
     */
 
 
