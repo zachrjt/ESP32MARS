@@ -19,8 +19,8 @@
     #define ICALMODEOPR    //Just a nice way of indicating if an argument or parameter is mode of operation to find the return value
     #define ICALOFFSET     //Just a nice way of indicating if an argument or parameter is a byte offset
     
-    #define EVENTSTACKSIZE  4 //The number of events being managed by the calendar at any given time
-    #define SECTORTABLESIZE 1024    //The number of elements within the sector_table
+    #define EVENTSTACKSIZE  8//The number of events being managed by the calendar at any given time
+    #define SECTORTABLESIZE 256    //The number of elements within the sector_table
     
     #define NEXTLINE 0x00   //Used for the keyword finding functions
     #define FIRSTCHAR 0xFF  //Used for the keyword finding functions
@@ -75,6 +75,7 @@
         char time_zone_id[MAX_NAME_SIZE];       //contains the time-zone id of the calendar, no standard used but, some server-side libaries exist for use of this
 
         byte daylight_status;                   //If 1 then daylight saving occurs, if 0 no daylight savings
+        byte daylight_mode;                     //Determines if we are in daylight or not, must be externally updated based on some webserver time or by hand, 1 for daylight savings 0 for no savings
         char daylight_time_zone [MAX_TZ_SIZE];  //Time zone name (MST, PST, etc) of the daylight savings timezone
         int daylight_offset;                    //The numerical time offset, from UTC time, that daylight savings is in -0700 would be 7 hours behind utc
         char standard_time_zone [MAX_TZ_SIZE];  //Time zone name (MST, MDT, etc) of the non-daylight savings timezone
@@ -218,11 +219,13 @@
     */
 
 
-   byte initialize_sector_table(File *file, long *sector_table);
+   byte initialize_sector_table(File *file, Calendar *user_calendar, const int current_date_code, const int current_time_code, long *sector_table);
     /* 
     REQUIRES:
         -A SD card class file address which is initialized and opened
         -A sector table to add offsets to
+        -A calendar that is intialized
+        =A current date code: 20210407 for instance
     PROMISES:
         -Upon success to return 0
         -Upon failure to return -1

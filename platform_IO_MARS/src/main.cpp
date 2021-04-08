@@ -66,7 +66,7 @@ void setup()
         return;
     }
     //6.5858 seconds to go through 150000 lines/ 600,730 byte
-    long keyword_position = find_next_keyword(&sdcard_calendar, "Additional Quiz 4 - Availability Ends",ICALOFFSET 0, ICALOFFSET -1, ICALMODERTN NEXTLINE);
+    long keyword_position = find_next_keyword(&sdcard_calendar, "SUMMER TERM LECTURES BEGIN.",ICALOFFSET 0, ICALOFFSET -1, ICALMODERTN NEXTLINE);
 
     //0.27 seconds to find a previous keyword 
     keyword_position = find_previous_keyword(&sdcard_calendar, "BEGIN:VEVENT", ICALOFFSET keyword_position, ICALOFFSET -1, ICALMODERTN FIRSTCHAR);
@@ -92,6 +92,21 @@ void setup()
     {
         Serial.print("Event: ");
         print_event(&myEvent);  //printing my event
+    }
+    Serial.println();
+    long section_table[SECTORTABLESIZE];
+    if(!initialize_sector_table(&sdcard_calendar, &myCalendar, 20210407, 141610, section_table))
+    {
+        Serial.println("Sector Table: ");
+        for(int i = 0; i < SECTORTABLESIZE; i++)
+        {
+            Serial.print("\t");
+            Serial.println(section_table[i], HEX);
+        }
+    }
+    else
+    {
+        Serial.println("\nERROR WHILE INITIALIZING SECTOR TABLE\n");
     }
     Serial.println("ENDING SERIAL CONNECTION");
     sdcard_calendar.close();

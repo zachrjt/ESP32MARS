@@ -22,6 +22,17 @@ END:STANDARD
 END:VTIMEZONE
 BEGIN:VEVENT
 DTSTAMP:20210326T211332Z
+SUMMARY:Canada Day. University Closed. No lectures.
+LOCATION:University of Calgary
+CLASS:PUBLIC
+DTSTART;VALUE=DATE:20140701
+DTEND;VALUE=DATE:20140702
+UID:6606-57709@d2l.ucalgary.ca
+SEQUENCE:0
+LAST-MODIFIED:20140903T015636Z
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20210326T211332Z
 SUMMARY:SUMMER TERM LECTURES BEGIN. First-term and six-week courses.
 LOCATION:University of Calgary
 CLASS:PUBLIC
@@ -58,44 +69,6 @@ SEQUENCE:11
 LAST-MODIFIED:20210325T224814Z
 END:VEVENT
 BEGIN:VEVENT
-DTSTAMP:20210326T211332Z
-SUMMARY:Canada Day. University Closed. No lectures.
-LOCATION:University of Calgary
-CLASS:PUBLIC
-DTSTART;VALUE=DATE:20140701
-DTEND;VALUE=DATE:20140702
-UID:6606-57709@d2l.ucalgary.ca
-SEQUENCE:0
-LAST-MODIFIED:20140903T015636Z
-END:VEVENT
-BEGIN:VEVENT
-DTSTAMP:20210326T204517Z
-SUMMARY:ENEL 300 - End of Year Reflection - Due
-LOCATION:(Winter 2021) - ENEL 2nd Year Integrated Learning Stream (ILS)
-DESCRIPTION:Dropbox:\nENEL 300 - End of Year Reflection - https://d2l.ucalg
-	ary.ca/d2l/lms/dropbox/user/folder_submit_files.d2l?ou=357197&db=131474\n\n
-	\nView event - https://d2l.ucalgary.ca/d2l/le/calendar/357197/event/712404/
-	detailsview?ou=357197#712404
-CLASS:PUBLIC
-DTSTART:20210416T055900Z
-DTEND:20210416T055900Z
-UID:6606-712404@d2l.ucalgary.ca
-SEQUENCE:2
-LAST-MODIFIED:20210322T134037Z
-END:VEVENT
-BEGIN:VEVENT
-DTSTAMP:20210326T204517Z
-SUMMARY:ENCM369 Exam 2
-LOCATION:(Winter 2021) - ENEL 2nd Year Integrated Learning Stream (ILS) - E
-	NCM 369 L03
-CLASS:PUBLIC
-DTSTART:20210406T230000Z
-DTEND:20210408T230000Z
-UID:6606-691746@d2l.ucalgary.ca
-SEQUENCE:0
-LAST-MODIFIED:20210219T165652Z
-END:VEVENT
-BEGIN:VEVENT
 DTSTAMP:20210326T204517Z
 SUMMARY:PIC Activity 7 Peer Code Review Rubric Submission - Due
 LOCATION:(Winter 2021) - ENEL 2nd Year Integrated Learning Stream (ILS)
@@ -118,5 +91,69 @@ DTEND:20210407T055900Z
 UID:6606-702929@d2l.ucalgary.ca
 SEQUENCE:15
 LAST-MODIFIED:20210324T202101Z
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20210326T204517Z
+SUMMARY:ENEL327 - Worksheet Session
+LOCATION:(Winter 2021) - ENEL 2nd Year Integrated Learning Stream (ILS) - E
+	NEL 327 L03
+CLASS:PUBLIC
+DTSTART:20210407T150000Z
+DTEND:20210407T170000Z
+UID:6606-715944@d2l.ucalgary.ca
+SEQUENCE:1
+LAST-MODIFIED:20210326T153731Z
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20210326T204517Z
+SUMMARY:ENCM369 Optional Exam 2 Drop-In Zoom
+LOCATION:(Winter 2021) - ENEL 2nd Year Integrated Learning Stream (ILS) - E
+	NCM 369 L03
+CLASS:PUBLIC
+DTSTART:20210407T190000Z
+DTEND:20210407T210000Z
+UID:6606-691745@d2l.ucalgary.ca
+SEQUENCE:0
+LAST-MODIFIED:20210219T164718Z
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20210326T204517Z
+SUMMARY:W2020 Quiz 1 - Due
+LOCATION:PHYS 259 L01-L04 - (Winter 2020) - Electricity and Magnetism (for 
+	students in Engineering)
+DESCRIPTION:This quiz is to be taken individually. You can use your PHYS 25
+	9 resources (it is an open book quiz)\, but by taking this quiz you are agr
+	eeing and declaring that this assessment was taken individually and without
+	 any help from other people and that the content will not be shared with an
+	y other individual or group.\n\n\nQuizzes:\nW2020 Quiz 1 - https://d2l.ucal
+	gary.ca/d2l/lms/quizzing/quizzing.d2l?ou=292015&qi=103828\n\n\nView event -
+	 https://d2l.ucalgary.ca/d2l/le/calendar/292015/event/493269/detailsview?ou
+	=292015#493269
+CLASS:PUBLIC
+DTSTART:20200324T040000Z
+DTEND:20200324T040000Z
+UID:6606-493269@d2l.ucalgary.ca
+SEQUENCE:1
+LAST-MODIFIED:20200323T145605Z
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20210326T204517Z
+SUMMARY:PIC Activity Late Submissions - Due
+LOCATION:(Winter 2021) - ENEL 2nd Year Integrated Learning Stream (ILS)
+DESCRIPTION:This dropbox will remain open until end of term.  If you miss a
+	 PIC Activity deadline\, you can still submit here.  Late submissions will 
+	be deducted 0.5 points per week late (subject to change based on feedback).
+	\nMAKE SURE YOUR FILE NAME CLEARLY INDICATES WHICH PIC ACTIVITY IT IS FOR.\
+	nThe dropbox is setup to receive multiple submissions so will hopefully wor
+	k as intended for any late submissions.\n\n\n\nDropbox:\nPIC Activity Late 
+	Submissions - https://d2l.ucalgary.ca/d2l/lms/dropbox/user/folder_submit_fi
+	les.d2l?ou=357197&db=129483\n\n\nView event - https://d2l.ucalgary.ca/d2l/l
+	e/calendar/357197/event/698629/detailsview?ou=357197#698629
+CLASS:PUBLIC
+DTSTART:20210409T055900Z
+DTEND:20210409T055900Z
+UID:6606-698629@d2l.ucalgary.ca
+SEQUENCE:13
+LAST-MODIFIED:20210301T195639Z
 END:VEVENT
 END:VCALENDAR
