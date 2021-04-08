@@ -46,7 +46,6 @@ void loop()
 {
   btn1.loop();
   btn2.loop();
-  sendTimetoPIC1(); 
 }
 
 //Need webserver update task

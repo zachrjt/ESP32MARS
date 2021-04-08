@@ -19,59 +19,108 @@ SPISettings PICSPISettings =  {
                               SPI_MODE0
                               };
 
-uint8_t Time0 = 76;
-uint8_t Time1 = 32;
-uint8_t Time2 = 64;
+uint8_t Time0;
+uint8_t Time1;
+uint8_t Time2;
+
+int Hours = 0;
+int Minutes = 51;
+int Seconds = 55;
 
 uint8_t AlarmFlag;
 
 void sendTimetoPIC1(void)
 {
-  digitalWrite(PIC1_SPICS, LOW);
-  PIC1_SPI.beginTransaction(PICSPISettings);
+    Time0 = 0;
+    Time1 = 0;
+    Time2 = 0;
 
-  PIC1_SPI.transfer(Time0);
-  PIC1_SPI.transfer(Time1);
-  PIC1_SPI.transfer(Time2);
+    if(Hours > 12)      //Conversions from ESP32 time to PIC display time vars (Hope this doesnt take too long in processing time)
+    {
+        Time2 += 0b00001000;
+        Time0 += (uint8_t)(((Hours - 12) / 10) << 7);
+        Serial.println(Time0);
+        Time0 += (uint8_t)(((Hours - 12) % 10) << 3);
+        Serial.println(Time0);
+    }
+    else if(Hours)
+    {
+        Time0 += (uint8_t)((Hours / 10) << 7);
+        Time0 += (uint8_t)((Hours % 10) << 3);
+    }
+    else 
+    {
+        Time0 += 0b10010000;
+    }
 
-  Serial.println(Time0);
-  Serial.println(Time1);
-  Serial.println(Time2);
+    Time0 += (uint8_t)(Minutes / 10);
+    Serial.println(Time0);
+    Time1 += (uint8_t)((Minutes % 10) << 4);
+    Serial.println(Time1);
 
-  PIC1_SPI.endTransaction();
-  digitalWrite(PIC1_SPICS, HIGH);
+    Time1 += (uint8_t)(Seconds / 10);
+    Time2 += (uint8_t)((Seconds % 10) << 4);
+
+    digitalWrite(PIC1_SPICS, LOW);
+    PIC1_SPI.beginTransaction(PICSPISettings);
+
+    PIC1_SPI.transfer(Time0);
+    PIC1_SPI.transfer(Time1);
+    PIC1_SPI.transfer(Time2);
+
+    PIC1_SPI.endTransaction();
+    digitalWrite(PIC1_SPICS, HIGH);
 }
 
 
 
-void  getTimefromPIC1(void)
+void  getTimefromPIC1(void)                     //Dont pull from PIC more than once a second or you will get erroneous values for Time2
 {
-  digitalWrite(PIC1_SPICS, LOW);
-  PIC1_SPI.beginTransaction(PICSPISettings);
+    digitalWrite(PIC1_SPICS, LOW);
+    PIC1_SPI.beginTransaction(PICSPISettings);
 
-  Time0 = PIC1_SPI.transfer(1);
-  Time1 = PIC1_SPI.transfer(2);
-  Time2 = PIC1_SPI.transfer(2);
+    Time2 = PIC1_SPI.transfer(FIRST_TIME_REQUEST);
+    Time1 = PIC1_SPI.transfer(SUBSEQUENT_TIME_REQUEST);
+    Time0 = PIC1_SPI.transfer(SUBSEQUENT_TIME_REQUEST);
 
-  Serial.println(Time0);
-  Serial.println(Time1);
-  Serial.println(Time2);
+    PIC1_SPI.endTransaction();
+    digitalWrite(PIC1_SPICS, HIGH);
 
-  PIC1_SPI.endTransaction();
-  digitalWrite(PIC1_SPICS, HIGH);
+    Hours = 0;
+    Minutes = 0;
+    Seconds = 0;
+                                                    //Hope this doesnt take too long in processing time
+    Hours += (int)((Time0 >> 7) * 10);              //bitmasking and shifting according to PIC time display standars
+    Hours += (int)((Time0 & 0b01111000) >> 3);
+
+    Minutes += (int)(Time0 & 0b00000111) * 10;
+    Minutes += (int)((Time1 & 0b11110000) >> 4);
+
+    Seconds += (int)(Time1 & 0b00001111) * 10;
+    Seconds += (int)((Time2 & 0b11110000) >> 4);
+
+
+    if((Time2 & 0b00001000) == 0b00001000)
+    {
+        Hours += 12;                                //24 hour clock
+    }
+    else
+    {
+        Hours %= 12;                                //make it 0:00 am rather than 12:00 am
+    }
 }
 
 
 
 void sendAlarmFlagtoPIC2(void)
 {
-  digitalWrite(PIC2_SPICS, LOW);
-  PIC1_SPI.beginTransaction(PICSPISettings);
+    digitalWrite(PIC2_SPICS, LOW);
+    PIC2_SPI.beginTransaction(PICSPISettings);
 
-  PIC1_SPI.transfer(AlarmFlag);
+    PIC2_SPI.transfer(AlarmFlag);
 
-  PIC1_SPI.endTransaction();
-  digitalWrite(PIC2_SPICS, HIGH);
+    PIC2_SPI.endTransaction();
+    digitalWrite(PIC2_SPICS, HIGH);
 }
 
 
@@ -79,31 +128,32 @@ void sendAlarmFlagtoPIC2(void)
 //Button Interrupts (?) for features, for some reason these are each triggered once during Start up so AlarmFlag is default off
 void pressed(Button2& btn) {
 
-  if(btn ==  btn1)
-  {
-    Serial.println("Snooze if Alarm flag is on, do nothing otherwise");
-    if (AlarmFlag)
+    if(btn ==  btn1)
     {
-      AlarmFlag = 0;
-      sendAlarmFlagtoPIC2();
+        if (AlarmFlag)  //Snooze Alarm if its on
+        {
+        AlarmFlag = ALARM_OFF;
+        sendAlarmFlagtoPIC2();
 
-      //Set up new Alarm event 5 minutes from now here
+        //Set up new Alarm event 5 minutes from now here
+        }
+        else      //for testing
+        {
+            AlarmFlag = ALARM_ON;
+            sendAlarmFlagtoPIC2();
+        }
+        //getTimefromPIC1();  //for testing
     }
-    else      ///This is just for debugging
+    else if (btn ==  btn2)
     {
-      AlarmFlag = 1;
-      sendAlarmFlagtoPIC2();
-    }
-  }
-  else if (btn ==  btn2)
-  {
-    Serial.println("Turn off Alarm if its on");
-    if (AlarmFlag)
-    {
-      AlarmFlag = 0;
-      sendAlarmFlagtoPIC2();
+        if (AlarmFlag)  //Turn off Alarm if its on
+        {
+            AlarmFlag = ALARM_OFF;
+            sendAlarmFlagtoPIC2();
 
-      //Update event(?) here (not sure if needed)
+            //Update event(?) here (not sure if needed)
+        }
+
+        sendTimetoPIC1();      //for testing
     }
-  }
 }
