@@ -730,43 +730,38 @@ byte initialize_sector_table(File *file, Calendar *user_calendar, const int curr
 {
     //This function should parse through the entire sd card file
     //While doing so it should examine each event and look at its start date stamps
-    //If the date stamp is less than a current date stamp it should consider the event(the byte offset range between the BEGIN and END) to be irrelevant
-    //These irrelevant byte offset ranges should lump together in the sector table
+    //If the date/time stamp is less than a current date/time stamp it should consider the event(the byte offset range between the BEGIN and END) to be irrelevant
+    //These irrelevant byte offset ranges wont be in the in the sector table
     //Such that the sector table contains all the RELEVANT ranges of byte offsets in order that contain data/events that are after, or on the current date 
     //unfortunalety any reoccuring events might be discarded since I never, and will not, implemented RRULE parsing for reoccurance of date stamps
-    
-
     //The sector table element are ranges that are valid between partners so: between [0] and [1] are good, but not between [1] and [2]
     //but between [2] and [3], so there are an even number of sector table oofset
-
-    //There will be 1024 sector table elements allowing for a maximum of 512 regions that are "relevant"
     //If there is not enough room the last element pair should contain the next relevant byte-offset to the end of the file
-
-    //As events are completed the sector table should be updated
+    //As events are completed the sector table should be updated to remove the region that the event was enclosed in
     
 
     byte return_value_code = 0;  //is the returned error value
     long working_byte_offset = 0;//Used to find keyword locally
-    //long extra_byte_offset = 0;//Extra one used to find keywords locally
+    long extra_byte_offset = 0;//An extra working byte offset to use
 
     long focused_event_start_byte_offset = 0;//THe focused event start byte, first char of BEGIN:VEVENT
     long focused_event_end_byte_offset = 0;//The focused event end byte, the line after END:VEVENT
+
     int focused_event_date_code = 0;//The date code of the event currently being looked at
     int focused_event_time_code = 0;//The time code of the event currently being looked at
-    int event_counter = 0;
-    int sector_count_max = SECTORTABLESIZE;
-    int sector_count = 0;
+
+    int event_counter = 0;//Counts the events encountered//for debugging purposes
+    int sector_count_max = SECTORTABLESIZE;//Maximum number of elements within the sector table
+    int sector_count = 0;//The current element index of the sector table
     const long file_end = (long)(file->size()-14);//End of the file using size instead of keyword parse 1000X faster, -14 since END:VCALENDAR is 14 in length with CR-LF sequence
+
+    char *working_string_pointer = NULL;//Used to parse string data for date relevance comparsions
 
     //Need to wipe values of sector_table and write 0's
     for(int i = 0; i < SECTORTABLESIZE; i++)
     {
         sector_table[i] = 0;//Setting all sector table values to zero
     }
-
-    char *working_string_pointer = NULL;//Used to parse string data for date relevance comparsions
-
-    focused_event_end_byte_offset = find_next_keyword(file, "BEGIN:VEVENT", 0, NOEND, FIRSTCHAR);
 
     while(sector_count < sector_count_max)
     {
@@ -882,8 +877,8 @@ byte initialize_sector_table(File *file, Calendar *user_calendar, const int curr
                             sector_table[sector_count++] = focused_event_start_byte_offset;//Set current sector table element to start of focused, relevant event
                             sector_table[sector_count++] = focused_event_end_byte_offset;//Set related pair element to end of focused, relevant event
                         }
-                        Serial.print("\tSector Table Event Pair Added For Event # ");
-                        Serial.println(event_counter);
+                        //Serial.print("\tSector Table Event Pair Added For Event # ");
+                        //Serial.println(event_counter);
                     }
                     else
                     {
@@ -895,9 +890,9 @@ byte initialize_sector_table(File *file, Calendar *user_calendar, const int curr
                         sector_table[sector_count++] = focused_event_start_byte_offset;
                         sector_table[sector_count++] = NOEND;   //Since there 1 pair left in sector table we set the last pair of sector bytes to the start of the current relevant event and the end of the file,
                                                                 //Note that NOEND is that acutal end of file but, the find_keyword functions and the parsing functions treat NOEND as the literal end of 2GiB file 
-                        Serial.print("\tEnd sector table pair added For Event # ");
-                        Serial.print(event_counter);
-                        Serial.println("-------------------------------------------------------------------------------------------------------------------");
+                        //Serial.print("\tEnd sector table pair added For Event # ");
+                        //Serial.print(event_counter);
+                        //Serial.println("-------------------------------------------------------------------------------------------------------------------");
                         break;
                     }
                 }
@@ -922,7 +917,7 @@ byte initialize_sector_table(File *file, Calendar *user_calendar, const int curr
                     {
                         //This mean event time is in a LOCAL time, adjust the time with using the offset
                         working_byte_offset+=12; //Moving from the ; in DTSTART;VALUE=DATE:1.. to the 1
-                        working_string_pointer = parse_data_string(file, working_byte_offset, NOEND, ONELINE); //Parse line for the start time stamp 
+                        working_string_pointer = parse_data_string(file, working_byte_offset, focused_event_end_byte_offset, ONELINE); //Parse line for the start time stamp 
                         if (working_string_pointer == NULL)
                         {
                                 return_value_code = -1;//Failure during parse for date stamp
@@ -1019,8 +1014,8 @@ byte initialize_sector_table(File *file, Calendar *user_calendar, const int curr
                                 sector_table[sector_count++] = focused_event_start_byte_offset;//Set current sector table element to start of focused, relevant event
                                 sector_table[sector_count++] = focused_event_end_byte_offset;//Set related pair element to end of focused, relevant event
                             }
-                            Serial.print("\tSector Table Event Pair Added For Event # ");
-                            Serial.println(event_counter);
+                            //Serial.print("\tSector Table Event Pair Added For Event # ");
+                            //Serial.println(event_counter);
                         }
                         else
                         {
@@ -1032,16 +1027,162 @@ byte initialize_sector_table(File *file, Calendar *user_calendar, const int curr
                             sector_table[sector_count++] = focused_event_start_byte_offset;
                             sector_table[sector_count++] = NOEND;   //Since there 1 pair left in sector table we set the last pair of sector bytes to the start of the current relevant event and the end of the file,
                                                                     //Note that NOEND is that acutal end of file but, the find_keyword functions and the parsing functions treat NOEND as the literal end of 2GiB file 
-                            Serial.print("\tEnd sector table pair added For Event # ");
-                            Serial.print(event_counter);
-                            Serial.println("-------------------------------------------------------------------------------------------------------------------");
+                            //Serial.print("\tEnd sector table pair added For Event # ");
+                            //Serial.print(event_counter);
+                            //Serial.println("-------------------------------------------------------------------------------------------------------------------");
                             break;
                         }
                     }
                     else if (char_temp == 'T')//TZID, check if the same as calendar, add offset based on utc offset in calendar struc
                     {
-                        //check if the TZID matches the calendar TZID, if so we adjust using the offset we found, else we considered the event to be irrelvent, unless we implement webserver time-zone fetching
+                        working_byte_offset+=6;//Need to move byte offset from ; to Amer.. in DTSTART;TZID=AMERICA/EDMONTON:
+                        extra_byte_offset = find_next_keyword(file, ":", working_byte_offset, focused_event_end_byte_offset, NEXTCHAR);
+                        if(extra_byte_offset < 0)
+                        {
+                            return_value_code = -1;//Failure to find TZID colon
+                            break;
+                        }
+                        else
+                        {
+                            //grabbing time zone id string, extra is decremented one since it is the byte offset after the colon not at the colon
+                            working_string_pointer = parse_data_string(file, working_byte_offset, (-1 + extra_byte_offset), ONELINE);  //looking for the tzid string in DTSTART;TZID= "America/Edmonton" :20210215T000000
+                            if (working_string_pointer == NULL)
+                            {
+                                return_value_code = -1;//Failure to parse TZID
+                                break;
+                            }
 
+                            for(int i = 0; working_string_pointer[i] != '\0'; i++)
+                            {
+                                if (working_string_pointer[i] != user_calendar->timezone.time_zone_id[i])
+                                {
+                                    vPortFree(working_string_pointer);//freeing the TZID string found
+                                    continue;//Since the event time zone and the calendar timezone arent the same we cant adjust/compared the event time with UTC at all
+                                }
+                            }
+                            vPortFree(working_string_pointer);  //freeing the heap timezoneid
+                            working_string_pointer = parse_data_string(file, extra_byte_offset, focused_event_end_byte_offset, ONELINE);//parseing the timestamp after the :
+                            if (working_string_pointer == NULL)
+                            {
+                                return_value_code = -1;//Failure to parse event date stamp
+                                break;
+                            }
+                            //pulling out the date stuff
+                            calendar_str_to_int(working_string_pointer, -1, 'T', &focused_event_date_code);    //grabbing date stamp code into year|month|day into focused event date stamp
+                            //pulling out the time stuff
+                            calendar_str_to_int(&(working_string_pointer[9]), -1, '\0', &focused_event_time_code); //transfering the time stamp hour|minute|second into event time stamp, it isnt Z terminated like UTC
+                            
+                            //Still have to adjust time and date stamp since it's the calendar timezone id
+
+                            vPortFree(working_string_pointer);  //freeing the heap timezoneid string
+                            if (time_offset <= 0)//Check if negative
+                            {
+                                focused_event_time_code = (-1 * time_offset);//Local time is behind so utc equivalent is offset ahead
+                            }
+                            else
+                            {
+                                focused_event_date_code -=1;    //subtract a day since local time is ahead of utc
+                                focused_event_time_code = 235959 - time_offset;
+                            }
+
+                            //now need to run through time check between event time and current time
+
+                            if(focused_event_date_code <= current_date_code)//Is the event start date less than or the same as the current date
+                            {
+                                if(focused_event_time_code <= current_time_code)//Is the event start time less that or the same as the current date
+                                {
+                                    working_byte_offset = find_next_keyword(file, "DTEND;TZID=", working_byte_offset, focused_event_end_byte_offset, NEXTCHAR);//Check end date
+                                    if(working_byte_offset == EOF)
+                                    {
+                                        return_value_code = -1;//Failure to find END time
+                                        break;
+                                    }
+                                    else if(working_byte_offset == -2)
+                                    {
+                                        //WE could not find an end date for the event, edge case of 2 events within ical, we same the event has zero-width
+                                        continue;//Since the start time is the end time for non-specified endtime event this event is not relevant
+                                    }
+                                    else
+                                    {
+                                        working_byte_offset = find_next_keyword(file, ":", working_byte_offset, focused_event_end_byte_offset, NEXTCHAR);//Jump to colon past know TZID
+                                        if (working_byte_offset < 0)
+                                        {
+                                            return_value_code = -1; //Failure to find end time TZID stamp
+                                            break;
+                                        }
+                                        //Found an end date for the event
+                                        working_string_pointer = parse_data_string(file, working_byte_offset, focused_event_end_byte_offset, ONELINE); //Parse line for end date
+                                        if (working_string_pointer == NULL)
+                                        {
+                                            return_value_code = -1;
+                                            break;  //Failure could not parse event end date
+                                        }
+                                        //transfering the end date into an int for comparison between now and the event date
+                                        calendar_str_to_int(working_string_pointer, -1, 'T', &focused_event_date_code);    //grabbing date stamp code into year|month|day into focused event date stamp
+                                        //pulling out the time stuff
+                                        calendar_str_to_int(&(working_string_pointer[9]), -1, '\0', &focused_event_time_code); //transfering the time stamp hour|minute|second into event time stamp, it isnt Z terminated like UTC
+                                        vPortFree(working_string_pointer);
+
+                                        //Adjusting end time based on calendar timezone offsets
+                                        if (time_offset <= 0)//Check if negative
+                                        {
+                                            focused_event_time_code = (-1 * time_offset);//Local time is behind so utc equivalent is offset ahead
+                                        }
+                                        else
+                                        {
+                                            focused_event_date_code -=1;    //subtract a day since local time is ahead of utc
+                                            focused_event_time_code = 235959 - time_offset;
+                                        }
+
+                                        //Checking
+                                        if(focused_event_date_code == current_date_code)//Is the event the same as the current date
+                                        {
+                                            if(focused_event_time_code <= current_time_code)//Is the event end time less that or the same as the current date
+                                            {
+                                                continue;//Since the end date/time has already passed this event is not relevant
+                                            }
+                                        }
+                                        else if(focused_event_date_code < current_date_code)//Is the end time less than the current time, ie event has finished already?
+                                        {
+                                            continue;//End time has already passed too
+                                        }
+                                    }
+                                }
+                            }
+                            //Since control has passed else if structure and test add to sector table
+                            if (sector_count < (sector_count_max-2))//Is there more than 1 pair (2 elements) left in the sector table?
+                            {
+                                //checking if last sector offset is the begining of this sectors offset i.e. a continous region of byte offsets
+                                if ((sector_count != 0) && (focused_event_start_byte_offset == sector_table[(-1 + sector_count)]))
+                                {
+                                    //The last sector's end is the same as this sector's start so we can replace the last sector's end with this sector's end since it a continous byte-offset region
+                                    sector_table[(-1 + sector_count)] = focused_event_end_byte_offset;
+                                    //no need to increment the sector count since technically no new elements were added
+                                }
+                                else
+                                {
+                                    sector_table[sector_count++] = focused_event_start_byte_offset;//Set current sector table element to start of focused, relevant event
+                                    sector_table[sector_count++] = focused_event_end_byte_offset;//Set related pair element to end of focused, relevant event
+                                }
+                                //Serial.print("\tSector Table Event Pair Added For Event # ");
+                                //Serial.println(event_counter);
+                            }
+                            else
+                            {
+                                if(focused_event_start_byte_offset == sector_table[(-1 + sector_count)])//checking to see if the begining of this sector and end of the last sector is continous
+                                {
+                                    sector_table[(-1 + sector_count)] = NOEND;//Since the start and end  is continous pl
+                                    sector_count+=2;// Adding 2 to sector count to prevent the function from writing sector byte offsets after NOEND element
+                                }
+                                sector_table[sector_count++] = focused_event_start_byte_offset;
+                                sector_table[sector_count++] = NOEND;   //Since there 1 pair left in sector table we set the last pair of sector bytes to the start of the current relevant event and the end of the file,
+                                                                        //Note that NOEND is that acutal end of file but, the find_keyword functions and the parsing functions treat NOEND as the literal end of 2GiB file 
+                                //Serial.print("\tEnd sector table pair added For Event # ");
+                                //Serial.print(event_counter);
+                                //Serial.println("-------------------------------------------------------------------------------------------------------------------");
+                                break;
+                            }
+                        } 
                     }
                     else
                     {
