@@ -2,7 +2,10 @@
     #define ICAL_LIBARY_H
     //https://www.youtube.com/watch?v=y8OnoxKotPQ is best way I can sum up the .ical libary 
 
-
+    //ALL TIMES ARE UTCCCCCCCCCCCCCCCCCCCCCCC WHEN USING EVENTS
+    //CURRENTLY IN DAYLIGHT SAVINGS SO local time is -600 hours off, calendar takes care of daylight savings conversions provided the Calendar.timezone.daylight_mode is correct
+    //1 for daylight savings, 0 for standard time, note intialized events will not have there times adjusted automatically so on leap forward/back days, non UTC time events
+    //Will need to be reloaded, best if you are going to change that byte is to re-intialize the sector table then reintialize the events of the calendar, this will fix that issue
 
 //DEFINE STATEMENT SECTION START---------------------------------------------------------------------------------------------------------------------------------------------------
     //#define PRINTOUTDEBUG  //Used so the printing function will replace whitespace with identifiers to make string output debug easier, comment out for no debug, 
@@ -43,8 +46,6 @@
 
         char event_location[MAX_LOCATION_SIZE]; //The location of the event
 
-        byte date_format;           //If 1 then only date is present, 2 for TZID event time, 0 normally for UTC times (needed for wacko 250 edge cases in u of c calendar)
-        char event_time_zone_id[MAX_TZ_SIZE];   //normally "UTC" but in mode 2 it holds a TZID EVENT TIME like America/Edmonton:, LOCAL for mode 1
         int event_start_date_code;  //Start date of event in utc parts: 2021 04 06(used for internal comparison)
         int event_start_year;       //Start date year
         int event_start_month;      //Start date month
@@ -185,10 +186,11 @@
     */
 
 
-    byte initialize_event(File *file, CalendarEvent *user_event, ICALOFFSET const long event_byte_offset);
+    byte initialize_event(File *file, Calendar *user_calendar, CalendarEvent *user_event, ICALOFFSET const long event_byte_offset);
     /* 
     REQUIRES:
         -A SD card class file address which is initialized and opened
+        -A pointer to an initialized calendar struct
         -A pointer to a created CalendarEvent
         -An byte-offset value for which the event begins at: "BEGIN:VEVENT" within the SD card file
     PROMISES:

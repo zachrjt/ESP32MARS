@@ -419,7 +419,7 @@ byte initialize_calendar(File *file, Calendar *user_calendar)
 }
 
 
-byte initialize_event(File *file, CalendarEvent *user_event, ICALOFFSET const long event_byte_offset)
+byte initialize_event(File *file, Calendar *user_calendar, CalendarEvent *user_event, ICALOFFSET const long event_byte_offset)
 {
     //This function fills events that are passed into it from data found at the event_byte_offset
     if(event_byte_offset == EOF)
@@ -433,7 +433,6 @@ byte initialize_event(File *file, CalendarEvent *user_event, ICALOFFSET const lo
     }
     //Grabing summary section------------------------------------------------------------------------------------------------------------------------------------------------------
     long working_byte_offset = 0;//Used to find keyword locally
-    long extra_byte_offset = 0;//Extra one used to find keywords locally
     char *working_string_pointer = NULL;
     working_byte_offset = find_next_keyword(file, "SUMMARY:", ICALOFFSET event_byte_offset, ICALOFFSET max_event_byte_offset, ICALMODERTN NEXTCHAR);  //looking for summary info
     if(working_byte_offset == EOF)
@@ -479,225 +478,60 @@ byte initialize_event(File *file, CalendarEvent *user_event, ICALOFFSET const lo
     //Grabing location section-----------------------------------------------------------------------------------------------------------------------------------------------------
 
     //Grabing times section--------------------------------------------------------------------------------------------------------------------------------------------------------
-    //Grabing the start
-    working_byte_offset = find_next_keyword(file, "DTSTART:", ICALOFFSET event_byte_offset, ICALOFFSET max_event_byte_offset, ICALMODERTN NEXTCHAR);  //looking for DTSTART string
-    if(working_byte_offset == EOF)
+
+    if(fetch_event_time(file, user_calendar, event_byte_offset, &user_event->event_start_date_code, &user_event->event_start_time_code, 
+                                                                &user_event->event_end_date_code, &user_event->event_end_time_code))
     {
-        return -1;  //Critical Error during search for DTSTART:
+        //Error could not parse times
+        return -1;
     }
-    else if(working_byte_offset == -2)//could not find DTSTART:, likely because non-utc usage look for DTSTART;VALUE=DATE:
+    else
     {
-        working_byte_offset = find_next_keyword(file, "DTSTART;VALUE=DATE:", ICALOFFSET event_byte_offset, ICALOFFSET max_event_byte_offset, ICALMODERTN NEXTCHAR);//look for DTSTART;..
-        if(working_byte_offset == EOF)
-        {
-            return -1;  //Critical Error during search for DTSTART;VALUE=DATE
-        }
-        else if(working_byte_offset == -2) //Could not find DTSTART;VALUE=, trying DTSTART;TZID=
-        {
-            working_byte_offset = find_next_keyword(file, "DTSTART;TZID=", ICALOFFSET event_byte_offset, ICALOFFSET max_event_byte_offset, ICALMODERTN NEXTCHAR);  //looking for DTSTART;TZID= string
-            if(working_byte_offset < 0)
-            {
-                return -1;  //Critical Error during search for DTSTART;TZID= or could not find, might be other format that I'm not considering
-            }
-            else
-            {
-                //So DTSTART;TZID=
-                user_event->date_format = 2;    //Setting date format state to 2 since its a TZID time stamp
-                extra_byte_offset = find_next_keyword(file, ":", ICALOFFSET working_byte_offset, ICALOFFSET max_event_byte_offset, ICALMODERTN NEXTCHAR);
-                if(extra_byte_offset < 0)
-                {
-                    return -1; //Error while trying to search for timezone id UTC stamp should be there
-                }
-                else
-                {
-                    //grabbing time zone id string, extra is decremented one since it is the byte offset after the colon not at the colon
-                    working_string_pointer = parse_data_string(file, working_byte_offset, (-1 + extra_byte_offset), ONELINE);  //looking for the tzid string in DTSTART;TZID= "America/Edmonton" :20210215T000000
-                    if (working_string_pointer == NULL)
-                    {
-                        return -1;  //Failure could not parse time zone id string
-                    }
-                    calendar_char_copy(working_string_pointer, user_event->event_time_zone_id);//copying the heap timezoneid into the struc timezone field
-                    vPortFree(working_string_pointer);  //freeing the heap timezoneid
+        //Need to force the times into the individual ints
+        int temp_code = user_event->event_start_time_code;
 
-                    //grabbing the utc timestamp after the timezone id
-                    working_string_pointer = parse_data_string(file, extra_byte_offset, NOEND, ONELINE);  //grabing the timestamp in DTSTART;TZID=America/Edmonton: 20210215T000000
-                    if (working_string_pointer == NULL)
-                    {
-                        return -1;  //Failure could not parse timestamp from TZID line
-                    }
-                    //pulling out the date stuff
-                    calendar_str_to_int(working_string_pointer, -1, 'T', &user_event->event_start_date_code);    //grabbing date stamp code into year|month|day into event struc
-                    calendar_str_to_int(working_string_pointer, 4,'\0', &user_event->event_start_year); //transfering the year
-                    calendar_str_to_int(&(working_string_pointer[4]), 2,'\0', &user_event->event_start_month); //transfering the month
-                    calendar_str_to_int(&(working_string_pointer[6]), -1,'T', &user_event->event_start_day); //transfering the day
+        user_event->event_start_second = (temp_code % 100);
 
-                    //pulling out the time stuff
-                    calendar_str_to_int(&(working_string_pointer[9]), -1, '\0', &user_event->event_start_time_code); //transfering the time stamp hour|minute|second into event struc
-                    calendar_str_to_int(&(working_string_pointer[9]), 2,'\0', &user_event->event_start_hour); //transfering the hour
-                    calendar_str_to_int(&(working_string_pointer[11]), 2,'\0', &user_event->event_start_minute); //transfering the minute
-                    calendar_str_to_int(&(working_string_pointer[13]), -1,'\0', &user_event->event_start_second); //transfering the second  UNLIKE UTC TIME STAMP NOT 'Z' terminated
-                    vPortFree(working_string_pointer);  //freeing the heap timezoneid
-                }   
-            }
-        }
-        else
-        {
-            //So DTSTART;VALUE= we assume that the event starts on the date at 00:00.00 time
-            user_event->date_format = 1;    //Setting date format state to 1
-            calendar_char_copy("LOCAL", user_event->event_time_zone_id);//copying the mode 1 : "Date" into the struc timezone field
-            working_string_pointer = parse_data_string(file, working_byte_offset, NOEND, ONELINE); //Parse line for the date stamp
-            if (working_string_pointer == NULL)
-            {
-                return -1;  //Failure could not non-utc date stamp
-            }
-            //This format of datestamp only had a date no time, used for edge 248 cases
-            calendar_str_to_int(working_string_pointer, -1, '\0', &user_event->event_start_date_code); //transfering the datestamp year|month|day into event struc
-            calendar_str_to_int(working_string_pointer, 4,'\0', &user_event->event_start_year); //transfering the year into the event struc
-            calendar_str_to_int(&(working_string_pointer[4]), 2,'\0', &user_event->event_start_month); //transfering the year into the event struc
-            calendar_str_to_int(&(working_string_pointer[6]), -1,'\0', &user_event->event_start_day); //transfering the year into the event struc
-            vPortFree(working_string_pointer); //freeing the date stamp off the heap
-        }
+        temp_code = (temp_code/100);
+        user_event->event_start_minute = (temp_code % 100);
+
+        temp_code = (temp_code/100);
+        user_event->event_start_hour = temp_code;
+
+        //now the date stamp
+        temp_code = user_event->event_start_date_code;
+
+        user_event->event_start_day = (temp_code % 100);
+
+        temp_code = (temp_code/100);
+        user_event->event_start_month = (temp_code % 100);
+
+        temp_code = (temp_code/100);
+        user_event->event_start_year = temp_code;
+
+        //Now the end times/dates
+        temp_code = user_event->event_end_time_code;
+
+        user_event->event_end_second = (temp_code % 100);
+
+        temp_code = (temp_code/100);
+        user_event->event_end_minute = (temp_code % 100);
+
+        temp_code = (temp_code/100);
+        user_event->event_end_hour = temp_code;
+
+        //now the date stamp
+        temp_code = user_event->event_end_date_code;
+
+        user_event->event_end_day = (temp_code % 100);
+
+        temp_code = (temp_code/100);
+        user_event->event_end_month = (temp_code % 100);
+
+        temp_code = (temp_code/100);
+        user_event->event_end_year = temp_code;
+
     }
-    else//DTSTART was UTC so we can parse info much more easily
-    {
-        user_event->date_format = 0;    //Normal utc code setting time format byte to 0
-        calendar_char_copy("UTC", user_event->event_time_zone_id);    //Since UTC copying UTC string into the time zone id string
-        working_string_pointer = parse_data_string(file, working_byte_offset, NOEND, ONELINE); //Parse line for DTSTART utc string
-        if (working_string_pointer == NULL)
-        {
-            return -1;  //Failure could not parse event start utc string  20210326 T 211332 Z
-        }
-        //transfering the start date
-        calendar_str_to_int(working_string_pointer, -1,'T', &user_event->event_start_date_code); //transfering the utc year|month|day into event struc
-        calendar_str_to_int(working_string_pointer, 4,'\0', &user_event->event_start_year); //transfering the year
-        calendar_str_to_int(&(working_string_pointer[4]), 2,'\0', &user_event->event_start_month); //transfering the month
-        calendar_str_to_int(&(working_string_pointer[6]), -1,'T', &user_event->event_start_day); //transfering the day
-
-        //transfering the start time
-        calendar_str_to_int(&(working_string_pointer[9]), -1, 'Z', &user_event->event_start_time_code); //transfering the utc hour|minute|second into event struc
-        calendar_str_to_int(&(working_string_pointer[9]), 2,'\0', &user_event->event_start_hour); //transfering the hour
-        calendar_str_to_int(&(working_string_pointer[11]), 2,'\0', &user_event->event_start_minute); //transfering the minute
-        calendar_str_to_int(&(working_string_pointer[13]), -1,'Z', &user_event->event_start_second); //transfering the second
-        vPortFree(working_string_pointer);  //freeing DTSTART line from heap
-    }
-
-    //grabing the end
-    working_byte_offset = find_next_keyword(file, "DTEND:", ICALOFFSET event_byte_offset, ICALOFFSET max_event_byte_offset, ICALMODERTN NEXTCHAR);  //looking for DTEND string
-    if(working_byte_offset == EOF)
-    {
-        return -1;  //Critical Error during search for DTEND:
-    }
-    else if(working_byte_offset == -2)//could not find DTEND:, likely because non-utc usage look for DTEND;VALUE=DATE:
-    {
-        working_byte_offset = find_next_keyword(file, "DTEND;VALUE=DATE:", ICALOFFSET event_byte_offset, ICALOFFSET max_event_byte_offset, ICALMODERTN NEXTCHAR);//look for DTSTART;..
-        if(working_byte_offset == EOF)
-        {
-            return -1;  //Critical Error during search for DTEND;VALUE=DATE
-        }
-        else if(working_byte_offset == -2) //Could not find DTEND;VALUE=, trying DTEND;TZID=
-        {
-            working_byte_offset = find_next_keyword(file, "DTEND;TZID=", ICALOFFSET event_byte_offset, ICALOFFSET max_event_byte_offset, ICALMODERTN NEXTCHAR);  //looking for DTEND;TZID= string
-            if(working_byte_offset == EOF)
-            {
-                return -1;  //Critical Error during search for DTEND;TZID= 
-            }
-            else if(working_byte_offset == -2)
-            {
-                //For some reason 2 events dont have a end time, if end time is zero consider it to be an event of infinsimal duration, and say the end time is the same as the start
-                user_event->alarm_status = 1;
-                //Copying the start times into the end times
-                user_event->event_end_date_code = user_event->event_start_date_code;
-                user_event->event_end_year = user_event->event_start_year;
-                user_event->event_end_month = user_event->event_start_month;
-                user_event->event_end_day = user_event->event_start_day;
-
-                user_event->event_end_time_code = user_event->event_start_time_code;
-                user_event->event_end_hour = user_event->event_start_hour;
-                user_event->event_end_minute = user_event->event_start_minute;
-                user_event->event_end_second = user_event->event_start_second;
-            }
-            else
-            {
-                //So DTEND;TZID=
-                user_event->date_format = 2;    //Setting date format state to 2 since its a TZID time stamp
-                extra_byte_offset = find_next_keyword(file, ":", ICALOFFSET working_byte_offset, ICALOFFSET max_event_byte_offset, ICALMODERTN NEXTCHAR);
-                if(extra_byte_offset < 0)
-                {
-                    return -1; //Error while trying to search for timezone id UTC stamp should be there
-                }
-                else
-                {
-                    //grabbing time zone id string, extra is decremented one since it is the byte offset after the colon not at the colon
-                    working_string_pointer = parse_data_string(file, working_byte_offset, (-1 + extra_byte_offset), ONELINE);  //looking for the tzid string in DTEND;TZID= "America/Edmonton" :20210215T000000
-                    if (working_string_pointer == NULL)
-                    {
-                        return -1;  //Failure could not parse time zone id string
-                    }
-                    calendar_char_copy(working_string_pointer, user_event->event_time_zone_id);//copying the heap timezoneid into the struc timezone field
-                    vPortFree(working_string_pointer);  //freeing the heap timezoneid
-
-                    //grabbing the utc timestamp after the timezone id
-                    working_string_pointer = parse_data_string(file, extra_byte_offset, NOEND, ONELINE);  //grabing the timestamp in DTEND;TZID=America/Edmonton: 20210215T000000
-                    if (working_string_pointer == NULL)
-                    {
-                        return -1;  //Failure could not parse timestamp from TZID line
-                    }
-                    //pulling out the date stuff
-                    calendar_str_to_int(working_string_pointer, -1, 'T', &user_event->event_end_date_code);    //grabbing date stamp code into year|month|day into event struc
-                    calendar_str_to_int(working_string_pointer, 4,'\0', &user_event->event_end_year); //transfering the year
-                    calendar_str_to_int(&(working_string_pointer[4]), 2,'\0', &user_event->event_end_month); //transfering the month
-                    calendar_str_to_int(&(working_string_pointer[6]), -1,'T', &user_event->event_end_day); //transfering the day
-
-                    //pulling out the time stuff
-                    calendar_str_to_int(&(working_string_pointer[9]), -1, '\0', &user_event->event_end_time_code); //transfering the time stamp hour|minute|second into event struc
-                    calendar_str_to_int(&(working_string_pointer[9]), 2,'\0', &user_event->event_end_hour); //transfering the hour
-                    calendar_str_to_int(&(working_string_pointer[11]), 2,'\0', &user_event->event_end_minute); //transfering the minute
-                    calendar_str_to_int(&(working_string_pointer[13]), -1,'\0', &user_event->event_end_second); //transfering the second  UNLIKE UTC TIME STAMP NOT 'Z' terminated
-                    vPortFree(working_string_pointer);  //freeing the heap timezoneid
-                }   
-            }
-        }
-        else
-        {
-            //So DTSTART;VALUE= we assume that the event starts on the date at 00:00.00 time
-            user_event->date_format = 1;    //Setting date format state to 1
-            calendar_char_copy("LOCAL", user_event->event_time_zone_id);//copying the mode 1 : "Date" into the struc timezone field
-            working_string_pointer = parse_data_string(file, working_byte_offset, NOEND, ONELINE); //Parse line for the date stamp
-            if (working_string_pointer == NULL)
-            {
-                return -1;  //Failure could not non-utc date stamp
-            }
-            //This format of datestamp only had a date no time, used for edge 248 cases
-            calendar_str_to_int(working_string_pointer, -1, '\0', &user_event->event_end_date_code); //transfering the datestamp year|month|day into event struc
-            calendar_str_to_int(working_string_pointer, 4,'\0', &user_event->event_end_year); //transfering the year into the event struc
-            calendar_str_to_int(&(working_string_pointer[4]), 2,'\0', &user_event->event_end_month); //transfering the year into the event struc
-            calendar_str_to_int(&(working_string_pointer[6]), -1,'\0', &user_event->event_end_day); //transfering the year into the event struc
-            vPortFree(working_string_pointer); //freeing the date stamp off the heap
-        }
-    }
-    else//DTENDwas UTC so we can parse info much more easily
-    {
-        user_event->date_format = 0;    //Normal utc code setting time format byte to 0
-        calendar_char_copy("UTC", user_event->event_time_zone_id);    //Since UTC copying UTC string into the time zone id string
-        working_string_pointer = parse_data_string(file, working_byte_offset, NOEND, ONELINE); //Parse line for DTSTART utc string
-        if (working_string_pointer == NULL)
-        {
-            return -1;  //Failure could not parse event start utc string  20210326 T 211332 Z
-        }
-        //transfering the start date
-        calendar_str_to_int(working_string_pointer, -1,'T', &user_event->event_end_date_code); //transfering the utc year|month|day into event struc
-        calendar_str_to_int(working_string_pointer, 4,'\0', &user_event->event_end_year); //transfering the year
-        calendar_str_to_int(&(working_string_pointer[4]), 2,'\0', &user_event->event_end_month); //transfering the month
-        calendar_str_to_int(&(working_string_pointer[6]), -1,'T', &user_event->event_end_day); //transfering the day
-
-        //transfering the start time
-        calendar_str_to_int(&(working_string_pointer[9]), -1, 'Z', &user_event->event_end_time_code); //transfering the utc hour|minute|second into event struc
-        calendar_str_to_int(&(working_string_pointer[9]), 2,'\0', &user_event->event_end_hour); //transfering the hour
-        calendar_str_to_int(&(working_string_pointer[11]), 2,'\0', &user_event->event_end_minute); //transfering the minute
-        calendar_str_to_int(&(working_string_pointer[13]), -1,'Z', &user_event->event_end_second); //transfering the second
-        vPortFree(working_string_pointer);  //freeing DTEND line from heap
-    }
-
     //Grabing times section--------------------------------------------------------------------------------------------------------------------------------------------------------
     
     //Checking the start and end time section--------------------------------------------------------------------------------------------------------------------------------------
@@ -1663,58 +1497,71 @@ void print_event(CalendarEvent *user_event)
         calendar_str_print(user_event->event_summary);
         Serial.print("\tLocated at: ");
         calendar_str_print(user_event->event_location);
-        Serial.print("\tIn a timezone of: ");
-        calendar_str_print(user_event->event_time_zone_id);
 
         if (user_event->alarm_status == 0)
         {
-            //Serial.println(user_event->event_start_date_code); //Not useful for humans to read
+            Serial.print("\tStart date code of: ");
+            Serial.println(user_event->event_start_date_code); //Not useful for humans to read
+
             Serial.print("\tThe event is on: ");
-            Serial.print(user_event->event_start_year);
+            Serial.print(user_event->event_start_year, DEC);
             Serial.print("/");
-            Serial.print(user_event->event_start_month);
+            Serial.print(user_event->event_start_month, DEC);
             Serial.print("/");
-            Serial.println(user_event->event_start_day);
-            //Serial.println(user_event->event_start_time_code);  //Not useful for humans to read
-            Serial.print("\tAt time of: ");
-            Serial.print(user_event->event_start_hour);
+            Serial.println(user_event->event_start_day, DEC);
+
+            Serial.print("\tStart time code of: ");
+            Serial.println(user_event->event_start_time_code);  //Not useful for humans to read
+
+            Serial.print("\t\tAt time of: ");
+            Serial.print(user_event->event_start_hour, DEC);
             Serial.print(":");
-            Serial.print(user_event->event_start_minute, 2);
+            Serial.print(user_event->event_start_minute, DEC);
             Serial.print(".");
-            Serial.println(user_event->event_start_minute, 2);
+            Serial.println(user_event->event_start_minute, DEC);
 
+            Serial.print("\tEnd date code of: ");
+            Serial.println(user_event->event_end_date_code); //Not useful for humans to read
 
-            //Serial.println(user_event->event_end_date_code); //Not useful for humans to read
             Serial.print("\tThe event ends on: ");
-            Serial.print(user_event->event_end_year);
+            Serial.print(user_event->event_end_year, DEC);
             Serial.print("/");
-            Serial.print(user_event->event_end_month);
+            Serial.print(user_event->event_end_month, DEC);
             Serial.print("/");
-            Serial.println(user_event->event_end_day);
-            //Serial.println(user_event->event_end_time_code);  //Not useful for humans to read
-            Serial.print("\tAt time of: ");
-            Serial.print(user_event->event_end_hour);
+            Serial.println(user_event->event_end_day, DEC);
+
+            
+            Serial.print("\tEnd time code of: ");
+            Serial.println(user_event->event_end_time_code);  //Not useful for humans to read
+
+            Serial.print("\t\tAt time of: ");
+            Serial.print(user_event->event_end_hour, DEC);
             Serial.print(":");
-            Serial.print(user_event->event_end_minute, 2);
+            Serial.print(user_event->event_end_minute, DEC);
             Serial.print(".");
-            Serial.println(user_event->event_end_minute, 2);
+            Serial.println(user_event->event_end_second, DEC);
         }
         else
         {
-            //Serial.println(user_event->event_start_date_code); //Not useful for humans to read
+            Serial.print("\tAlarm date code of: ");
+            Serial.println(user_event->event_start_date_code); //Not useful for humans to read
+
             Serial.print("\tThe alarm is on: ");
-            Serial.print(user_event->event_start_year);
+            Serial.print(user_event->event_start_year, DEC);
             Serial.print("/");
-            Serial.print(user_event->event_start_month);
+            Serial.print(user_event->event_start_month, DEC);
             Serial.print("/");
-            Serial.println(user_event->event_start_day);
-            //Serial.println(user_event->event_start_time_code);  //Not useful for humans to read
-            Serial.print("\tAt time of: ");
-            Serial.print(user_event->event_start_hour);
+            Serial.println(user_event->event_start_day, DEC);
+
+            Serial.print("\tAlarm time code of: ");
+            Serial.println(user_event->event_start_time_code);  //Not useful for humans to read
+
+            Serial.print("\t\tAt time of: ");
+            Serial.print(user_event->event_start_hour, DEC);
             Serial.print(":");
-            Serial.print(user_event->event_start_minute, 2);
+            Serial.print(user_event->event_start_minute, DEC);
             Serial.print(".");
-            Serial.println(user_event->event_start_minute, 2);
+            Serial.println(user_event->event_start_second, DEC);
         }
 
     }

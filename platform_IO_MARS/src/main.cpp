@@ -67,7 +67,7 @@ void setup()
     }
     //6.5858 seconds to go through 150000 lines/ 600,730 byte
     long keyword_position = 0;
-    keyword_position = find_next_keyword(&sdcard_calendar, "6606-653105@d2l.ucalgary.ca", 0, NOEND, FIRSTCHAR);
+    keyword_position = find_next_keyword(&sdcard_calendar, "6606-700320@d2l.ucalgary.ca", 0, NOEND, FIRSTCHAR);
 
     keyword_position = find_previous_keyword(&sdcard_calendar, "BEGIN:VEVENT", keyword_position, NOEND, FIRSTCHAR);
 
@@ -80,29 +80,9 @@ void setup()
     }
     CalendarEvent myEvent;
 
-    if(!initialize_event(&sdcard_calendar, &myEvent, keyword_position))
+    if(!initialize_event(&sdcard_calendar, &myCalendar, &myEvent, keyword_position))
     {
         print_event(&myEvent);
-    }
-    int start_date = 0;
-    int start_time = 0;
-    int end_date = 0;
-    int end_time = 0;
-
-    if(!fetch_event_time(&sdcard_calendar, &myCalendar, keyword_position, &start_date, &start_time, &end_date, &end_time))
-    {
-        Serial.print("The event is on: ");
-        Serial.print(start_date);
-        Serial.print(" at: ");
-        Serial.println(start_time);
-        Serial.print("The event ends on: ");
-        Serial.print(end_date);
-        Serial.print(" at: ");
-        Serial.println(end_time);
-    }
-    else
-    {
-        Serial.println("Parsing error during fetch time");
     }
 
     /*
