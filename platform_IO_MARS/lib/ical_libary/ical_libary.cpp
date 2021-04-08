@@ -716,7 +716,7 @@ byte initialize_event(File *file, CalendarEvent *user_event, ICALOFFSET const lo
 }
 
 
-long *find_event(File *file, const long start_offset_byte, const long *read_sector_table, long date, long time, long tolerance)
+long *find_event(File *file, const long *read_sector_table, int date, int time)
 {
     //This needs some basic operations and calls to find_event_limits
     //First needs the creation/function to make a read_sector_table 
@@ -725,6 +725,269 @@ long *find_event(File *file, const long start_offset_byte, const long *read_sect
     return 0;
 }
 
+byte fetch_event_time(File *file, Calendar *user_calendar, const long event_byte_offset, int *event_start_date, int *event_start_time, int *event_end_date, int *event_end_time)
+{
+    long working_byte_offset = 0;//Used to find keyword locally
+    long extra_byte_offset = 0;//An extra working byte offset to use
+
+    long event_start_byte_offset = event_byte_offset;//THe  event start byte, first char of BEGIN:VEVENT
+    long event_end_byte_offset = 0;//The  event end byte, the line after END:VEVENT
+
+    int event_date_code = 0;//The start date code of the event currently being looked at (UTC)
+    int event_time_code = 0;//The end time code of the event currently being looked at (UTC)
+
+    int event_date_end_code = 0;//The end date code of the event UTC
+    int event_time_end_code = 0;//The end time code of the event UTC
+
+    char * working_string_pointer = NULL;//Used to parse string content from file
+
+    event_end_byte_offset = find_next_keyword(file, "END:VEVENT", event_start_byte_offset, NOEND, FIRSTCHAR);//Find end of event
+
+    working_byte_offset = find_next_keyword(file, "DTSTART", event_start_byte_offset, event_end_byte_offset, NEXTCHAR);//Find the start date
+    if(working_byte_offset < 0)
+    {
+        return -1;  //Critical Error during search for DTSTART this is bad since all events must have a start time, bad ICAL file
+    }
+    else
+    {
+        char char_temp = file->read();
+
+        //UTC TIMESTAMP------------------------------------------------------------------------------------------------------------------------------------------------------------
+        if (char_temp == ':')//Check if the start time is in a UTC time stamp
+        {
+            working_byte_offset++;  //incrementing past colon
+            working_string_pointer = parse_data_string(file, working_byte_offset, event_end_byte_offset, ONELINE); //Parse line for DTSTART utc string
+            if (working_string_pointer == NULL)
+            {
+                return -1; //Could not parse UTC time stamp
+            }
+            //transfering the start date into an int event date
+            calendar_str_to_int(working_string_pointer, -1,'T', &event_date_code); //transfering the utc year|month|day into the event date code int
+            //transfering the start time into an int event time
+            calendar_str_to_int(&(working_string_pointer[9]), -1, 'Z', &event_time_code); //transfering the utc time code into the event date code int
+            vPortFree(working_string_pointer);
+
+            working_byte_offset = find_next_keyword(file, "DTEND:", working_byte_offset, event_end_byte_offset, NEXTCHAR);//Getting the end time
+            if(working_byte_offset == EOF)
+            {
+                return -1;//Error during parsing of end time
+            }
+            else if(working_byte_offset == -2)
+            {
+                //WE could not find an end date for the event, edge case of 2 events within ical, event has zero-width same end as start
+                event_date_end_code = event_date_code;
+                event_time_end_code = event_time_code;
+            }
+            else
+            {
+                //Found a utc end time for the event
+                working_string_pointer = parse_data_string(file, working_byte_offset, event_end_byte_offset, ONELINE); //Parse line for DTEND: utc stamp
+                if (working_string_pointer == NULL)
+                {
+                    return -1; //Found but could not parse the utc end time stamp
+                }
+                calendar_str_to_int(working_string_pointer, -1,'T', &event_date_end_code); //transfering the end utc year|month|day into the event end date code
+                calendar_str_to_int(&(working_string_pointer[9]), -1, 'Z', &event_time_end_code);//transfering the end utc time into the event date code
+                vPortFree(working_string_pointer);//Free utc end time stamp off heap
+            }
+        }
+        //UTC TIMESTAMP------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+        //TZID/LOCAL TIMESTAMP-----------------------------------------------------------------------------------------------------------------------------------------------------
+        else if (char_temp == ';')   //local time stamp or TZID time stamp
+        {
+            int time_offset = 0; //offset of local time compared to utc, we use utc timestamps to figure out 
+            if (user_calendar->timezone.daylight_status == 1)//Does the calendar even have daylight savings info?
+            {
+                if(user_calendar->timezone.daylight_mode == 1)//Are we in daylight savings?
+                {
+                    time_offset = user_calendar->timezone.daylight_offset;//Yes we are, 
+                }
+                else
+                {
+                    time_offset = user_calendar->timezone.standard_offset;//No, or daylight savings mode was never specified hence the else and not else if ... 
+                }
+            }
+            time_offset *=100; //since timeoffset is in hours, minutes but utc stamps are hours, minute, seconds need to shift two places left
+
+            char_temp = file->read();//Look for either ;VALUE=... or ;TZID=....
+            //LOCAL TIMESTAMP------------------------------------------------------------------------------------------------------------------------------------------------------
+            if(char_temp == 'V')
+            {
+                //Event has a local time must add offset to get UTC time
+                working_byte_offset+=12; //Moving from the ; in DTSTART;VALUE=DATE:1.. to the 1
+                working_string_pointer = parse_data_string(file, working_byte_offset, event_end_byte_offset, ONELINE); //Parse line for the start time stamp 
+                if (working_string_pointer == NULL)
+                {
+                    return -1;//Error during search start time parse
+                }
+                //This format of datestamp only had a date no time, used for edge 248 cases
+                calendar_str_to_int(working_string_pointer, -1, '\0', &event_date_code); //transfering the datestamp year|month|day into event date stamp
+                event_time_code = 0;//No time stamp with this format set to 0
+                vPortFree(working_string_pointer); //freeing the start date stamp
+
+                //Note no time stamp, we assume time = 00:00.00 plus the offset in regards to utc, so same day by ahead if local is behind, behind if local is ahead
+                if (time_offset <= 0)//Check if negative
+                {
+                    event_time_code = (-1 * time_offset);//Local time is behind so utc equivalent is offset ahead
+                }
+                else
+                {
+                    event_date_code -=1;    //subtract a day since local time is ahead of utc
+                    event_time_code = 235959 - time_offset;
+                }
+
+                working_byte_offset = find_next_keyword(file, "DTEND;VALUE=DATE:", working_byte_offset, event_end_byte_offset, NEXTCHAR);//Grab end date
+                if(working_byte_offset == EOF)
+                {
+                    return -1;//Error during search for start time
+                }
+                else if(working_byte_offset == -2)
+                {
+                    //WE could not find an end date for the event, edge case of 2 events within ical, we same the event has zero-width
+                    event_date_end_code = event_date_code;
+                    event_time_end_code = event_time_code;
+                }
+                else
+                {
+                    //Found an end date for the event
+                    working_string_pointer = parse_data_string(file, working_byte_offset, event_end_byte_offset, ONELINE); //Parse line for end date
+                    if (working_string_pointer == NULL)
+                    {
+                        return -1;//Failure to parse end time
+                    }
+                    //transfering the end date into an int for comparison between now and the event date
+                    calendar_str_to_int(working_string_pointer, -1, '\0', &event_date_end_code); //transfering the end datestamp year|month|day into event date stamp
+                    event_time_end_code = 0;//No time stamp with this format set to 0
+                    vPortFree(working_string_pointer);
+
+                    //Note no time stamp, we assume time = 00:00.00 plus the offset in regards to utc, so same day by ahead if local is behind, behind if local is ahead
+                    if (time_offset <= 0)//Check if negative
+                    {
+                        event_time_end_code = (-1 * time_offset);//Local time is behind so utc equivalent is offset ahead
+                    }
+                    else
+                    {
+                        event_date_end_code -=1;    //subtract a day since local time is ahead of utc
+                        event_time_end_code = 235959 - time_offset;
+                    }
+                }
+            }
+            //LOCAL TIMESTAMP------------------------------------------------------------------------------------------------------------------------------------------------------
+
+            //TZID TIMESTAMP-------------------------------------------------------------------------------------------------------------------------------------------------------
+            else if (char_temp == 'T')//TZID, check if the same as calendar, add offset based on utc offset in calendar struc
+            {
+                working_byte_offset+=6;//Need to move byte offset from ; to Amer.. in DTSTART;TZID=AMERICA/EDMONTON:
+                extra_byte_offset = find_next_keyword(file, ":", working_byte_offset, event_end_byte_offset, NEXTCHAR);
+                if(extra_byte_offset < 0)
+                {
+                    return -1;//Failure to find TZID colon
+                }
+                else
+                {
+                    //grabbing time zone id string, extra is decremented one since it is the byte offset after the colon not at the colon
+                    working_string_pointer = parse_data_string(file, working_byte_offset, (-1 + extra_byte_offset), ONELINE);  //looking for the tzid string in DTSTART;TZID= "America/Edmonton" :20210215T000000
+                    if (working_string_pointer == NULL)
+                    {
+                        return -1;//Failure to parse TZID
+                    }
+
+                    for(int i = 0; working_string_pointer[i] != '\0'; i++)
+                    {
+                        if (working_string_pointer[i] != user_calendar->timezone.time_zone_id[i])
+                        {
+                            vPortFree(working_string_pointer);//freeing the TZID string found
+                            return -1;//Timezone does not match the calendar timezone so no idea what to do with it
+                        }
+                    }
+                    vPortFree(working_string_pointer);  //freeing the heap timezoneid
+
+                    working_string_pointer = parse_data_string(file, extra_byte_offset, event_end_byte_offset, ONELINE);//parseing the timestamp after the :
+                    if (working_string_pointer == NULL)
+                    {
+                        return -1;//Failure to parse event date stamp
+                    }
+                    //pulling out the date and time stuff
+                    calendar_str_to_int(working_string_pointer, -1, 'T', &event_date_code);//grabbing date stamp code into year|month|day into event date stamp
+                    calendar_str_to_int(&(working_string_pointer[9]), -1, '\0', &event_time_code); //transfering the time stamp hour|minute|second into event time stamp, it isnt Z terminated like UTC
+                    vPortFree(working_string_pointer);  //freeing the heap timezoneid string
+
+                    //Adjust time offset
+                    if (time_offset <= 0)//Check if negative
+                    {
+                        event_time_code += (-1 * time_offset);//Local time is behind so utc equivalent is offset ahead
+                    }
+                    else
+                    {
+                        event_date_code -=1;    //subtract a day since local time is ahead of utc
+                        event_time_code = 235959 - time_offset;
+                    }
+
+                    //Grabbing end time
+                    working_byte_offset = find_next_keyword(file, "DTEND;TZID=", working_byte_offset, event_end_byte_offset, NEXTCHAR);//Check end date
+                    if(working_byte_offset == EOF)
+                    {
+                        return -1;//Failure to find END time
+                    }
+                    else if(working_byte_offset == -2)
+                    {
+                        //WE could not find an end date for the event, edge case of 2 events within ical, we same the event has zero-width
+                        event_date_end_code = event_date_code;
+                        event_time_end_code = event_time_code;
+                    }
+                    else
+                    {
+                        working_byte_offset = find_next_keyword(file, ":", working_byte_offset, event_end_byte_offset, NEXTCHAR);//Jump to colon past know TZID
+                        if (working_byte_offset < 0)
+                        {
+                            return -1; //Failure to find end time TZID stamp
+                        }
+                        //Found an end date for the event
+                        working_string_pointer = parse_data_string(file, working_byte_offset, event_end_byte_offset, ONELINE); //Parse line for end date
+                        if (working_string_pointer == NULL)
+                        {
+                            return -1;//Failure to parse end date string
+                        }
+                        //transfering the end date into end time/date ints
+                        calendar_str_to_int(working_string_pointer, -1, 'T', &event_date_end_code);    //grabbing date stamp code into year|month|day into event end date stamp
+                        //pulling out the time stuff
+                        calendar_str_to_int(&(working_string_pointer[9]), -1, '\0', &event_time_end_code); //transfering the time stamp hour|minute|second into event end time stamp, it isnt Z terminated like UTC
+                        vPortFree(working_string_pointer);
+
+                        //Adjusting end time based on calendar timezone offsets
+                        if (time_offset <= 0)//Check if negative
+                        {
+                            event_time_end_code += (-1 * time_offset);//Local time is behind so utc equivalent is offset ahead
+                        }
+                        else
+                        {
+                            event_date_end_code -=1;    //subtract a day since local time is ahead of utc
+                            event_time_end_code = 235959 - time_offset;
+                        }
+                    }
+                }
+            }
+            //TZID TIMESTAMP-------------------------------------------------------------------------------------------------------------------------------------------------------
+            else
+            {
+                return -1; //Not local nor TZID who knows?
+            }
+            //TZID/LOCAL TIMESTAMP-----------------------------------------------------------------------------------------------------------------------------------------------------
+        }
+        else
+        {   
+            return -1; //Event dates are not parsable
+        }
+    }
+    //Assigning values
+    *event_start_date = event_date_code;
+    *event_start_time = event_time_code;
+    *event_end_date = event_date_end_code; 
+    *event_end_time = event_time_end_code;
+
+    return 0;//Success!
+}
 
 byte initialize_sector_table(File *file, Calendar *user_calendar, const int current_date_code, const int current_time_code, long *sector_table)
 {
@@ -1077,7 +1340,7 @@ byte initialize_sector_table(File *file, Calendar *user_calendar, const int curr
                             vPortFree(working_string_pointer);  //freeing the heap timezoneid string
                             if (time_offset <= 0)//Check if negative
                             {
-                                focused_event_time_code = (-1 * time_offset);//Local time is behind so utc equivalent is offset ahead
+                                focused_event_time_code += (-1 * time_offset);//Local time is behind so utc equivalent is offset ahead
                             }
                             else
                             {
@@ -1126,7 +1389,7 @@ byte initialize_sector_table(File *file, Calendar *user_calendar, const int curr
                                         //Adjusting end time based on calendar timezone offsets
                                         if (time_offset <= 0)//Check if negative
                                         {
-                                            focused_event_time_code = (-1 * time_offset);//Local time is behind so utc equivalent is offset ahead
+                                            focused_event_time_code += (-1 * time_offset);//Local time is behind so utc equivalent is offset ahead
                                         }
                                         else
                                         {
