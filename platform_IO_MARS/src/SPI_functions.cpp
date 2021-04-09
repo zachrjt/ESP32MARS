@@ -7,19 +7,19 @@ extern SPIClass SDSPI; //defines the spi bus for use with the SD card
 extern SPIClass PIC1_SPI;    //defines the spi bus for use with the PIC with clock display
 extern SPIClass PIC2_SPI;    //defines the spi bus for use with the PIC with alarm capabilities
 
-SPISettings PICSPISettings =  {
-                              5000000, 
-                              MSBFIRST,
-                              SPI_MODE0
-                              };
+SPISettings PICSPISettings =    {
+                                5000000, 
+                                MSBFIRST,
+                                SPI_MODE0
+                                };
 
 uint8_t Time0;
 uint8_t Time1;
 uint8_t Time2;
 
-int Hours = 0;
-int Minutes = 31;
-int Seconds = 54;
+int Hours;
+int Minutes;
+int Seconds;
 
 uint8_t AlarmFlag;
 
@@ -102,6 +102,10 @@ void  getTimefromPIC1(void)                     //Dont pull from PIC more than o
     {
         Hours %= 12;                                //make it 0:00 am rather than 12:00 am
     }
+
+    Serial.println(Hours);
+    Serial.println(Minutes);
+    Serial.println(Seconds);
 }
 
 
@@ -131,12 +135,11 @@ void pressed(Button2& btn) {
 
         //Set up new Alarm event 5 minutes from now here
         }
-        else      //for testing
+        /*else      //for testing
         {
             AlarmFlag = ALARM_ON;
             sendAlarmFlagtoPIC2();
-        }
-        //sendTimetoPIC1();      //for testing
+        }*/
     }
     else if (btn ==  btn2)
     {
@@ -147,8 +150,5 @@ void pressed(Button2& btn) {
 
             //Update event(?) here (not sure if needed)
         }
-
-        //sendTimetoPIC1();    //for testing
-        getTimefromPIC1();  //for testing
     }
 }

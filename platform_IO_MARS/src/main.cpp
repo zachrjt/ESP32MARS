@@ -11,6 +11,9 @@
 #include "peripheral_initialize.h"  //other functions header file
 #include "SPI_functions.h"          //SPI functions header file
 #include "display_functions.h"
+#include "interrupts.h"
+
+TFT_eSPI tft = TFT_eSPI();  //create tft_display object for usage
 
 Button2 btn1(BUTTON_1_PIN);                 //creating button object for usage
 Button2 btn2(BUTTON_2_PIN);                 //creating button object for usage
@@ -19,7 +22,7 @@ SPIClass SDSPI(HSPI); //defines the spi bus for use with the SD card
 SPIClass PIC1_SPI;    //defines the spi bus for use with the PIC with clock display
 SPIClass PIC2_SPI;    //defines the spi bus for use with the PIC with alarm capabilities
 
-TFT_eSPI tft = TFT_eSPI();  //create tft_display object for usage
+extern int TMRF;
 
 String Event1 = "Pass out and sleep";   //Name of the next event
 
@@ -48,13 +51,20 @@ void setup()
   pinMode(BUTTON_2_PIN, INPUT);
   btn1.setPressedHandler(pressed);
   btn2.setPressedHandler(pressed);
+
+  setUpInterrupts();
 }
 
 void loop()
 {
   btn1.loop();
   btn2.loop();
-  printNextEvent();
+
+  if (TMRF >= TIME_REQUEST_INTERVAL)
+  {
+    TMRF = 0;
+    getTimefromPIC1();
+  }
 }
 
 //Need webserver update task

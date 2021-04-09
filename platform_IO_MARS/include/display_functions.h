@@ -7,5 +7,4 @@
     
     void printSplitString(String text);
     void printNextEvent(void);
-
 #endif

@@ -1,6 +1,6 @@
 #include "display_functions.h"
 
-extern TFT_eSPI tft;  //create tft_display object for usage
+extern TFT_eSPI tft;
 
 extern String Event1;
 

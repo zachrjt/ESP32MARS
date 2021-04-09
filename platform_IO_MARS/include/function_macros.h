@@ -15,4 +15,6 @@
 
     #define FIRST_TIME_REQUEST      1
     #define SUBSEQUENT_TIME_REQUEST 2
+
+    #define TIME_REQUEST_INTERVAL 1
 #endif
