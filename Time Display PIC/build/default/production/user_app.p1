@@ -2911,190 +2911,192 @@ Version 4.0 HI-TECH Software Intermediate Code
 }
 [e :U 2288 ]
 "172
-[; ;user_app.c: 172:     if((G_au8Time2 & 0b00001000) == 0b00001000){
+[; ;user_app.c: 172:     if((G_au8Time2 & 0b00001000) == 0b00001000)
 [e $ ! == & -> _G_au8Time2 `i -> 8 `i -> 8 `i 2289  ]
-{
 "173
-[; ;user_app.c: 173:         LATCbits.LATC3 ^= 1;
-[e =^ . . _LATCbits 0 3 -> -> 1 `i `Vuc ]
+[; ;user_app.c: 173:     {
+{
 "174
-[; ;user_app.c: 174:     }
+[; ;user_app.c: 174:         LATCbits.LATC3 ^= 1;
+[e =^ . . _LATCbits 0 3 -> -> 1 `i `Vuc ]
+"175
+[; ;user_app.c: 175:     }
 }
 [e :U 2289 ]
-"176
-[; ;user_app.c: 176:     SPI1STATUSbits.CLRBF = 1;
-[e = . . _SPI1STATUSbits 0 2 -> -> 1 `i `uc ]
 "177
-[; ;user_app.c: 177:     SPI1TXB = G_au8Time2;
-[e = _SPI1TXB _G_au8Time2 ]
+[; ;user_app.c: 177:     SPI1STATUSbits.CLRBF = 1;
+[e = . . _SPI1STATUSbits 0 2 -> -> 1 `i `uc ]
 "178
-[; ;user_app.c: 178:     SPI1TXB = G_au8Time1;
+[; ;user_app.c: 178:     SPI1TXB = G_au8Time2;
+[e = _SPI1TXB _G_au8Time2 ]
+"179
+[; ;user_app.c: 179:     SPI1TXB = G_au8Time1;
 [e = _SPI1TXB _G_au8Time1 ]
-"186
-[; ;user_app.c: 186:     LATA ^=0x40;
-[e =^ _LATA -> -> 64 `i `Vuc ]
 "187
-[; ;user_app.c: 187: }
+[; ;user_app.c: 187:     LATA ^=0x40;
+[e =^ _LATA -> -> 64 `i `Vuc ]
+"188
+[; ;user_app.c: 188: }
 [e :UE 2273 ]
 }
-"204
-[; ;user_app.c: 204: void TimeXusInitialize(void)
-[v _TimeXusInitialize `(v ~T0 @X0 1 ef ]
 "205
-[; ;user_app.c: 205: {
+[; ;user_app.c: 205: void TimeXusInitialize(void)
+[v _TimeXusInitialize `(v ~T0 @X0 1 ef ]
+"206
+[; ;user_app.c: 206: {
 {
 [e :U _TimeXusInitialize ]
 [f ]
-"206
-[; ;user_app.c: 206:     OSCCON3bits.SOSCPWR = 0;
-[e = . . _OSCCON3bits 0 4 -> -> 0 `i `uc ]
 "207
-[; ;user_app.c: 207:     OSCENbits.SOSCEN = 1;
+[; ;user_app.c: 207:     OSCCON3bits.SOSCPWR = 0;
+[e = . . _OSCCON3bits 0 4 -> -> 0 `i `uc ]
+"208
+[; ;user_app.c: 208:     OSCENbits.SOSCEN = 1;
 [e = . . _OSCENbits 0 3 -> -> 1 `i `uc ]
-"210
-[; ;user_app.c: 210:     while(OSCSTATbits.SOR != 1)
+"211
+[; ;user_app.c: 211:     while(OSCSTATbits.SOR != 1)
 [e $U 2291  ]
 [e :U 2292 ]
-"211
-[; ;user_app.c: 211:     {
-{
 "212
-[; ;user_app.c: 212:     }
+[; ;user_app.c: 212:     {
+{
+"213
+[; ;user_app.c: 213:     }
 }
 [e :U 2291 ]
-"210
-[; ;user_app.c: 210:     while(OSCSTATbits.SOR != 1)
+"211
+[; ;user_app.c: 211:     while(OSCSTATbits.SOR != 1)
 [e $ != -> . . _OSCSTATbits 0 3 `i -> 1 `i 2292  ]
 [e :U 2293 ]
-"213
-[; ;user_app.c: 213:     T0CON1 = 0b11011110;
-[e = _T0CON1 -> -> 222 `i `uc ]
 "214
-[; ;user_app.c: 214:     T0CON0 = 0b10010000;
+[; ;user_app.c: 214:     T0CON1 = 0b11011110;
+[e = _T0CON1 -> -> 222 `i `uc ]
+"215
+[; ;user_app.c: 215:     T0CON0 = 0b10010000;
 [e = _T0CON0 -> -> 144 `i `uc ]
-"218
-[; ;user_app.c: 218:     T0CON0 &= 0x7F;
+"219
+[; ;user_app.c: 219:     T0CON0 &= 0x7F;
 [e =& _T0CON0 -> -> 127 `i `Vuc ]
-"220
-[; ;user_app.c: 220:     TMR0H = (0xFFFF - 0x0001) >> 8;
+"221
+[; ;user_app.c: 221:     TMR0H = (0xFFFF - 0x0001) >> 8;
 [e = _TMR0H -> >> - -> 65535 `ui -> -> 1 `i `ui -> 8 `i `uc ]
-"223
-[; ;user_app.c: 223:     TMR0L = (0xFFFF - 0x0001) & 0x00FF;
+"224
+[; ;user_app.c: 224:     TMR0L = (0xFFFF - 0x0001) & 0x00FF;
 [e = _TMR0L -> & - -> 65535 `ui -> -> 1 `i `ui -> -> 255 `i `ui `uc ]
-"225
-[; ;user_app.c: 225:     T0CON0 |= 0x80;
+"226
+[; ;user_app.c: 226:     T0CON0 |= 0x80;
 [e =| _T0CON0 -> -> 128 `i `Vuc ]
-"227
-[; ;user_app.c: 227: }
+"228
+[; ;user_app.c: 228: }
 [e :UE 2290 ]
 }
-"245
-[; ;user_app.c: 245: void TimeXus(void)
-[v _TimeXus `(v ~T0 @X0 1 ef ]
 "246
-[; ;user_app.c: 246: {
+[; ;user_app.c: 246: void TimeXus(void)
+[v _TimeXus `(v ~T0 @X0 1 ef ]
+"247
+[; ;user_app.c: 247: {
 {
 [e :U _TimeXus ]
 [f ]
-"249
-[; ;user_app.c: 249: }
+"250
+[; ;user_app.c: 250: }
 [e :UE 2294 ]
 }
-"268
-[; ;user_app.c: 268: void SegmentDecoderIntialize(void)
-[v _SegmentDecoderIntialize `(v ~T0 @X0 1 ef ]
 "269
-[; ;user_app.c: 269: {
+[; ;user_app.c: 269: void SegmentDecoderIntialize(void)
+[v _SegmentDecoderIntialize `(v ~T0 @X0 1 ef ]
+"270
+[; ;user_app.c: 270: {
 {
 [e :U _SegmentDecoderIntialize ]
 [f ]
-"270
-[; ;user_app.c: 270:     NVMADR = 380000;
-[e = _NVMADR -> -> 380000 `l `um ]
 "271
-[; ;user_app.c: 271:     NVMCON1bits.CMD = 0x00;
-[e = . . _NVMCON1bits 0 0 -> -> 0 `i `uc ]
+[; ;user_app.c: 271:     NVMADR = 380000;
+[e = _NVMADR -> -> 380000 `l `um ]
 "272
-[; ;user_app.c: 272:     NVMCON0bits.GO = 1;
-[e = . . _NVMCON0bits 0 0 -> -> 1 `i `uc ]
+[; ;user_app.c: 272:     NVMCON1bits.CMD = 0x00;
+[e = . . _NVMCON1bits 0 0 -> -> 0 `i `uc ]
 "273
-[; ;user_app.c: 273:     while (NVMCON0bits.GO);
+[; ;user_app.c: 273:     NVMCON0bits.GO = 1;
+[e = . . _NVMCON0bits 0 0 -> -> 1 `i `uc ]
+"274
+[; ;user_app.c: 274:     while (NVMCON0bits.GO);
 [e $U 2296  ]
 [e :U 2297 ]
 [e :U 2296 ]
 [e $ != -> . . _NVMCON0bits 0 0 `i -> 0 `i 2297  ]
 [e :U 2298 ]
-"275
-[; ;user_app.c: 275:     if(1)
-[e $ ! != -> 1 `i -> 0 `i 2299  ]
 "276
-[; ;user_app.c: 276:     {
+[; ;user_app.c: 276:     if(1)
+[e $ ! != -> 1 `i -> 0 `i 2299  ]
+"277
+[; ;user_app.c: 277:     {
 {
-"280
-[; ;user_app.c: 280:         uint16_t bufferRAM = 0x2500;
+"281
+[; ;user_app.c: 281:         uint16_t bufferRAM = 0x2500;
 [v _bufferRAM `us ~T0 @X0 1 a ]
 [e = _bufferRAM -> -> 9472 `i `us ]
-"281
-[; ;user_app.c: 281:         uint16_t *bufferRamPtr = (uint16_t*) bufferRAM;
+"282
+[; ;user_app.c: 282:         uint16_t *bufferRamPtr = (uint16_t*) bufferRAM;
 [v _bufferRamPtr `*us ~T0 @X0 1 a ]
 [e = _bufferRamPtr -> _bufferRAM `*us ]
-"284
-[; ;user_app.c: 284:         NVMADR = 0x380000;
-[e = _NVMADR -> -> 3670016 `l `um ]
 "285
-[; ;user_app.c: 285:         NVMCON1bits.CMD = 0x02;
-[e = . . _NVMCON1bits 0 0 -> -> 2 `i `uc ]
+[; ;user_app.c: 285:         NVMADR = 0x380000;
+[e = _NVMADR -> -> 3670016 `l `um ]
 "286
-[; ;user_app.c: 286:         INTCON0bits.GIE = 0;
-[e = . . _INTCON0bits 0 6 -> -> 0 `i `uc ]
+[; ;user_app.c: 286:         NVMCON1bits.CMD = 0x02;
+[e = . . _NVMCON1bits 0 0 -> -> 2 `i `uc ]
 "287
-[; ;user_app.c: 287:         NVMCON0bits.GO = 1;
-[e = . . _NVMCON0bits 0 0 -> -> 1 `i `uc ]
+[; ;user_app.c: 287:         INTCON0bits.GIE = 0;
+[e = . . _INTCON0bits 0 6 -> -> 0 `i `uc ]
 "288
-[; ;user_app.c: 288:         while (NVMCON0bits.GO);
+[; ;user_app.c: 288:         NVMCON0bits.GO = 1;
+[e = . . _NVMCON0bits 0 0 -> -> 1 `i `uc ]
+"289
+[; ;user_app.c: 289:         while (NVMCON0bits.GO);
 [e $U 2300  ]
 [e :U 2301 ]
 [e :U 2300 ]
 [e $ != -> . . _NVMCON0bits 0 0 `i -> 0 `i 2301  ]
 [e :U 2302 ]
-"291
-[; ;user_app.c: 291:         NVMCON1bits.CMD = 0x06;
-[e = . . _NVMCON1bits 0 0 -> -> 6 `i `uc ]
 "292
-[; ;user_app.c: 292:         NVMLOCK = 0x55;
-[e = _NVMLOCK -> -> 85 `i `uc ]
+[; ;user_app.c: 292:         NVMCON1bits.CMD = 0x06;
+[e = . . _NVMCON1bits 0 0 -> -> 6 `i `uc ]
 "293
-[; ;user_app.c: 293:         NVMLOCK = 0xAA;
-[e = _NVMLOCK -> -> 170 `i `uc ]
+[; ;user_app.c: 293:         NVMLOCK = 0x55;
+[e = _NVMLOCK -> -> 85 `i `uc ]
 "294
-[; ;user_app.c: 294:         NVMCON0bits.GO = 1;
-[e = . . _NVMCON0bits 0 0 -> -> 1 `i `uc ]
+[; ;user_app.c: 294:         NVMLOCK = 0xAA;
+[e = _NVMLOCK -> -> 170 `i `uc ]
 "295
-[; ;user_app.c: 295:         while (NVMCON0bits.GO);
+[; ;user_app.c: 295:         NVMCON0bits.GO = 1;
+[e = . . _NVMCON0bits 0 0 -> -> 1 `i `uc ]
+"296
+[; ;user_app.c: 296:         while (NVMCON0bits.GO);
 [e $U 2303  ]
 [e :U 2304 ]
 [e :U 2303 ]
 [e $ != -> . . _NVMCON0bits 0 0 `i -> 0 `i 2304  ]
 [e :U 2305 ]
-"297
-[; ;user_app.c: 297:         if(NVMCON1bits.WRERR)
-[e $ ! != -> . . _NVMCON1bits 0 2 `i -> 0 `i 2306  ]
 "298
-[; ;user_app.c: 298:         {
+[; ;user_app.c: 298:         if(NVMCON1bits.WRERR)
+[e $ ! != -> . . _NVMCON1bits 0 2 `i -> 0 `i 2306  ]
+"299
+[; ;user_app.c: 299:         {
 {
-"301
-[; ;user_app.c: 301:         }
+"302
+[; ;user_app.c: 302:         }
 }
 [e :U 2306 ]
-"303
-[; ;user_app.c: 303:         u8 u8ArrayIndex = 0;
+"304
+[; ;user_app.c: 304:         u8 u8ArrayIndex = 0;
 [v _u8ArrayIndex `uc ~T0 @X0 1 a ]
 [e = _u8ArrayIndex -> -> 0 `i `uc ]
 [v F15939 `us ~T0 @X0 -> 9 `i s ]
 [i F15939
 :U ..
-"305
-[; ;user_app.c: 305:         u16 au16DecodingValues[] = {0x3F06, 0x5B4F, 0x666D, 0x7D07,
+"306
+[; ;user_app.c: 306:         u16 au16DecodingValues[] = {0x3F06, 0x5B4F, 0x666D, 0x7D07,
 -> -> 16134 `i `us
 -> -> 23375 `i `us
 -> -> 26221 `i `us
@@ -3108,80 +3110,80 @@ Version 4.0 HI-TECH Software Intermediate Code
 ]
 [v _au16DecodingValues `us ~T0 @X0 -> 9 `i a ]
 [e = _au16DecodingValues F15939 ]
-"309
-[; ;user_app.c: 309:         u8 u8Offset = (u8) ((0x380000 & ((128 * 2) - 1)) / 2);
+"310
+[; ;user_app.c: 310:         u8 u8Offset = (u8) ((0x380000 & ((128 * 2) - 1)) / 2);
 [v _u8Offset `uc ~T0 @X0 1 a ]
 [e = _u8Offset -> / & -> 3670016 `l -> - * -> 128 `i -> 2 `i -> 1 `i `l -> -> 2 `i `l `uc ]
-"310
-[; ;user_app.c: 310:         while (u8ArrayIndex < 0x09)
+"311
+[; ;user_app.c: 311:         while (u8ArrayIndex < 0x09)
 [e $U 2307  ]
 [e :U 2308 ]
-"311
-[; ;user_app.c: 311:         {
-{
 "312
-[; ;user_app.c: 312:             *bufferRamPtr = au16DecodingValues[u8ArrayIndex];
-[e = *U _bufferRamPtr *U + &U _au16DecodingValues * -> _u8ArrayIndex `ux -> -> # *U &U _au16DecodingValues `ui `ux ]
+[; ;user_app.c: 312:         {
+{
 "313
-[; ;user_app.c: 313:             bufferRamPtr += 1;
+[; ;user_app.c: 313:             *bufferRamPtr = au16DecodingValues[u8ArrayIndex];
+[e = *U _bufferRamPtr *U + &U _au16DecodingValues * -> _u8ArrayIndex `ux -> -> # *U &U _au16DecodingValues `ui `ux ]
+"314
+[; ;user_app.c: 314:             bufferRamPtr += 1;
 [e =+ _bufferRamPtr * -> -> 1 `i `x -> -> # *U _bufferRamPtr `i `x ]
-"319
-[; ;user_app.c: 319:             u8ArrayIndex++;
-[e ++ _u8ArrayIndex -> -> 1 `i `uc ]
 "320
-[; ;user_app.c: 320:         }
+[; ;user_app.c: 320:             u8ArrayIndex++;
+[e ++ _u8ArrayIndex -> -> 1 `i `uc ]
+"321
+[; ;user_app.c: 321:         }
 }
 [e :U 2307 ]
-"310
-[; ;user_app.c: 310:         while (u8ArrayIndex < 0x09)
+"311
+[; ;user_app.c: 311:         while (u8ArrayIndex < 0x09)
 [e $ < -> _u8ArrayIndex `i -> 9 `i 2308  ]
 [e :U 2309 ]
-"321
-[; ;user_app.c: 321:         *bufferRamPtr = 0x0000;
+"322
+[; ;user_app.c: 322:         *bufferRamPtr = 0x0000;
 [e = *U _bufferRamPtr -> -> 0 `i `us ]
-"324
-[; ;user_app.c: 324:         NVMADR = 0x380000;
-[e = _NVMADR -> -> 3670016 `l `um ]
 "325
-[; ;user_app.c: 325:         NVMCON1bits.CMD = 0x05;
-[e = . . _NVMCON1bits 0 0 -> -> 5 `i `uc ]
+[; ;user_app.c: 325:         NVMADR = 0x380000;
+[e = _NVMADR -> -> 3670016 `l `um ]
 "326
-[; ;user_app.c: 326:         NVMLOCK = 0x55;
-[e = _NVMLOCK -> -> 85 `i `uc ]
+[; ;user_app.c: 326:         NVMCON1bits.CMD = 0x05;
+[e = . . _NVMCON1bits 0 0 -> -> 5 `i `uc ]
 "327
-[; ;user_app.c: 327:         NVMLOCK = 0xAA;
-[e = _NVMLOCK -> -> 170 `i `uc ]
+[; ;user_app.c: 327:         NVMLOCK = 0x55;
+[e = _NVMLOCK -> -> 85 `i `uc ]
 "328
-[; ;user_app.c: 328:         NVMCON0bits.GO = 1;
-[e = . . _NVMCON0bits 0 0 -> -> 1 `i `uc ]
+[; ;user_app.c: 328:         NVMLOCK = 0xAA;
+[e = _NVMLOCK -> -> 170 `i `uc ]
 "329
-[; ;user_app.c: 329:         while (NVMCON0bits.GO);
+[; ;user_app.c: 329:         NVMCON0bits.GO = 1;
+[e = . . _NVMCON0bits 0 0 -> -> 1 `i `uc ]
+"330
+[; ;user_app.c: 330:         while (NVMCON0bits.GO);
 [e $U 2310  ]
 [e :U 2311 ]
 [e :U 2310 ]
 [e $ != -> . . _NVMCON0bits 0 0 `i -> 0 `i 2311  ]
 [e :U 2312 ]
-"331
-[; ;user_app.c: 331:         if(NVMCON1bits.WRERR)
-[e $ ! != -> . . _NVMCON1bits 0 2 `i -> 0 `i 2313  ]
 "332
-[; ;user_app.c: 332:         {
+[; ;user_app.c: 332:         if(NVMCON1bits.WRERR)
+[e $ ! != -> . . _NVMCON1bits 0 2 `i -> 0 `i 2313  ]
+"333
+[; ;user_app.c: 333:         {
 {
-"335
-[; ;user_app.c: 335:         }
+"336
+[; ;user_app.c: 336:         }
 }
 [e :U 2313 ]
-"337
-[; ;user_app.c: 337:         INTCON0bits.GIE = 1;
-[e = . . _INTCON0bits 0 6 -> -> 1 `i `uc ]
 "338
-[; ;user_app.c: 338:         NVMCON1bits.CMD = 0x00;
-[e = . . _NVMCON1bits 0 0 -> -> 0 `i `uc ]
+[; ;user_app.c: 338:         INTCON0bits.GIE = 1;
+[e = . . _INTCON0bits 0 6 -> -> 1 `i `uc ]
 "339
-[; ;user_app.c: 339:     }
+[; ;user_app.c: 339:         NVMCON1bits.CMD = 0x00;
+[e = . . _NVMCON1bits 0 0 -> -> 0 `i `uc ]
+"340
+[; ;user_app.c: 340:     }
 }
 [e :U 2299 ]
-"340
-[; ;user_app.c: 340: }
+"341
+[; ;user_app.c: 341: }
 [e :UE 2295 ]
 }

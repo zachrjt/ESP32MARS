@@ -27399,7 +27399,8 @@ void UserAppRun(void)
         G_au8Time2 += 0x10;
     }
 
-    if((G_au8Time2 & 0b00001000) == 0b00001000){
+    if((G_au8Time2 & 0b00001000) == 0b00001000)
+    {
         LATCbits.LATC3 ^= 1;
     }
 
@@ -27415,7 +27416,7 @@ void UserAppRun(void)
 
     LATA ^=0x40;
 }
-# 204 "user_app.c"
+# 205 "user_app.c"
 void TimeXusInitialize(void)
 {
     OSCCON3bits.SOSCPWR = 0;
@@ -27440,13 +27441,13 @@ void TimeXusInitialize(void)
     T0CON0 |= 0x80;
 
 }
-# 245 "user_app.c"
+# 246 "user_app.c"
 void TimeXus(void)
 {
 
 
 }
-# 268 "user_app.c"
+# 269 "user_app.c"
 void SegmentDecoderIntialize(void)
 {
     NVMADR = 380000;

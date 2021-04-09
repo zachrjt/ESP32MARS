@@ -24,8 +24,8 @@ uint8_t Time1;
 uint8_t Time2;
 
 int Hours = 0;
-int Minutes = 51;
-int Seconds = 55;
+int Minutes = 31;
+int Seconds = 54;
 
 uint8_t AlarmFlag;
 
@@ -35,13 +35,11 @@ void sendTimetoPIC1(void)
     Time1 = 0;
     Time2 = 0;
 
-    if(Hours > 12)      //Conversions from ESP32 time to PIC display time vars (Hope this doesnt take too long in processing time)
+    if(Hours > 11)      //Conversions from ESP32 time to PIC display time vars (Hope this doesnt take too long in processing time)
     {
         Time2 += 0b00001000;
         Time0 += (uint8_t)(((Hours - 12) / 10) << 7);
-        Serial.println(Time0);
         Time0 += (uint8_t)(((Hours - 12) % 10) << 3);
-        Serial.println(Time0);
     }
     else if(Hours)
     {
@@ -56,7 +54,6 @@ void sendTimetoPIC1(void)
     Time0 += (uint8_t)(Minutes / 10);
     Serial.println(Time0);
     Time1 += (uint8_t)((Minutes % 10) << 4);
-    Serial.println(Time1);
 
     Time1 += (uint8_t)(Seconds / 10);
     Time2 += (uint8_t)((Seconds % 10) << 4);
@@ -64,9 +61,9 @@ void sendTimetoPIC1(void)
     digitalWrite(PIC1_SPICS, LOW);
     PIC1_SPI.beginTransaction(PICSPISettings);
 
-    PIC1_SPI.transfer(Time0);
-    PIC1_SPI.transfer(Time1);
     PIC1_SPI.transfer(Time2);
+    PIC1_SPI.transfer(Time1);
+    PIC1_SPI.transfer(Time0);
 
     PIC1_SPI.endTransaction();
     digitalWrite(PIC1_SPICS, HIGH);
@@ -102,7 +99,10 @@ void  getTimefromPIC1(void)                     //Dont pull from PIC more than o
 
     if((Time2 & 0b00001000) == 0b00001000)
     {
-        Hours += 12;                                //24 hour clock
+        if(Hours < 12)
+        {
+            Hours += 12;                                //24 hour clock
+        }
     }
     else
     {
@@ -142,7 +142,7 @@ void pressed(Button2& btn) {
             AlarmFlag = ALARM_ON;
             sendAlarmFlagtoPIC2();
         }
-        //getTimefromPIC1();  //for testing
+        //sendTimetoPIC1();      //for testing
     }
     else if (btn ==  btn2)
     {
@@ -154,6 +154,7 @@ void pressed(Button2& btn) {
             //Update event(?) here (not sure if needed)
         }
 
-        sendTimetoPIC1();      //for testing
+        //sendTimetoPIC1();    //for testing
+        //getTimefromPIC1();  //for testing
     }
 }

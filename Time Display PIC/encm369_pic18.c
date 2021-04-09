@@ -166,7 +166,7 @@ void __interrupt(irq(IRQ_SPI1RX), high_priority) SPI1RX_ISR(void)  //Could have 
     {
         if((u8received & 0b00000111) == 0x00)
         {
-            G_au8Time0 = u8received;
+            G_au8Time2 = u8received;
             u8Counter++;
         }
         else if(u8received == 1)        //First Time request from ESP32
@@ -181,7 +181,7 @@ void __interrupt(irq(IRQ_SPI1RX), high_priority) SPI1RX_ISR(void)  //Could have 
     }
     else
     {
-        G_au8Time2 = u8received;
+        G_au8Time0 = u8received;
         u8Counter = 0;
     }
     

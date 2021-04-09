@@ -101,18 +101,18 @@ Version 4.0 HI-TECH Software Intermediate Code
 "3339 C:/Program Files/Microchip/MPLABX/v5_45/packs/Microchip/PIC18F-Q_DFP/1.8.154/xc8\pic\include\proc\pic18f27q43.h
 [; ;C:/Program Files/Microchip/MPLABX/v5_45/packs/Microchip/PIC18F-Q_DFP/1.8.154/xc8\pic\include\proc\pic18f27q43.h: 3339: extern volatile unsigned char SPI1RXB __attribute__((address(0x080)));
 [v _SPI1RXB `Vuc ~T0 @X0 0 e@128 ]
-"42 encm369_pic18.c
-[; ;encm369_pic18.c: 42: extern u8 G_au8Time0;
-[v _G_au8Time0 `uc ~T0 @X0 0 e ]
+"44 encm369_pic18.c
+[; ;encm369_pic18.c: 44: extern u8 G_au8Time2;
+[v _G_au8Time2 `uc ~T0 @X0 0 e ]
 "3409 C:/Program Files/Microchip/MPLABX/v5_45/packs/Microchip/PIC18F-Q_DFP/1.8.154/xc8\pic\include\proc\pic18f27q43.h
 [; ;C:/Program Files/Microchip/MPLABX/v5_45/packs/Microchip/PIC18F-Q_DFP/1.8.154/xc8\pic\include\proc\pic18f27q43.h: 3409: extern volatile unsigned char SPI1TXB __attribute__((address(0x081)));
 [v _SPI1TXB `Vuc ~T0 @X0 0 e@129 ]
-"43 encm369_pic18.c
+"42 encm369_pic18.c
+[; ;encm369_pic18.c: 42: extern u8 G_au8Time0;
+[v _G_au8Time0 `uc ~T0 @X0 0 e ]
+"43
 [; ;encm369_pic18.c: 43: extern u8 G_au8Time1;
 [v _G_au8Time1 `uc ~T0 @X0 0 e ]
-"44
-[; ;encm369_pic18.c: 44: extern u8 G_au8Time2;
-[v _G_au8Time2 `uc ~T0 @X0 0 e ]
 "37918 C:/Program Files/Microchip/MPLABX/v5_45/packs/Microchip/PIC18F-Q_DFP/1.8.154/xc8\pic\include\proc\pic18f27q43.h
 [; ;C:/Program Files/Microchip/MPLABX/v5_45/packs/Microchip/PIC18F-Q_DFP/1.8.154/xc8\pic\include\proc\pic18f27q43.h: 37918: extern volatile unsigned char ANSELA __attribute__((address(0x400)));
 [v _ANSELA `Vuc ~T0 @X0 0 e@1024 ]
@@ -2804,14 +2804,14 @@ Version 4.0 HI-TECH Software Intermediate Code
 [; ;encm369_pic18.c: 166:     {
 {
 "167
-[; ;encm369_pic18.c: 167:         if(u8received > 0x0F)
-[e $ ! > -> F15932 `i -> 15 `i 2277  ]
+[; ;encm369_pic18.c: 167:         if((u8received & 0b00000111) == 0x00)
+[e $ ! == & -> F15932 `i -> 7 `i -> 0 `i 2277  ]
 "168
 [; ;encm369_pic18.c: 168:         {
 {
 "169
-[; ;encm369_pic18.c: 169:             G_au8Time0 = u8received;
-[e = _G_au8Time0 F15932 ]
+[; ;encm369_pic18.c: 169:             G_au8Time2 = u8received;
+[e = _G_au8Time2 F15932 ]
 "170
 [; ;encm369_pic18.c: 170:             u8Counter++;
 [e ++ F15931 -> -> 1 `i `uc ]
@@ -2862,8 +2862,8 @@ Version 4.0 HI-TECH Software Intermediate Code
 [; ;encm369_pic18.c: 183:     {
 {
 "184
-[; ;encm369_pic18.c: 184:         G_au8Time2 = u8received;
-[e = _G_au8Time2 F15932 ]
+[; ;encm369_pic18.c: 184:         G_au8Time0 = u8received;
+[e = _G_au8Time0 F15932 ]
 "185
 [; ;encm369_pic18.c: 185:         u8Counter = 0;
 [e = F15931 -> -> 0 `i `uc ]

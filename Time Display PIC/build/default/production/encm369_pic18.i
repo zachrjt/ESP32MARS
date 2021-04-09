@@ -27365,9 +27365,9 @@ void __attribute__((picinterrupt(("irq(24), high_priority")))) SPI1RX_ISR(void)
 
     if(u8Counter == 0)
     {
-        if(u8received > 0x0F)
+        if((u8received & 0b00000111) == 0x00)
         {
-            G_au8Time0 = u8received;
+            G_au8Time2 = u8received;
             u8Counter++;
         }
         else if(u8received == 1)
@@ -27382,7 +27382,7 @@ void __attribute__((picinterrupt(("irq(24), high_priority")))) SPI1RX_ISR(void)
     }
     else
     {
-        G_au8Time2 = u8received;
+        G_au8Time0 = u8received;
         u8Counter = 0;
     }
 
