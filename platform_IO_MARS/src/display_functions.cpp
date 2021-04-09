@@ -4,6 +4,13 @@ extern TFT_eSPI tft;
 
 extern String Event1;
 
+void displaySetup()
+{
+    tft.init();
+    tft.setRotation(3);
+    tft.fillScreen(TFT_BLACK);
+}
+
 void printSplitString(String text)
 {
   int wordStart = 0;

@@ -12,6 +12,7 @@
 
     #define ALARM_ON    1
     #define ALARM_OFF   0
+    #define SNOOZE_TIME_MINUTES 5
 
     #define FIRST_TIME_REQUEST      1
     #define SUBSEQUENT_TIME_REQUEST 2

@@ -21,7 +21,23 @@ int Hours;
 int Minutes;
 int Seconds;
 
+int AlarmHours = 99;
+int AlarmMinutes = 99;
+int AlarmSeconds = 99;
+
+int snoozeF;
 uint8_t AlarmFlag;
+
+void PICSPISetup()
+{
+    pinMode(PIC_MISO, INPUT);
+    pinMode(PIC1_SPICS, OUTPUT);
+    digitalWrite(PIC1_SPICS, HIGH);
+    pinMode(PIC2_SPICS, OUTPUT);
+    digitalWrite(PIC2_SPICS, HIGH);
+    PIC1_SPI.begin(PIC_SPICLK, PIC_MISO, PIC_MOSI, PIC1_SPICS);
+    PIC2_SPI.begin(PIC_SPICLK, PIC_MISO, PIC_MOSI, PIC2_SPICS);
+}
 
 void sendTimetoPIC1(void)
 {
@@ -123,6 +139,14 @@ void sendAlarmFlagtoPIC2(void)
 
 
 
+void clockButtonsSetup()
+{
+    pinMode(BUTTON_1_PIN, INPUT);
+    pinMode(BUTTON_2_PIN, INPUT);
+    btn1.setPressedHandler(pressed);
+    btn2.setPressedHandler(pressed);
+}
+
 //Button Interrupts (?) for features, for some reason these are each triggered once during Start up so AlarmFlag is default off
 void pressed(Button2& btn) {
 
@@ -134,12 +158,11 @@ void pressed(Button2& btn) {
         sendAlarmFlagtoPIC2();
 
         //Set up new Alarm event 5 minutes from now here
+        AlarmHours = Hours;
+        AlarmMinutes = Minutes + SNOOZE_TIME_MINUTES;
+        AlarmSeconds = 0;
+        snoozeF = 1;
         }
-        /*else      //for testing
-        {
-            AlarmFlag = ALARM_ON;
-            sendAlarmFlagtoPIC2();
-        }*/
     }
     else if (btn ==  btn2)
     {
@@ -150,5 +173,18 @@ void pressed(Button2& btn) {
 
             //Update event(?) here (not sure if needed)
         }
+    }
+}
+
+void checkSnooze()
+{
+    if((Hours == AlarmHours) && (Minutes == AlarmMinutes) && (Seconds == AlarmSeconds))
+    {
+        AlarmFlag = ALARM_ON;
+        sendAlarmFlagtoPIC2();
+        AlarmHours = 99;
+        AlarmMinutes = 99;
+        AlarmSeconds = 99;
+        snoozeF = 0;
     }
 }

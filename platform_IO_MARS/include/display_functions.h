@@ -5,6 +5,7 @@
 #ifndef DISPLAY_FUNCTIONS_H
     #define DISPLAY_FUNCTIONS_H
     
+    void displaySetup();
     void printSplitString(String text);
     void printNextEvent(void);
 #endif

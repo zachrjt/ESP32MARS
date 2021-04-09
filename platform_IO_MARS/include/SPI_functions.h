@@ -7,8 +7,11 @@
 #ifndef SPI_FUNCTIONS_H
     #define SPI_FUNCTIONS_H
 
+    void PICSPISetup();
     void sendTimetoPIC1(void);          //Send time to PIC
     void getTimefromPIC1(void);         //Get time from PIC
     void sendAlarmFlagtoPIC2(void);     //If Alarm then alarm
+    void clockButtonsSetup();
     void pressed(Button2& btn);       //Button Pressed event
+    void checkSnooze();
 #endif

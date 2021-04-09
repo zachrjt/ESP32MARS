@@ -23,6 +23,7 @@ SPIClass PIC1_SPI;    //defines the spi bus for use with the PIC with clock disp
 SPIClass PIC2_SPI;    //defines the spi bus for use with the PIC with alarm capabilities
 
 extern int TMRF;
+extern int snoozeF;
 
 String Event1 = "Pass out and sleep";   //Name of the next event
 
@@ -35,23 +36,9 @@ void setup()
     //record error message
   }
   
-  tft.init();
-  tft.setRotation(3);
-  tft.fillScreen(TFT_BLACK);
-
-  pinMode(PIC_MISO, INPUT);
-  pinMode(PIC1_SPICS, OUTPUT);
-  digitalWrite(PIC1_SPICS, HIGH);
-  pinMode(PIC2_SPICS, OUTPUT);
-  digitalWrite(PIC2_SPICS, HIGH);
-  PIC1_SPI.begin(PIC_SPICLK, PIC_MISO, PIC_MOSI, PIC1_SPICS);
-  PIC2_SPI.begin(PIC_SPICLK, PIC_MISO, PIC_MOSI, PIC2_SPICS);
-
-  pinMode(BUTTON_1_PIN, INPUT);
-  pinMode(BUTTON_2_PIN, INPUT);
-  btn1.setPressedHandler(pressed);
-  btn2.setPressedHandler(pressed);
-
+  displaySetup();   //will put in set up initialize eventually
+  PICSPISetup();
+  clockButtonsSetup();
   setUpInterrupts();
 }
 
@@ -59,6 +46,14 @@ void loop()
 {
   btn1.loop();
   btn2.loop();
+
+  if(TMRF)
+  {
+    if(snoozeF)
+    {
+        checkSnooze();
+    }
+  }
 
   if (TMRF >= TIME_REQUEST_INTERVAL)
   {
