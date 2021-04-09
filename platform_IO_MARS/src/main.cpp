@@ -32,8 +32,8 @@ SPIClass SDSPI(HSPI); //defines the spi bus for use with the SD card
 //PERIPHERAL GPIO SETUP SECTION END------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-int DATESTAMP = 20210407;  //The current year, month, day
-int TIMESTAMP = 202930;    //The current time: hours (24 hours) minutes, seconds
+int DATESTAMP = 20210409;  //The current year, month, day UTC
+int TIMESTAMP = 000000;    //The current time: hours (24 hours) minutes, seconds, UTC
 
 //SETUP FUNCTION START-------------------------------------------------------------------------------------------------------------------------------------------------------------
 void setup()
@@ -55,22 +55,17 @@ void setup()
     if (!SD.begin(SD_SPICS,  SDSPI))
     {
         Serial.println("Could not mount SD card!");
+        Serial.println("Try re-inserting the SD card and hitting the side reset button");
         return;
     }
     Serial.println("Mounted SD card");
 
-    File sdcard_calendar = SD.open("/uofc_calendar.ics");
+    File sdcard_calendar = SD.open("/ils_calendar.ics");
     if (!sdcard_calendar)
     {
         Serial.println("Could not open file");
         return;
     }
-    //6.5858 seconds to go through 150000 lines/ 600,730 byte
-    long keyword_position = 0;
-    keyword_position = find_next_keyword(&sdcard_calendar, "6606-700320@d2l.ucalgary.ca", 0, NOEND, FIRSTCHAR);
-
-    keyword_position = find_previous_keyword(&sdcard_calendar, "BEGIN:VEVENT", keyword_position, NOEND, FIRSTCHAR);
-
 
     Calendar myCalendar;
     if(!initialize_calendar(&sdcard_calendar, &myCalendar))
@@ -80,40 +75,34 @@ void setup()
     }
     CalendarEvent myEvent;
 
-    if(!initialize_event(&sdcard_calendar, &myCalendar, &myEvent, keyword_position))
-    {
-        print_event(&myEvent);
-    }
-
     Serial.println();
     long sector_table[SECTORTABLESIZE];
-    if(!initialize_sector_table(&sdcard_calendar, &myCalendar, 20210407, 141610, sector_table))
+    if(!initialize_sector_table(&sdcard_calendar, &myCalendar, DATESTAMP, TIMESTAMP, sector_table))
     {
         
         Serial.println("Sector Table: ");
-        for(int i = 0; i < SECTORTABLESIZE; i++)
+        for(int i = 0; i < SECTORTABLESIZE && sector_table[i]!=0 ; i++)
         {
             Serial.print("\t");
             Serial.println(sector_table[i], HEX);
         }
-        
     }
     else
     {
         Serial.println("\nERROR WHILE INITIALIZING SECTOR TABLE\n");
     }
 
-    /*
     for(int i = 0; i < EVENTSTACKSIZE; i++)
     {
         myCalendar.jobs[i] = (CalendarEvent *)(pvPortMalloc(sizeof(CalendarEvent)));
         long next_event = 0;
-        if(!find_event(&sdcard_calendar, &myCalendar, sector_table, &next_event, DATESTAMP, TIMESTAMP))
+        if(!find_event(&sdcard_calendar, &myCalendar, sector_table, &next_event, DATESTAMP, TIMESTAMP, 0xFF))
         {
             if(!initialize_event(&sdcard_calendar, &myCalendar, myCalendar.jobs[i], next_event))
             {
                 myCalendar.event_intialization = 1;//We have initializated an event within the calendar
                 myCalendar.event_precedence[i] = i;
+
                 print_event(myCalendar.jobs[i]);
                 continue;//All good move onto next event
             }
@@ -127,26 +116,6 @@ void setup()
             Serial.println("Could not find an event");
         }
     }
-    */
-    long next_event = 0;
-    CalendarEvent my_other_event;
-    
-    if(!find_event(&sdcard_calendar, &myCalendar, sector_table, &next_event, DATESTAMP, TIMESTAMP))
-    {
-        if(!initialize_event(&sdcard_calendar, &myCalendar, &my_other_event, next_event))
-        {
-            print_event(&my_other_event);
-        }
-        else
-        {
-            Serial.println("Error while trying to intialize event");
-        }
-    }
-    else
-    {
-        Serial.println("Error finding event");
-    }
-    
 
     Serial.println("ENDING SERIAL CONNECTION");
     sdcard_calendar.close();
