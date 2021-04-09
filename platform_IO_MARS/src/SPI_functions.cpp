@@ -119,9 +119,9 @@ void  getTimefromPIC1(void)                     //Dont pull from PIC more than o
         Hours %= 12;                                //make it 0:00 am rather than 12:00 am
     }
 
-    Serial.println(Hours);
+    /*Serial.println(Hours);
     Serial.println(Minutes);
-    Serial.println(Seconds);
+    Serial.println(Seconds);*/
 }
 
 

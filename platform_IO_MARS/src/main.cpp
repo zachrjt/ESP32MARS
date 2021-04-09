@@ -47,7 +47,7 @@ void loop()
   btn1.loop();
   btn2.loop();
 
-  if(TMRF)
+  if(TMRF)        //Snooze checking protocol
   {
     if(snoozeF)
     {
@@ -55,11 +55,13 @@ void loop()
     }
   }
 
-  if (TMRF >= TIME_REQUEST_INTERVAL)
+  if (TMRF >= TIME_REQUEST_INTERVAL)  // gets time from PIC every 1 second
   {
     TMRF = 0;
     getTimefromPIC1();
   }
+
+  printNextEvent();  //Prints the string on Event1 global var
 }
 
 //Need webserver update task
