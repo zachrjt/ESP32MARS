@@ -25,6 +25,9 @@ SPIClass SDSPI(HSPI); //defines the spi bus for use with the SD card            
 SPIClass PIC1_SPI;    //defines the spi bus for use with the PIC with clock display
 SPIClass PIC2_SPI;    //defines the spi bus for use with the PIC with alarm capabilities
 
+extern Calendar myCalendar;
+extern long sector_table[SECTORTABLESIZE];
+
 extern int TMRF;
 extern int snoozeF;
 
@@ -41,6 +44,7 @@ void setup()
   }
   icalLibarySetup();//zach added, just doing first since it takes like 15 seconds
 
+  Event1 = myCalendar.jobs[0]->event_summary;
 
   displaySetup();   //will put in set up initialize eventually    ///should add something to disaply the first job within the calendar, it's summary as a string to tired
   PICSPISetup();

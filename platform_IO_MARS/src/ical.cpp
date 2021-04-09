@@ -4,9 +4,9 @@
 #include <SD.h>           //SD Card Libary
 #include <ical_libary.h>    //actual libary
 
-SPIClass SDSPI(HSPI); //defines the spi bus for use with the SD card
+extern SPIClass SDSPI; //defines the spi bus for use with the SD card
 
-extern Calendar myCalendar;//will this make it global???
+Calendar myCalendar;
 
 //below are utc time stamps that the ical libary uses, there is no updating function within thats left up to the user/zach tom.
 
@@ -14,7 +14,8 @@ int DATESTAMP = 20210409;
 
 int TIMESTAMP = 133000; //730am local?
 
-extern long sector_table[SECTORTABLESIZE];//this must remain allocated so that SD card can be reopened later if needed
+long sector_table[SECTORTABLESIZE];//this must remain allocated so that SD card can be reopened later if needed
+
 void icalLibarySetup()
 {
     SDSPI.begin(SD_SPICLK, SD_MISO, SD_MOSI, SD_SPICS);//begin sdspi connecition with sd card
