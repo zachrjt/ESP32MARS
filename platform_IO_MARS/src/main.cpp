@@ -10,6 +10,7 @@
 
 #include "peripheral_initialize.h"  //other functions header file
 #include "SPI_functions.h"          //SPI functions header file
+#include "display_functions.h"
 
 Button2 btn1(BUTTON_1_PIN);                 //creating button object for usage
 Button2 btn2(BUTTON_2_PIN);                 //creating button object for usage
@@ -17,6 +18,10 @@ Button2 btn2(BUTTON_2_PIN);                 //creating button object for usage
 SPIClass SDSPI(HSPI); //defines the spi bus for use with the SD card
 SPIClass PIC1_SPI;    //defines the spi bus for use with the PIC with clock display
 SPIClass PIC2_SPI;    //defines the spi bus for use with the PIC with alarm capabilities
+
+TFT_eSPI tft = TFT_eSPI();  //create tft_display object for usage
+
+String Event1 = "Pass out and sleep";   //Name of the next event
 
 void setup()
 {
@@ -26,6 +31,10 @@ void setup()
   {
     //record error message
   }
+  
+  tft.init();
+  tft.setRotation(3);
+  tft.fillScreen(TFT_BLACK);
 
   pinMode(PIC_MISO, INPUT);
   pinMode(PIC1_SPICS, OUTPUT);
@@ -34,7 +43,6 @@ void setup()
   digitalWrite(PIC2_SPICS, HIGH);
   PIC1_SPI.begin(PIC_SPICLK, PIC_MISO, PIC_MOSI, PIC1_SPICS);
   PIC2_SPI.begin(PIC_SPICLK, PIC_MISO, PIC_MOSI, PIC2_SPICS);
-
 
   pinMode(BUTTON_1_PIN, INPUT);
   pinMode(BUTTON_2_PIN, INPUT);
@@ -46,9 +54,9 @@ void loop()
 {
   btn1.loop();
   btn2.loop();
+  printNextEvent();
 }
 
 //Need webserver update task
 
 //need alarm interrupt
-

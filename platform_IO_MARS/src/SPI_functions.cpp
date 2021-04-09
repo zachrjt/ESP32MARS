@@ -1,10 +1,4 @@
-#include "Pinout_macros.h"          //pintout macros
 #include "SPI_functions.h"          //SPI functions header file
-#include <Arduino.h>
-#include <TFT_eSPI.h>     //TFT display libary
-#include <SPI.h>          //SPI Libary
-#include <Button2.h>      //Button libary
-#include <SD.h>           //SD card library
 
 extern Button2 btn1;                 //creating button object for usage
 extern Button2 btn2;                 //creating button object for usage
@@ -155,6 +149,6 @@ void pressed(Button2& btn) {
         }
 
         //sendTimetoPIC1();    //for testing
-        //getTimefromPIC1();  //for testing
+        getTimefromPIC1();  //for testing
     }
 }

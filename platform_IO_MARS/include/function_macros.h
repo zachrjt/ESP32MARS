@@ -9,4 +9,10 @@
     #define PERIPHERAL_FAILURE 1
     #define PERIPHERAL_TIMEOUT 2
     #define PERIPHERAL_BAD_BEHAVIOUR 3
+
+    #define ALARM_ON    1
+    #define ALARM_OFF   0
+
+    #define FIRST_TIME_REQUEST      1
+    #define SUBSEQUENT_TIME_REQUEST 2
 #endif

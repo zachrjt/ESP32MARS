@@ -10,3 +10,5 @@
     int SDCardInterruptSetup();
 
 #endif
+
+#include "SPI_functions.h"
