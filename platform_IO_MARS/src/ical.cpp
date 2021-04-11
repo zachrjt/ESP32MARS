@@ -1,10 +1,9 @@
 #include "ical.h"
-#include <Arduino.h>
-#include <SPI.h>          //SPI Libary
-#include <SD.h>           //SD Card Libary
-#include <ical_libary.h>    //actual libary
 
 extern SPIClass SDSPI; //defines the spi bus for use with the SD card
+
+String weather_description;  //Pulls the weather description
+String weather_value;  //Pulls the weather value like -4
 
 Calendar myCalendar;
 
@@ -106,4 +105,82 @@ void icalLibarySetup()
     sdcard_calendar.close();//closing serial, update cant be made but sector
     SD.end();
 
+
+
+    //WiFi setup-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    WiFi.begin(NETWORKNAME, NETWORKPASSWORD);
+
+    while (WiFi.status() != WL_CONNECTED)
+    {
+        delay(1000);
+        if(Serial)
+        {
+            Serial.println("Connecting to WiFi network");
+        }
+    }
+    if(Serial)
+    {
+        Serial.println("Connected to WiFi network!!!");
+    }
+
+    HTTPClient webserver;
+
+    webserver.begin("http://50.66.76.111/Calgary");//Set up request to webserver host by zach
+    int HTTPcode = webserver.GET();//send http request and take the return code
+
+    if(0 < HTTPcode)    //ie no error
+    {
+        String request_data = webserver.getString();//grab content
+        if(Serial)
+        {
+            Serial.println(HTTPcode);
+            Serial.println(request_data);
+        }
+        int pattern_index = 0;
+        char pattern_string[] = "<hi>Temperature ";
+        int end_of_pattern = 0;
+        for(int i = 0; request_data[i] != '\0'; i++)
+        {
+            if(request_data[i] == pattern_string[pattern_index])
+            {
+                pattern_index++;
+                if(pattern_index == 15)
+                {
+                    end_of_pattern = i;
+                }
+            }
+            else
+            {
+                pattern_index = 0;
+            }
+        }
+        if(end_of_pattern != 0)
+        {
+           weather_description = request_data.substring((end_of_pattern+1), (end_of_pattern+11));
+        }
+        int end_of_usefull_string = 0;
+        for(int i = 0; weather_description[i] != '<'; i++)
+        {
+            end_of_usefull_string++;
+        }
+        
+        weather_description = weather_description.substring(0, end_of_usefull_string);
+        if(Serial)
+        {
+            Serial.print("The weather is: ");
+            Serial.println(weather_description);
+        }
+
+    }
+    else
+    {
+        if(Serial)
+        {
+            Serial.println("ERROR while sending HTTP request:");
+            Serial.println(HTTPcode);
+        }
+    }
+
+    WiFi.disconnect();  //disconnect from WiFi
 }

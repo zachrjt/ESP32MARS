@@ -3,7 +3,10 @@
 #include "SPI_functions.h"
 #include <Arduino.h>
 #include <SPI.h>          //SPI Libary
+#include <WiFi.h>         //Libary to connect to WiFI
+#include <HTTPClient.h>   //Libary to pull http sites
 #include <Button2.h>      //Button libary
+#include <ical_libary.h>  //actual libary
 
 #ifndef ICAL_H
     #define ICAL_H
