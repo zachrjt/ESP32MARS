@@ -3,6 +3,8 @@
 #include <SPI.h>          //SPI Libary
 #include <Button2.h>      //Button Libary
 #include <SD.h>           //SD Card Libary
+#include <WiFi.h>         //WiFi Libary
+#include <HTTPClient.h>   //http Libary
 
 #include <TFT_eSPI.h>               //TTgo TFT Display Libary
 #include <ical_libary.h>            //Icalendar format file libary
@@ -29,10 +31,12 @@ SPIClass SDSPI(HSPI); //defines the spi bus for use with the SD card
 #define SD_MISO 27
 #define SD_SPICLK 25
 #define SD_SPICS 33
+#define NETWORKNAME "not dad"
+#define NETWORKPASSWORD "4032820508"
 //PERIPHERAL GPIO SETUP SECTION END------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-int DATESTAMP = 20210409;  //The current year, month, day UTC
+int DATESTAMP = 20210411;  //The current year, month, day UTC
 int TIMESTAMP = 000000;    //The current time: hours (24 hours) minutes, seconds, UTC
 
 //SETUP FUNCTION START-------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -116,6 +120,78 @@ void setup()
             Serial.println("Could not find an event");
         }
     }
+
+    WiFi.begin(NETWORKNAME, NETWORKPASSWORD);
+
+    while (WiFi.status() != WL_CONNECTED)
+    {
+        delay(1000);
+        if(Serial)
+        {
+            Serial.println("Connecting to WiFi network");
+        }
+    }
+    if(Serial)
+    {
+        Serial.println("Connected to WiFi network!!!");
+    }
+
+    HTTPClient webserver;
+    String weather_description;
+    String weather_value;
+
+    webserver.begin("http://50.66.76.111/Calgary");//Set up request to webserver
+    int HTTPcode = webserver.GET();//send http request and take the return code
+
+    if(0 < HTTPcode)    //ie no error
+    {
+        String request_data = webserver.getString();//grab content
+        if(Serial)
+        {
+            Serial.println(HTTPcode);
+            Serial.println(request_data);
+        }
+        int pattern_index = 0;
+        char pattern_string[] = "<hi>Temperature ";
+        int end_of_pattern = 0;
+        for(int i = 0; request_data[i] != '\0'; i++)
+        {
+            if(request_data[i] == pattern_string[pattern_index])
+            {
+                pattern_index++;
+                if(pattern_index == 15)
+                {
+                    end_of_pattern = i;
+                }
+            }
+            else
+            {
+                pattern_index = 0;
+            }
+        }
+        if(end_of_pattern != 0)
+        {
+           weather_description = request_data.substring((end_of_pattern+1), (end_of_pattern+11));
+        }
+        int end_of_usefull_string = 0;
+        for(int i = 0; weather_description[i] != '<'; i++)
+        {
+            end_of_usefull_string++;
+        }
+        
+        weather_description = weather_description.substring(0, end_of_usefull_string);
+        Serial.println(weather_description);
+    }
+    else
+    {
+        if(Serial)
+        {
+            Serial.println("ERROR while sending HTTP request:");
+            Serial.println(HTTPcode);
+        }
+    }
+
+    WiFi.disconnect();  //disconnect from WiFi
 
     Serial.println("ENDING SERIAL CONNECTION");
     sdcard_calendar.close();
