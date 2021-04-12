@@ -17,6 +17,9 @@ uint8_t Time0;
 uint8_t Time1;
 uint8_t Time2;
 
+extern int TIMESTAMP;   //to change when getTimeFromPIC() is called
+//int update_time;        //if high, connect to webserver and pull a new date and time
+
 int Hours;
 int Minutes;
 int Seconds;
@@ -41,6 +44,13 @@ void PICSPISetup()
 
 void sendTimetoPIC1(void)
 {
+    Hours = TIMESTAMP / 10000;              //separate UTC timestamp into different int vars
+    Minutes = (TIMESTAMP % 10000) / 100;
+    Seconds = TIMESTAMP % 100;
+
+    Hours += 18;   //convert from UTC time to local time
+    Hours %= 24;
+
     Time0 = 0;
     Time1 = 0;
     Time2 = 0;
@@ -62,13 +72,16 @@ void sendTimetoPIC1(void)
     }
 
     Time0 += (uint8_t)(Minutes / 10);
-    Serial.println(Time0);
     Time1 += (uint8_t)((Minutes % 10) << 4);
 
     Time1 += (uint8_t)(Seconds / 10);
     Time2 += (uint8_t)((Seconds % 10) << 4);
 
-    digitalWrite(PIC1_SPICS, LOW);
+    /*Serial.println(Time0);
+    Serial.println(Time1);
+    Serial.println(Time2);*/
+
+    digitalWrite(PIC1_SPICS, LOW);              //send time to PIC through SPI protocol
     PIC1_SPI.beginTransaction(PICSPISettings);
 
     PIC1_SPI.transfer(Time2);
@@ -119,6 +132,13 @@ void  getTimefromPIC1(void)                     //Dont pull from PIC more than o
         Hours %= 12;                                //make it 0:00 am rather than 12:00 am
     }
 
+    TIMESTAMP = ((Hours + 6) % 24) * 10000 + Minutes * 100 + Seconds;
+
+    if(TIMESTAMP < 1)
+    {
+        WifiUpdate();
+    }
+
     /*Serial.println(Hours);
     Serial.println(Minutes);
     Serial.println(Seconds);*/
@@ -162,6 +182,11 @@ void pressed(Button2& btn) {
         AlarmMinutes = Minutes + SNOOZE_TIME_MINUTES;
         AlarmSeconds = 0;
         snoozeF = 1;
+        }
+        else
+        {
+        AlarmFlag = ALARM_ON;
+        sendAlarmFlagtoPIC2();
         }
     }
     else if (btn ==  btn2)

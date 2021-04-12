@@ -14,4 +14,5 @@
     void clockButtonsSetup();
     void pressed(Button2& btn);       //Button Pressed event
     void checkSnooze();
+    extern void WifiUpdate(void);
 #endif

@@ -48,14 +48,14 @@ void setup()
   {
     //record error message
   }
-  icalLibarySetup();//zach added, just doing first since the longest
-
-  Event1 = myCalendar.jobs[0]->event_summary;
-
   displaySetup();   //will put in set up initialize eventually
   PICSPISetup();
   clockButtonsSetup();
   setUpInterrupts();
+
+  icalLibarySetup();//zach added, just doing first since the longest
+
+  Event1 = myCalendar.jobs[0]->event_summary;
 
 }
 

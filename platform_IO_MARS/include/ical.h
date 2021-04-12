@@ -19,4 +19,5 @@
     #define SD_SPICS 33*/
 
     void icalLibarySetup();
+    void WifiUpdate(void);
 #endif

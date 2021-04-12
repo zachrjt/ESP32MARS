@@ -37,7 +37,7 @@ dataBANK6 BANK6 1 600 600 100 1
 dataCOMRAM COMRAM 1 501 501 33 1
 bssCOMRAM COMRAM 1 534 534 19 1
 config CONFIG 4 300000 300000 A 1
-$C:\Users\marce\AppData\Local\Temp\s154.o
+$C:\Users\marce\AppData\Local\Temp\s7qc.o
 idloc IDLOC 5 200000 200000 20 1
 init CODE 0 102 102 4 1
 reset_vec CODE 0 0 0 4 1
@@ -116,195 +116,195 @@ MEDIUMCONST 12600-1FFFF 1
 # All other numeric values are in decimal.
 %LINETAB
 $dist/default/production\Alarm_PIC.production.o
-580 text14 CODE >167:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\interrupts.c
-580 text14 CODE >169:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\interrupts.c
-580 text14 CODE >171:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\interrupts.c
-582 text14 CODE >173:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\interrupts.c
-588 text14 CODE >174:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\interrupts.c
-560 text13 CODE >147:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\interrupts.c
-560 text13 CODE >151:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\interrupts.c
-560 text13 CODE >154:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\interrupts.c
-562 text13 CODE >155:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\interrupts.c
-564 text13 CODE >158:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\interrupts.c
-570 text13 CODE >167:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\interrupts.c
-3EC text12 CODE >94:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\interrupts.c
-3EC text12 CODE >116:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\interrupts.c
-3EC text12 CODE >121:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\interrupts.c
-3F2 text12 CODE >122:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\interrupts.c
-3F8 text12 CODE >130:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\interrupts.c
-40A text12 CODE >131:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\interrupts.c
-40E text12 CODE >138:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\interrupts.c
-410 text12 CODE >141:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\interrupts.c
-41E text12 CODE >143:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\interrupts.c
-420 text12 CODE >144:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\interrupts.c
-424 text12 CODE >147:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\interrupts.c
-58C text11 CODE >90:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\interrupts.c
-58C text11 CODE >92:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\interrupts.c
-58C text11 CODE >110:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\interrupts.c
-58E text11 CODE >94:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\interrupts.c
-534 text10 CODE >75:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\encm369_pic18.c
-534 text10 CODE >97:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\interrupts.c
-53A text10 CODE >105:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\interrupts.c
-546 text10 CODE >110:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\interrupts.c
-590 text9 CODE >71:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\encm369_pic18.c
-590 text9 CODE >75:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\encm369_pic18.c
-48E text8 CODE >118:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\encm369_pic18.c
-48E text8 CODE >120:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\encm369_pic18.c
-494 text8 CODE >121:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\encm369_pic18.c
-498 text8 CODE >122:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\encm369_pic18.c
-49C text8 CODE >124:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\encm369_pic18.c
-4A0 text8 CODE >125:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\encm369_pic18.c
-4A4 text8 CODE >126:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\encm369_pic18.c
-4A8 text8 CODE >128:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\encm369_pic18.c
-4AC text8 CODE >129:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\encm369_pic18.c
-4B0 text8 CODE >130:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\encm369_pic18.c
-4B4 text8 CODE >133:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\encm369_pic18.c
-4BA text8 CODE >134:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\encm369_pic18.c
-4BE text8 CODE >136:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\encm369_pic18.c
-572 text7 CODE >75:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\interrupts.c
-572 text7 CODE >78:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\interrupts.c
-574 text7 CODE >81:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\interrupts.c
-576 text7 CODE >82:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\interrupts.c
-578 text7 CODE >84:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\interrupts.c
-57A text7 CODE >85:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\interrupts.c
-57C text7 CODE >87:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\interrupts.c
-4F0 text6 CODE >89:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\encm369_pic18.c
-4F0 text6 CODE >91:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\encm369_pic18.c
-4F4 text6 CODE >93:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\encm369_pic18.c
-4FA text6 CODE >94:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\encm369_pic18.c
-4FE text6 CODE >95:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\encm369_pic18.c
-502 text6 CODE >97:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\encm369_pic18.c
-506 text6 CODE >99:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\encm369_pic18.c
-50C text6 CODE >100:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\encm369_pic18.c
-510 text6 CODE >101:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\encm369_pic18.c
-514 text6 CODE >103:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\encm369_pic18.c
-516 text6 CODE >104:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\encm369_pic18.c
-426 text5 CODE >151:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\encm369_pic18.c
-426 text5 CODE >153:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\encm369_pic18.c
-436 text5 CODE >154:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\encm369_pic18.c
-446 text5 CODE >162:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\encm369_pic18.c
-44C text5 CODE >163:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\encm369_pic18.c
-450 text5 CODE >164:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\encm369_pic18.c
-452 text5 CODE >165:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\encm369_pic18.c
-456 text5 CODE >167:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\encm369_pic18.c
-458 text5 CODE >169:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\encm369_pic18.c
-54E text4 CODE >186:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\encm369_pic18.c
-54E text4 CODE >188:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\encm369_pic18.c
-550 text4 CODE >189:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\encm369_pic18.c
-55E text4 CODE >191:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\encm369_pic18.c
-518 text3 CODE >204:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-518 text3 CODE >207:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-51C text3 CODE >211:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-522 text3 CODE >212:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-526 text3 CODE >216:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-52A text3 CODE >217:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-52E text3 CODE >218:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-532 text3 CODE >223:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-398 text2 CODE >147:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-398 text2 CODE >152:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-39C text2 CODE >155:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-3AE text2 CODE >157:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-3B4 text2 CODE >161:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-3B4 text2 CODE >164:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-3BC text2 CODE >165:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-3C0 text2 CODE >166:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-3C4 text2 CODE >167:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-3CA text2 CODE >168:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-3D0 text2 CODE >171:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-3D2 text2 CODE >172:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-3E2 text2 CODE >174:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-3E4 text2 CODE >178:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-3E6 text2 CODE >179:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-3E8 text2 CODE >180:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-3EA text2 CODE >182:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-106 text1 CODE >238:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-106 text1 CODE >250:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-116 text1 CODE >252:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-126 text1 CODE >254:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-12A text1 CODE >255:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-12E text1 CODE >258:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-146 text1 CODE >260:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-156 text1 CODE >262:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-172 text1 CODE >263:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-198 text1 CODE >264:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-19A text1 CODE >265:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-19E text1 CODE >268:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-1AE text1 CODE >270:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-1B6 text1 CODE >271:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-1BC text1 CODE >272:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-1C0 text1 CODE >275:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-1C4 text1 CODE >276:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-1CC text1 CODE >277:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-1D2 text1 CODE >280:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-1F4 text1 CODE >281:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-20A text1 CODE >282:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-212 text1 CODE >283:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-216 text1 CODE >286:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-21E text1 CODE >291:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-22E text1 CODE >294:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-232 text1 CODE >295:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\user_app.c
-4C0 text0 CODE >34:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\main.c
-4C0 text0 CODE >36:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\main.c
-4C2 text0 CODE >39:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\main.c
-4C6 text0 CODE >40:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\main.c
-4CA text0 CODE >41:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\main.c
-4CE text0 CODE >42:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\main.c
-4D2 text0 CODE >44:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\main.c
-4D6 text0 CODE >49:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\main.c
-4DA text0 CODE >52:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\main.c
-4DC text0 CODE >60:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\main.c
-4E0 text0 CODE >63:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\main.c
-4E2 text0 CODE >64:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\main.c
-4E6 text0 CODE >65:C:\Users\marce\OneDrive\Documents\GitHub\ILS17B\Alarm PIC\main.c
-334 cinit CODE >7119:C:\Users\marce\AppData\Local\Temp\s154.s
-334 cinit CODE >7121:C:\Users\marce\AppData\Local\Temp\s154.s
-334 cinit CODE >7124:C:\Users\marce\AppData\Local\Temp\s154.s
-334 cinit CODE >7199:C:\Users\marce\AppData\Local\Temp\s154.s
-336 cinit CODE >7200:C:\Users\marce\AppData\Local\Temp\s154.s
-338 cinit CODE >7201:C:\Users\marce\AppData\Local\Temp\s154.s
-33A cinit CODE >7202:C:\Users\marce\AppData\Local\Temp\s154.s
-33C cinit CODE >7203:C:\Users\marce\AppData\Local\Temp\s154.s
-33E cinit CODE >7204:C:\Users\marce\AppData\Local\Temp\s154.s
-340 cinit CODE >7205:C:\Users\marce\AppData\Local\Temp\s154.s
-344 cinit CODE >7206:C:\Users\marce\AppData\Local\Temp\s154.s
-348 cinit CODE >7207:C:\Users\marce\AppData\Local\Temp\s154.s
-348 cinit CODE >7208:C:\Users\marce\AppData\Local\Temp\s154.s
-34A cinit CODE >7209:C:\Users\marce\AppData\Local\Temp\s154.s
-34E cinit CODE >7210:C:\Users\marce\AppData\Local\Temp\s154.s
-350 cinit CODE >7211:C:\Users\marce\AppData\Local\Temp\s154.s
-352 cinit CODE >7212:C:\Users\marce\AppData\Local\Temp\s154.s
-354 cinit CODE >7213:C:\Users\marce\AppData\Local\Temp\s154.s
-356 cinit CODE >7214:C:\Users\marce\AppData\Local\Temp\s154.s
-358 cinit CODE >7218:C:\Users\marce\AppData\Local\Temp\s154.s
-35A cinit CODE >7219:C:\Users\marce\AppData\Local\Temp\s154.s
-35C cinit CODE >7220:C:\Users\marce\AppData\Local\Temp\s154.s
-35E cinit CODE >7221:C:\Users\marce\AppData\Local\Temp\s154.s
-360 cinit CODE >7222:C:\Users\marce\AppData\Local\Temp\s154.s
-362 cinit CODE >7223:C:\Users\marce\AppData\Local\Temp\s154.s
-364 cinit CODE >7224:C:\Users\marce\AppData\Local\Temp\s154.s
-368 cinit CODE >7225:C:\Users\marce\AppData\Local\Temp\s154.s
-36C cinit CODE >7226:C:\Users\marce\AppData\Local\Temp\s154.s
-36C cinit CODE >7227:C:\Users\marce\AppData\Local\Temp\s154.s
-36E cinit CODE >7228:C:\Users\marce\AppData\Local\Temp\s154.s
-372 cinit CODE >7229:C:\Users\marce\AppData\Local\Temp\s154.s
-374 cinit CODE >7230:C:\Users\marce\AppData\Local\Temp\s154.s
-376 cinit CODE >7231:C:\Users\marce\AppData\Local\Temp\s154.s
-378 cinit CODE >7235:C:\Users\marce\AppData\Local\Temp\s154.s
-37C cinit CODE >7236:C:\Users\marce\AppData\Local\Temp\s154.s
-37E cinit CODE >7237:C:\Users\marce\AppData\Local\Temp\s154.s
-37E cinit CODE >7238:C:\Users\marce\AppData\Local\Temp\s154.s
-380 cinit CODE >7239:C:\Users\marce\AppData\Local\Temp\s154.s
-382 cinit CODE >7240:C:\Users\marce\AppData\Local\Temp\s154.s
-384 cinit CODE >7248:C:\Users\marce\AppData\Local\Temp\s154.s
-386 cinit CODE >7249:C:\Users\marce\AppData\Local\Temp\s154.s
-388 cinit CODE >7250:C:\Users\marce\AppData\Local\Temp\s154.s
-38A cinit CODE >7251:C:\Users\marce\AppData\Local\Temp\s154.s
-38C cinit CODE >7252:C:\Users\marce\AppData\Local\Temp\s154.s
-38E cinit CODE >7253:C:\Users\marce\AppData\Local\Temp\s154.s
-390 cinit CODE >7254:C:\Users\marce\AppData\Local\Temp\s154.s
-392 cinit CODE >7260:C:\Users\marce\AppData\Local\Temp\s154.s
-392 cinit CODE >7262:C:\Users\marce\AppData\Local\Temp\s154.s
-394 cinit CODE >7263:C:\Users\marce\AppData\Local\Temp\s154.s
+580 text14 CODE >167:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\interrupts.c
+580 text14 CODE >169:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\interrupts.c
+580 text14 CODE >171:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\interrupts.c
+582 text14 CODE >173:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\interrupts.c
+588 text14 CODE >174:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\interrupts.c
+560 text13 CODE >147:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\interrupts.c
+560 text13 CODE >151:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\interrupts.c
+560 text13 CODE >154:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\interrupts.c
+562 text13 CODE >155:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\interrupts.c
+564 text13 CODE >158:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\interrupts.c
+570 text13 CODE >167:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\interrupts.c
+3EC text12 CODE >94:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\interrupts.c
+3EC text12 CODE >116:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\interrupts.c
+3EC text12 CODE >121:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\interrupts.c
+3F2 text12 CODE >122:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\interrupts.c
+3F8 text12 CODE >130:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\interrupts.c
+40A text12 CODE >131:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\interrupts.c
+40E text12 CODE >138:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\interrupts.c
+410 text12 CODE >141:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\interrupts.c
+41E text12 CODE >143:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\interrupts.c
+420 text12 CODE >144:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\interrupts.c
+424 text12 CODE >147:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\interrupts.c
+58C text11 CODE >90:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\interrupts.c
+58C text11 CODE >92:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\interrupts.c
+58C text11 CODE >110:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\interrupts.c
+58E text11 CODE >94:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\interrupts.c
+534 text10 CODE >75:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\encm369_pic18.c
+534 text10 CODE >97:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\interrupts.c
+53A text10 CODE >105:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\interrupts.c
+546 text10 CODE >110:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\interrupts.c
+590 text9 CODE >71:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\encm369_pic18.c
+590 text9 CODE >75:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\encm369_pic18.c
+48E text8 CODE >118:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\encm369_pic18.c
+48E text8 CODE >120:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\encm369_pic18.c
+494 text8 CODE >121:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\encm369_pic18.c
+498 text8 CODE >122:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\encm369_pic18.c
+49C text8 CODE >124:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\encm369_pic18.c
+4A0 text8 CODE >125:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\encm369_pic18.c
+4A4 text8 CODE >126:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\encm369_pic18.c
+4A8 text8 CODE >128:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\encm369_pic18.c
+4AC text8 CODE >129:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\encm369_pic18.c
+4B0 text8 CODE >130:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\encm369_pic18.c
+4B4 text8 CODE >133:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\encm369_pic18.c
+4BA text8 CODE >134:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\encm369_pic18.c
+4BE text8 CODE >136:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\encm369_pic18.c
+572 text7 CODE >75:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\interrupts.c
+572 text7 CODE >78:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\interrupts.c
+574 text7 CODE >81:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\interrupts.c
+576 text7 CODE >82:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\interrupts.c
+578 text7 CODE >84:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\interrupts.c
+57A text7 CODE >85:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\interrupts.c
+57C text7 CODE >87:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\interrupts.c
+4F0 text6 CODE >89:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\encm369_pic18.c
+4F0 text6 CODE >91:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\encm369_pic18.c
+4F4 text6 CODE >93:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\encm369_pic18.c
+4FA text6 CODE >94:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\encm369_pic18.c
+4FE text6 CODE >95:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\encm369_pic18.c
+502 text6 CODE >97:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\encm369_pic18.c
+506 text6 CODE >99:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\encm369_pic18.c
+50C text6 CODE >100:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\encm369_pic18.c
+510 text6 CODE >101:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\encm369_pic18.c
+514 text6 CODE >103:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\encm369_pic18.c
+516 text6 CODE >104:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\encm369_pic18.c
+426 text5 CODE >151:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\encm369_pic18.c
+426 text5 CODE >153:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\encm369_pic18.c
+436 text5 CODE >154:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\encm369_pic18.c
+446 text5 CODE >162:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\encm369_pic18.c
+44C text5 CODE >163:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\encm369_pic18.c
+450 text5 CODE >164:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\encm369_pic18.c
+452 text5 CODE >165:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\encm369_pic18.c
+456 text5 CODE >167:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\encm369_pic18.c
+458 text5 CODE >169:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\encm369_pic18.c
+54E text4 CODE >186:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\encm369_pic18.c
+54E text4 CODE >188:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\encm369_pic18.c
+550 text4 CODE >189:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\encm369_pic18.c
+55E text4 CODE >191:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\encm369_pic18.c
+518 text3 CODE >204:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+518 text3 CODE >207:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+51C text3 CODE >211:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+522 text3 CODE >212:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+526 text3 CODE >216:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+52A text3 CODE >217:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+52E text3 CODE >218:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+532 text3 CODE >223:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+398 text2 CODE >147:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+398 text2 CODE >152:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+39C text2 CODE >155:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+3AE text2 CODE >157:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+3B4 text2 CODE >161:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+3B4 text2 CODE >164:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+3BC text2 CODE >165:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+3C0 text2 CODE >166:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+3C4 text2 CODE >167:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+3CA text2 CODE >168:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+3D0 text2 CODE >171:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+3D2 text2 CODE >172:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+3E2 text2 CODE >174:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+3E4 text2 CODE >178:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+3E6 text2 CODE >179:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+3E8 text2 CODE >180:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+3EA text2 CODE >182:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+106 text1 CODE >238:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+106 text1 CODE >250:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+116 text1 CODE >252:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+126 text1 CODE >254:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+12A text1 CODE >255:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+12E text1 CODE >258:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+146 text1 CODE >260:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+156 text1 CODE >262:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+172 text1 CODE >263:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+198 text1 CODE >264:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+19A text1 CODE >265:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+19E text1 CODE >268:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+1AE text1 CODE >270:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+1B6 text1 CODE >271:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+1BC text1 CODE >272:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+1C0 text1 CODE >275:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+1C4 text1 CODE >276:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+1CC text1 CODE >277:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+1D2 text1 CODE >280:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+1F4 text1 CODE >281:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+20A text1 CODE >282:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+212 text1 CODE >283:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+216 text1 CODE >286:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+21E text1 CODE >291:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+22E text1 CODE >294:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+232 text1 CODE >295:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\user_app.c
+4C0 text0 CODE >34:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\main.c
+4C0 text0 CODE >36:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\main.c
+4C2 text0 CODE >39:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\main.c
+4C6 text0 CODE >40:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\main.c
+4CA text0 CODE >41:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\main.c
+4CE text0 CODE >42:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\main.c
+4D2 text0 CODE >44:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\main.c
+4D6 text0 CODE >49:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\main.c
+4DA text0 CODE >52:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\main.c
+4DC text0 CODE >60:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\main.c
+4E0 text0 CODE >63:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\main.c
+4E2 text0 CODE >64:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\main.c
+4E6 text0 CODE >65:C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Alarm PIC\main.c
+334 cinit CODE >7119:C:\Users\marce\AppData\Local\Temp\s7qc.s
+334 cinit CODE >7121:C:\Users\marce\AppData\Local\Temp\s7qc.s
+334 cinit CODE >7124:C:\Users\marce\AppData\Local\Temp\s7qc.s
+334 cinit CODE >7199:C:\Users\marce\AppData\Local\Temp\s7qc.s
+336 cinit CODE >7200:C:\Users\marce\AppData\Local\Temp\s7qc.s
+338 cinit CODE >7201:C:\Users\marce\AppData\Local\Temp\s7qc.s
+33A cinit CODE >7202:C:\Users\marce\AppData\Local\Temp\s7qc.s
+33C cinit CODE >7203:C:\Users\marce\AppData\Local\Temp\s7qc.s
+33E cinit CODE >7204:C:\Users\marce\AppData\Local\Temp\s7qc.s
+340 cinit CODE >7205:C:\Users\marce\AppData\Local\Temp\s7qc.s
+344 cinit CODE >7206:C:\Users\marce\AppData\Local\Temp\s7qc.s
+348 cinit CODE >7207:C:\Users\marce\AppData\Local\Temp\s7qc.s
+348 cinit CODE >7208:C:\Users\marce\AppData\Local\Temp\s7qc.s
+34A cinit CODE >7209:C:\Users\marce\AppData\Local\Temp\s7qc.s
+34E cinit CODE >7210:C:\Users\marce\AppData\Local\Temp\s7qc.s
+350 cinit CODE >7211:C:\Users\marce\AppData\Local\Temp\s7qc.s
+352 cinit CODE >7212:C:\Users\marce\AppData\Local\Temp\s7qc.s
+354 cinit CODE >7213:C:\Users\marce\AppData\Local\Temp\s7qc.s
+356 cinit CODE >7214:C:\Users\marce\AppData\Local\Temp\s7qc.s
+358 cinit CODE >7218:C:\Users\marce\AppData\Local\Temp\s7qc.s
+35A cinit CODE >7219:C:\Users\marce\AppData\Local\Temp\s7qc.s
+35C cinit CODE >7220:C:\Users\marce\AppData\Local\Temp\s7qc.s
+35E cinit CODE >7221:C:\Users\marce\AppData\Local\Temp\s7qc.s
+360 cinit CODE >7222:C:\Users\marce\AppData\Local\Temp\s7qc.s
+362 cinit CODE >7223:C:\Users\marce\AppData\Local\Temp\s7qc.s
+364 cinit CODE >7224:C:\Users\marce\AppData\Local\Temp\s7qc.s
+368 cinit CODE >7225:C:\Users\marce\AppData\Local\Temp\s7qc.s
+36C cinit CODE >7226:C:\Users\marce\AppData\Local\Temp\s7qc.s
+36C cinit CODE >7227:C:\Users\marce\AppData\Local\Temp\s7qc.s
+36E cinit CODE >7228:C:\Users\marce\AppData\Local\Temp\s7qc.s
+372 cinit CODE >7229:C:\Users\marce\AppData\Local\Temp\s7qc.s
+374 cinit CODE >7230:C:\Users\marce\AppData\Local\Temp\s7qc.s
+376 cinit CODE >7231:C:\Users\marce\AppData\Local\Temp\s7qc.s
+378 cinit CODE >7235:C:\Users\marce\AppData\Local\Temp\s7qc.s
+37C cinit CODE >7236:C:\Users\marce\AppData\Local\Temp\s7qc.s
+37E cinit CODE >7237:C:\Users\marce\AppData\Local\Temp\s7qc.s
+37E cinit CODE >7238:C:\Users\marce\AppData\Local\Temp\s7qc.s
+380 cinit CODE >7239:C:\Users\marce\AppData\Local\Temp\s7qc.s
+382 cinit CODE >7240:C:\Users\marce\AppData\Local\Temp\s7qc.s
+384 cinit CODE >7248:C:\Users\marce\AppData\Local\Temp\s7qc.s
+386 cinit CODE >7249:C:\Users\marce\AppData\Local\Temp\s7qc.s
+388 cinit CODE >7250:C:\Users\marce\AppData\Local\Temp\s7qc.s
+38A cinit CODE >7251:C:\Users\marce\AppData\Local\Temp\s7qc.s
+38C cinit CODE >7252:C:\Users\marce\AppData\Local\Temp\s7qc.s
+38E cinit CODE >7253:C:\Users\marce\AppData\Local\Temp\s7qc.s
+390 cinit CODE >7254:C:\Users\marce\AppData\Local\Temp\s7qc.s
+392 cinit CODE >7260:C:\Users\marce\AppData\Local\Temp\s7qc.s
+392 cinit CODE >7262:C:\Users\marce\AppData\Local\Temp\s7qc.s
+394 cinit CODE >7263:C:\Users\marce\AppData\Local\Temp\s7qc.s
 # %SYMTAB Section
 # An enumeration of all symbols in the program.
 # The beginning of the section is indicated by %SYMTAB.
@@ -328,7 +328,7 @@ __Hspace_2 0 0 ABS 0 - dist/default/production\Alarm_PIC.production.o
 __Hspace_4 60000A 0 ABS 0 - dist/default/production\Alarm_PIC.production.o
 __HidataBANK6 0 0 ABS 0 idataBANK6 dist/default/production\Alarm_PIC.production.o
 __Hibigdata 0 0 CODE 0 ibigdata dist/default/production\Alarm_PIC.production.o
-__mediumconst 0 0 MEDIUMCONST 0 mediumconst C:\Users\marce\AppData\Local\Temp\s154.o
+__mediumconst 0 0 MEDIUMCONST 0 mediumconst C:\Users\marce\AppData\Local\Temp\s7qc.o
 __Heeprom_data 0 0 EEDATA 0 eeprom_data dist/default/production\Alarm_PIC.production.o
 _T1CONbits 31E 0 ABS 0 - dist/default/production\Alarm_PIC.production.o
 __Lsmallconst 0 0 SMALLCONST 0 smallconst dist/default/production\Alarm_PIC.production.o
@@ -336,9 +336,9 @@ _LATA 4BE 0 ABS 0 - dist/default/production\Alarm_PIC.production.o
 _LATB 4BF 0 ABS 0 - dist/default/production\Alarm_PIC.production.o
 _LATC 4C0 0 ABS 0 - dist/default/production\Alarm_PIC.production.o
 _T2PR 323 0 ABS 0 - dist/default/production\Alarm_PIC.production.o
-___sp 0 0 STACK 2 stack C:\Users\marce\AppData\Local\Temp\s154.o
+___sp 0 0 STACK 2 stack C:\Users\marce\AppData\Local\Temp\s7qc.o
 _main 4C0 0 CODE 0 text0 dist/default/production\Alarm_PIC.production.o
-start 102 0 CODE 0 init C:\Users\marce\AppData\Local\Temp\s154.o
+start 102 0 CODE 0 init C:\Users\marce\AppData\Local\Temp\s7qc.o
 _SPIInitialize 4F0 0 CODE 0 text6 dist/default/production\Alarm_PIC.production.o
 __size_of_main 0 0 ABS 0 - dist/default/production\Alarm_PIC.production.o
 __HbssCOMRAM 0 0 ABS 0 bssCOMRAM dist/default/production\Alarm_PIC.production.o
@@ -350,11 +350,11 @@ __end_of_SW_ISR 590 0 CODE 0 text11 dist/default/production\Alarm_PIC.production
 __HdataCOMRAM 0 0 ABS 0 dataCOMRAM dist/default/production\Alarm_PIC.production.o
 __end_of_SPI1RX_ISR 58A 0 CODE 0 text14 dist/default/production\Alarm_PIC.production.o
 InterruptTimerXus@u16TimeXus_ 54E 0 COMRAM 1 cstackCOMRAM dist/default/production\Alarm_PIC.production.o
-__accesstop 560 0 ABS 0 - C:\Users\marce\AppData\Local\Temp\s154.o
-intlevel0 0 0 CODE 0 text C:\Users\marce\AppData\Local\Temp\s154.o
-intlevel1 0 0 CODE 0 text C:\Users\marce\AppData\Local\Temp\s154.o
-intlevel2 0 0 CODE 0 text C:\Users\marce\AppData\Local\Temp\s154.o
-intlevel3 0 0 CODE 0 text C:\Users\marce\AppData\Local\Temp\s154.o
+__accesstop 560 0 ABS 0 - C:\Users\marce\AppData\Local\Temp\s7qc.o
+intlevel0 0 0 CODE 0 text C:\Users\marce\AppData\Local\Temp\s7qc.o
+intlevel1 0 0 CODE 0 text C:\Users\marce\AppData\Local\Temp\s7qc.o
+intlevel2 0 0 CODE 0 text C:\Users\marce\AppData\Local\Temp\s7qc.o
+intlevel3 0 0 CODE 0 text C:\Users\marce\AppData\Local\Temp\s7qc.o
 __LbssCOMRAM 0 0 ABS 0 bssCOMRAM dist/default/production\Alarm_PIC.production.o
 _DEFAULT_ISR 534 0 CODE 0 text10 dist/default/production\Alarm_PIC.production.o
 __LnvFARRAM 0 0 FARRAM 0 nvFARRAM dist/default/production\Alarm_PIC.production.o
@@ -368,8 +368,8 @@ _ANSELA 400 0 ABS 0 - dist/default/production\Alarm_PIC.production.o
 _ANSELB 408 0 ABS 0 - dist/default/production\Alarm_PIC.production.o
 _ANSELC 410 0 ABS 0 - dist/default/production\Alarm_PIC.production.o
 _G_u32SystemTime1s 538 0 COMRAM 1 bssCOMRAM dist/default/production\Alarm_PIC.production.o
-___inthi_sp 0 0 STACK 2 stack C:\Users\marce\AppData\Local\Temp\s154.o
-___intlo_sp 0 0 STACK 2 stack C:\Users\marce\AppData\Local\Temp\s154.o
+___inthi_sp 0 0 STACK 2 stack C:\Users\marce\AppData\Local\Temp\s7qc.o
+___intlo_sp 0 0 STACK 2 stack C:\Users\marce\AppData\Local\Temp\s7qc.o
 __LdataCOMRAM 0 0 ABS 0 dataCOMRAM dist/default/production\Alarm_PIC.production.o
 _DAC1CON 7F 0 ABS 0 - dist/default/production\Alarm_PIC.production.o
 __Lintsave_regs 0 0 BIGRAM 1 intsave_regs dist/default/production\Alarm_PIC.production.o
@@ -446,7 +446,7 @@ __Hbank36 0 0 ABS 0 bank36 dist/default/production\Alarm_PIC.production.o
 __Hbank37 0 0 ABS 0 bank37 dist/default/production\Alarm_PIC.production.o
 __Hbigbss 0 0 BIGRAM 1 bigbss dist/default/production\Alarm_PIC.production.o
 __Hbigram 0 0 ABS 0 bigram dist/default/production\Alarm_PIC.production.o
-__smallconst 0 0 SMALLCONST 0 smallconst C:\Users\marce\AppData\Local\Temp\s154.o
+__smallconst 0 0 SMALLCONST 0 smallconst C:\Users\marce\AppData\Local\Temp\s7qc.o
 _SystemSleep 54E 0 CODE 0 text4 dist/default/production\Alarm_PIC.production.o
 UserAppRun@au16Length 501 0 COMRAM 1 dataCOMRAM dist/default/production\Alarm_PIC.production.o
 __Hcomram 0 0 ABS 0 comram dist/default/production\Alarm_PIC.production.o
@@ -578,8 +578,8 @@ __end_of_SysTickSetup 45A 0 CODE 0 text5 dist/default/production\Alarm_PIC.produ
 _UserAppInitialize 518 0 CODE 0 text3 dist/default/production\Alarm_PIC.production.o
 __Lfarbss 0 0 FARRAM 0 farbss dist/default/production\Alarm_PIC.production.o
 __Lfardata 0 0 FARRAM 0 fardata dist/default/production\Alarm_PIC.production.o
-stackhi 25FF 0 ABS 0 - C:\Users\marce\AppData\Local\Temp\s154.o
-stacklo 700 0 ABS 0 - C:\Users\marce\AppData\Local\Temp\s154.o
+stackhi 25FF 0 ABS 0 - C:\Users\marce\AppData\Local\Temp\s7qc.o
+stacklo 700 0 ABS 0 - C:\Users\marce\AppData\Local\Temp\s7qc.o
 __Lirdata 0 0 CODE 0 irdata dist/default/production\Alarm_PIC.production.o
 __Livt0x8 8 0 CODE 0 ivt0x8 dist/default/production\Alarm_PIC.production.o
 __Lspace_0 0 0 ABS 0 - dist/default/production\Alarm_PIC.production.o
@@ -619,7 +619,7 @@ __Ltext12 0 0 ABS 0 text12 dist/default/production\Alarm_PIC.production.o
 __Ltext13 0 0 ABS 0 text13 dist/default/production\Alarm_PIC.production.o
 __Ltext14 0 0 ABS 0 text14 dist/default/production\Alarm_PIC.production.o
 _G_u8UserAppAlarmFlag 548 0 COMRAM 1 bssCOMRAM dist/default/production\Alarm_PIC.production.o
-__ramtop 2600 0 RAM 0 ramtop C:\Users\marce\AppData\Local\Temp\s154.o
+__ramtop 2600 0 RAM 0 ramtop C:\Users\marce\AppData\Local\Temp\s7qc.o
 __Lpowerup 0 0 CODE 0 powerup dist/default/production\Alarm_PIC.production.o
 __Leeprom_data 0 0 EEDATA 0 eeprom_data dist/default/production\Alarm_PIC.production.o
 DEFAULT_ISR@u32UnhandledCounter 534 0 COMRAM 1 bssCOMRAM dist/default/production\Alarm_PIC.production.o

@@ -15,6 +15,6 @@
     #define PIC1_SPICS 17
     #define PIC2_SPICS 22
 
-    #define NETWORKNAME "marcelo 2.4G wifi network"
-    #define NETWORKPASSWORD "password"
+    #define NETWORKNAME "SM-A705W2771"
+    #define NETWORKPASSWORD "uggk2720"
 #endif
