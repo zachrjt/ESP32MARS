@@ -120,7 +120,7 @@ void setup()
             Serial.println("Could not find an event");
         }
     }
-
+    /*
     WiFi.begin(NETWORKNAME, NETWORKPASSWORD);
 
     while (WiFi.status() != WL_CONNECTED)
@@ -140,7 +140,7 @@ void setup()
     String weather_description;
     String weather_value;
 
-    webserver.begin("http://50.66.76.111/Calgary");//Set up request to webserver
+    webserver.begin("");//Set up request to webserver
     int HTTPcode = webserver.GET();//send http request and take the return code
 
     if(0 < HTTPcode)    //ie no error
@@ -192,7 +192,7 @@ void setup()
     }
 
     WiFi.disconnect();  //disconnect from WiFi
-
+    */
     Serial.println("ENDING SERIAL CONNECTION");
     sdcard_calendar.close();
     SD.end();
