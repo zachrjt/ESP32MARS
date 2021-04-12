@@ -8,4 +8,5 @@
     void displaySetup();
     void printSplitString(String text);
     void printNextEvent(void);
+    void printTemperature(void);
 #endif

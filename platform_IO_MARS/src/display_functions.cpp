@@ -4,6 +4,8 @@ extern TFT_eSPI tft;
 
 extern String Event1;
 
+extern String weather_description;  //Pulls the weather value like -4
+
 void displaySetup()
 {
     tft.init();
@@ -35,4 +37,14 @@ void printNextEvent(void)
 
     printSplitString("Next event: \n");
     printSplitString(Event1);
+}
+
+void printTemperature(void)
+{
+    tft.setCursor(0, 120);
+    tft.setTextColor(TFT_WHITE,TFT_BLACK);
+    tft.setTextSize(1);
+
+    printSplitString("Current Temperature: ");
+    printSplitString(weather_description);
 }

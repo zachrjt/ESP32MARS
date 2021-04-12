@@ -79,6 +79,7 @@ void loop()
   }
 
   printNextEvent();  //Prints the string on Event1 global var
+  printTemperature();
 }
 
 //Need webserver update task
