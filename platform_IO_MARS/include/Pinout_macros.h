@@ -3,6 +3,7 @@
 
     #define BUTTON_1_PIN        36
     #define BUTTON_2_PIN        37
+    #define BUTTON_3_PIN        0
 
     #define SD_MOSI 25
     #define SD_MISO 33

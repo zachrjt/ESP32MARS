@@ -13,9 +13,11 @@
     #define ALARM_ON    1
     #define ALARM_OFF   0
     #define SNOOZE_TIME_MINUTES 5
+    #define POMODORO_STUDY_TIME_MINUTES 20
+    #define POMODORO_BREAK_TIME_MINUTES 5
 
     #define FIRST_TIME_REQUEST      1
     #define SUBSEQUENT_TIME_REQUEST 2
 
-    #define TIME_REQUEST_INTERVAL 10
+    #define TIME_REQUEST_INTERVAL 1
 #endif

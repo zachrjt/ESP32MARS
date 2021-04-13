@@ -15,6 +15,8 @@
     void clockButtonsSetup();
     void pressed(Button2& btn);       //Button Pressed event
     void checkSnooze();
+    void updatePomodoroTime(void);
     extern void WifiUpdate(void);
     extern void updateEvents(void);
+    extern void displayPomodoro(void);
 #endif

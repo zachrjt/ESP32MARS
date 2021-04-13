@@ -22,23 +22,22 @@ TFT_eSPI tft = TFT_eSPI();  //create tft_display object for usage
 
 Button2 btn1(BUTTON_1_PIN);                 //creating button object for usage
 Button2 btn2(BUTTON_2_PIN);                 //creating button object for usage
+Button2 btn3(BUTTON_3_PIN);                 //creating button object for usage
 
 SPIClass SDSPI(HSPI); //defines the spi bus for use with the SD card                    ///////////////not sure how to use with the ical setup cpp since i defined it there
 SPIClass PIC1_SPI;    //defines the spi bus for use with the PIC with clock display
 SPIClass PIC2_SPI;    //defines the spi bus for use with the PIC with alarm capabilities
 
-
-
 extern Calendar myCalendar;
 extern long sector_table;
-extern String weather_description;  //Pulls the weather description
-extern String weather_value;  //Pulls the weather value like -4
 
 extern int TMRF;
-extern int snoozeF;
-
-
-extern String Event1;   //Name of the next event
+extern int DISPLAYTMRF;
+extern int snoozeFlag;
+extern int PomodoroFlag;
+extern int ALARMSTAMP;
+extern int TIMESTAMP;
+extern uint8_t AlarmFlag;
 
 void setup()
 {
@@ -48,41 +47,56 @@ void setup()
   {
     //record error message
   }
-  displaySetup();   //will put in set up initialize eventually
+  displaySetup();   //will put in set up initialize eventually (maybe)
   PICSPISetup();
   setUpInterrupts();
-
-  icalLibarySetup();//zach added, just doing first since the longest
+  icalLibarySetup();
   clockButtonsSetup();
 
-  //Event1 = myCalendar.jobs[0]->event_summary;
-
+  printNextEvent();
+  printTemperature();
 }
 
 void loop()
 {
   btn1.loop();
   btn2.loop();
-
-  if(TMRF)        //Snooze checking protocol
-  {
-    if(snoozeF)
-    {
-        checkSnooze();
-    }
-  }
+  btn3.loop();
 
   if (TMRF >= TIME_REQUEST_INTERVAL)  // gets time from PIC every 1 second
   {
     TMRF = 0;
     getTimefromPIC1();
-    updateEvents();
+    if(snoozeFlag)
+    {
+      checkSnooze();
+    }
+    if(PomodoroFlag)
+    {
+      updatePomodoroTime();
+      displayPomodoro();  
+    }
   }
 
-  printNextEvent();  //Prints the string on Event1 global var
-  printTemperature();
+
+  if(DISPLAYTMRF)   //updates display for non-pomodoro mode
+  {
+    if (!PomodoroFlag)
+    {
+      updateDisplay();
+    }
+    DISPLAYTMRF = 0;
+  }
+
+
+
+  /*if (ALARMSTAMP == TIMESTAMP) //checks for alarm from calendar event
+  {
+    if(!AlarmFlag)
+    {
+      AlarmFlag = ALARM_ON;
+      sendAlarmFlagtoPIC2();
+      updateEvents();         //it probably works
+    }
+  }*/
 }
-
-//Need webserver update task
-
-//need alarm interrupt

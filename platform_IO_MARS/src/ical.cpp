@@ -11,9 +11,9 @@ Calendar myCalendar;
 
 int DATESTAMP = 20210412;
 String DATEREQUEST;
-
 int TIMESTAMP = 181500;
 String TIMEREQUEST;
+extern int ALARMSTAMP;
 
 long sector_table[SECTORTABLESIZE];//this must remain allocated so that SD card can be reopened later if needed
 
@@ -79,12 +79,14 @@ void icalLibarySetup()
     {
         myCalendar.jobs[i] = (CalendarEvent *)(pvPortMalloc(sizeof(CalendarEvent)));
         long next_event = 0;
+        int event_order = 0;
         if(!find_event(&sdcard_calendar, &myCalendar, sector_table, &next_event, DATESTAMP, TIMESTAMP, 0xFF))
         {
             if(!initialize_event(&sdcard_calendar, &myCalendar, myCalendar.jobs[i], next_event))
             {
                 myCalendar.event_intialization = 1;//We have initializated an event within the calendar
-                myCalendar.event_precedence[i] = i;
+                myCalendar.event_precedence[i] = event_order++;
+                myCalendar.event_max_index++;
                 if(Serial)//prob dont need to check serial for print function in ical libary but im too tired to check
                 {
                     print_event(myCalendar.jobs[i]);
@@ -104,13 +106,24 @@ void icalLibarySetup()
             {
                 Serial.println("Could not find an event");
             }
+            myCalendar.event_precedence[i] = -1;
         }
     }
     sdcard_calendar.close();//closing serial, update cant be made but sector
     SD.end();
 
-
-    Event1 = myCalendar.jobs[0]->event_summary;
+    for(int i = 0; i < EVENTSTACKSIZE; i++)
+    {
+        if((&myCalendar)->event_precedence[i] == 0) //Looking for the element with the minimum precedence (0)
+        {
+            Event1 = myCalendar.jobs[i]->event_summary; //sending the summary to be printed in the LCD screen
+            ALARMSTAMP = myCalendar.jobs[i]->event_start_time_code;
+            Serial.println(myCalendar.jobs[i]->event_summary);
+            Serial.println(myCalendar.jobs[i]->event_start_date_code);
+            Serial.println(myCalendar.jobs[i]->event_start_time_code);
+            break;
+        }
+    }
 
     //WiFi setup-------------------------------------------------------------------------------------------------------------------------------------------------------------------
     WifiUpdate();
@@ -174,7 +187,7 @@ void WifiUpdate(void)
             end_of_usefull_string++;
         }
         
-        weather_description = weather_description.substring(0, end_of_usefull_string);
+        weather_description = weather_description.substring(0, end_of_usefull_string - 4);
         if(Serial)
         {
             Serial.print("The weather is: ");
@@ -253,6 +266,8 @@ void updateEvents(void)
         if((&myCalendar)->event_precedence[i] == 0) //Looking for the element with the minimum precedence (0)
         {
             Event1 = myCalendar.jobs[i]->event_summary; //sending the summary to be printed in the LCD screen
+            ALARMSTAMP = myCalendar.jobs[i]->event_start_time_code;
+            Serial.println(myCalendar.jobs[i]->event_summary);
             Serial.println(myCalendar.jobs[i]->event_start_date_code);
             Serial.println(myCalendar.jobs[i]->event_start_time_code);
             break;

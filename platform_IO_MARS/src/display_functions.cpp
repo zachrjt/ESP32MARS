@@ -3,8 +3,10 @@
 extern TFT_eSPI tft;
 
 extern String Event1;
-
-extern String weather_description;  //Pulls the weather value like -4
+extern String weather_description;
+extern int PomodoroFlag;
+extern int PomodoroMinutes;
+extern int PomodoroSeconds;
 
 void displaySetup()
 {
@@ -29,22 +31,58 @@ void printSplitString(String text)
   }
 }
 
-void printNextEvent(void)
+void printNextEvent(void) //Prints the string on Event1 global var
 {
-    tft.setCursor(0, 0, 2);
-    tft.setTextColor(TFT_WHITE,TFT_BLACK);
-    tft.setTextSize(2);
+  tft.setCursor(0, 0);
+  tft.setTextColor(TFT_WHITE,TFT_BLACK);
+  tft.setTextSize(2);
 
-    printSplitString("Next event: \n");
-    printSplitString(Event1);
+  printSplitString("Next event: \n");
+  printSplitString(Event1);
 }
 
-void printTemperature(void)
+void printTemperature(void) //Prints the temperature found on weather_description
 {
-    tft.setCursor(0, 120);
-    tft.setTextColor(TFT_WHITE,TFT_BLACK);
-    tft.setTextSize(1);
+  tft.setCursor(0, 90);
+  tft.setTextColor(TFT_WHITE,TFT_BLACK);
+  tft.setTextSize(2);
 
-    printSplitString("Current Temperature: ");
-    printSplitString(weather_description);
+  printSplitString("Current Temperature:");
+  printSplitString(weather_description + "C");
+}
+
+void updateDisplay(void)    //We can have bigger letters and have the two modes switch back and forth,
+{                           //except the event summary dont fit with the next letter size, might 
+  static int displayFocus;  //look into making shorter event summaries later on (probably not)
+
+  tft.fillScreen(TFT_BLACK);
+
+  //if(displayFocus)
+  {
+    printNextEvent();
+  }
+  //else
+  {
+    printTemperature(); 
+  }
+  displayFocus ^= 1;
+}
+
+void displayPomodoro(void)
+{
+  tft.fillScreen(TFT_BLACK);
+  tft.setCursor(0, 0);
+  tft.setTextColor(TFT_WHITE,TFT_BLACK);
+  tft.setTextSize(3);
+
+  if(PomodoroFlag == 1)
+  {
+    printSplitString("Study Time \n" + String(PomodoroMinutes) + ":" + String(PomodoroSeconds)
+                     + " left");
+  }
+  else if (PomodoroFlag == 2)
+  {
+    printSplitString("Break Time \n" + String(PomodoroMinutes) + ":" + String(PomodoroSeconds)
+                     + " left");
+  }
 }

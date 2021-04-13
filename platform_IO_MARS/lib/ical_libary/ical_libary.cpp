@@ -573,6 +573,12 @@ byte find_event(File *file, Calendar *user_calendar, long *sector_table, long *d
         max_sector_index++;
     }
 
+    if(max_sector_index == 0)   //Are there no sectors left in the sector table
+    {
+        return -2;     //No more sectors within sector table so return -2, similar to parsing function return values if we wish to consider this at somepoint
+    }
+
+
     int temp_event_timing[4] = {0, 0, 0, 0};//The timing (start date, time ; end date, time) of a found event
 
     for(int i = 0; i < max_sector_index; i+=2)//Look through the entire sector table(All relevant events)
@@ -1562,7 +1568,7 @@ void update_calendar_event(File *file, Calendar *user_calendar, long *sector_tab
     long next_event = 0;    //byte offset value of the next event
     int logic_state = 0;    //To make coding easier for zach
 
-    if(!find_event(file, user_calendar, sector_table, &next_event, date_stamp, time_stamp, 0xFF))
+    if(!find_event(file, user_calendar, sector_table, &next_event, date_stamp, time_stamp, 0xFF))//If find event returns -1 then error either since no more events or because general parsing error either way same outcome
     {
         //need to initialize the event
         if(!initialize_event(file, user_calendar, user_calendar->jobs[focused_event_index], next_event))
@@ -1579,22 +1585,37 @@ void update_calendar_event(File *file, Calendar *user_calendar, long *sector_tab
     {
         vPortFree(user_calendar->jobs[focused_event_index]);            //We deallocate the heap space that the event is contained in (hopefull it was heap allocated)??  
         user_calendar->jobs[focused_event_index] = NULL;                //Since we could not find another event we clearly set the jobs element pointer to NULL
-        user_calendar->event_precedence[focused_event_index] = -1;     //And we also set the event precendence to -1 since there are no more events to put here
+        user_calendar->event_precedence[focused_event_index] = -1;      //And we also set the event precendence to -1 since there are no more events to put here
+        user_calendar->event_max_index--;                               //Decrement the max index value so that we always get 0 precedence events
+        //need to update event precedence table taking into account a removed event
+        for(int i = 0; i < EVENTSTACKSIZE; i++)
+        {
+            if(user_calendar->event_precedence[i] == -1)
+            {
+                //do nothing since -1 precedence implies a useless event
+            }
+            else
+            {
+                user_calendar->event_precedence[i]--;   //If the event is not useless ie not a -1 precedence level decrement it so 1 becomes 0, 2 becomes 1 etc
+            }
+        }                        
     }
-
-    for(int i = 0; i < EVENTSTACKSIZE; i++)
+    else
     {
-        if(user_calendar->event_precedence[i] == 0)
+        for(int i = 0; i < EVENTSTACKSIZE; i++)
         {
-            user_calendar->event_precedence[i] == EVENTSTACKSIZE-1;
-        }
-        else if(user_calendar->event_precedence[i] == -1)
-        {
-            //Do nothing since this event can't be used anyway
-        }
-        else
-        {
-            user_calendar->event_precedence[i] = user_calendar->event_precedence[i] - 1;//event thing gets shift down one
-        }
+            if(i == focused_event_index)
+            {
+                user_calendar->event_precedence[i] = user_calendar->event_max_index;    //If the event was found set the element that was 0 to the max last precedence value
+            }
+            else if(user_calendar->event_precedence[i] == -1)
+            {
+                //do nothing since -1 precedence level implies useless event
+            }
+            else
+            {
+                user_calendar->event_precedence[i]--;   //If the event is not useless ie not a -1 precedence level decrement it so 1 becomes 0, 2 becomes 1 etc
+            }
+        }    
     }
 }

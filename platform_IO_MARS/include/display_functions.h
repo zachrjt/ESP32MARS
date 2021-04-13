@@ -9,4 +9,6 @@
     void printSplitString(String text);
     void printNextEvent(void);
     void printTemperature(void);
+    void updateDisplay(void);
+    void displayPomodoro(void);
 #endif

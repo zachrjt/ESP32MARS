@@ -2,11 +2,11 @@
 
 extern Button2 btn1;                 //creating button object for usage
 extern Button2 btn2;                 //creating button object for usage
+extern Button2 btn3;                 //creating button object for usage
 
 extern SPIClass SDSPI; //defines the spi bus for use with the SD card
 extern SPIClass PIC1_SPI;    //defines the spi bus for use with the PIC with clock display
 extern SPIClass PIC2_SPI;    //defines the spi bus for use with the PIC with alarm capabilities
-
 SPISettings PICSPISettings =    {
                                 5000000, 
                                 MSBFIRST,
@@ -16,21 +16,22 @@ SPISettings PICSPISettings =    {
 uint8_t Time0;
 uint8_t Time1;
 uint8_t Time2;
-
 extern int TIMESTAMP;   //to change when getTimeFromPIC() is called
 extern int DATESTAMP;   //to change when getTimeFromPIC() is called
-//int update_time;        //if high, connect to webserver and pull a new date and time
-
 int Hours;
 int Minutes;
 int Seconds;
 
-int AlarmHours = 99;
-int AlarmMinutes = 99;
-int AlarmSeconds = 99;
-
-int snoozeF;
+int ALARMSTAMP;         //uhhhhhhhhhhh I am lazy and tired of making fifty thousand variables ok im sorry
+int SnoozeHours = 99;
+int SnoozeMinutes = 99;
+int SnoozeSeconds = 99;
+int snoozeFlag;
 uint8_t AlarmFlag;
+int PomodoroMinutes = 99;
+int PomodoroSeconds = 99;
+int PomodoroFlag;           //0 if not using, 1 if study period, 2 if break period
+
 extern Calendar myCalendar;
 extern long sector_table;
 
@@ -166,48 +167,109 @@ void clockButtonsSetup()
 {
     pinMode(BUTTON_1_PIN, INPUT);
     pinMode(BUTTON_2_PIN, INPUT);
+    pinMode(BUTTON_3_PIN, INPUT);
     btn1.setPressedHandler(pressed);
     btn2.setPressedHandler(pressed);
+    btn3.setPressedHandler(pressed);
 }
 
 //Button Interrupts (?) for features, for some reason these are each triggered once during Start up so AlarmFlag is default off
-void pressed(Button2& btn) {
+void pressed(Button2& btn) 
+{
+    static int setup = 0;
 
-    if(btn ==  btn1)
+    if (setup > 3)
     {
-        if (AlarmFlag)  //Snooze Alarm if its on
+        if(btn ==  btn1)
         {
-        AlarmFlag = ALARM_OFF;
-        sendAlarmFlagtoPIC2();
-
-        //Set up new Alarm event 5 minutes from now here
-        AlarmHours = Hours;
-        AlarmMinutes = Minutes + SNOOZE_TIME_MINUTES;
-        AlarmSeconds = 0;
-        snoozeF = 1;
-        }
-    }
-    else if (btn ==  btn2)
-    {
-        if (AlarmFlag)  //Turn off Alarm if its on
-        {
+            if (AlarmFlag)  //Snooze Alarm if its on
+            {
             AlarmFlag = ALARM_OFF;
             sendAlarmFlagtoPIC2();
 
-            //Update event(?) here (not sure if needed)
+            if(Minutes < 55)    //Set up snooze event 5 minutes from now
+            {
+                SnoozeMinutes = Minutes + SNOOZE_TIME_MINUTES;
+                SnoozeHours = Hours;
+            }
+            else 
+            {
+                SnoozeMinutes = Minutes + SNOOZE_TIME_MINUTES - 60;
+                SnoozeHours = (Hours + 1) % 24;
+            }
+            SnoozeSeconds = 0;
+            snoozeFlag = 1;
+            }
         }
+        else if (btn ==  btn2)
+        {
+            if (AlarmFlag)  //Turn off Alarm if its on
+            {
+                AlarmFlag = ALARM_OFF;
+                sendAlarmFlagtoPIC2();
+            }
+        }
+        else if (btn == btn3)
+        {
+            if(!PomodoroFlag)
+            {
+                PomodoroMinutes = 20;
+                PomodoroSeconds = 0;
+                PomodoroFlag = 1;
+                displayPomodoro();
+            }
+        }
+    }
+    else
+    {
+        setup++;
     }
 }
 
 void checkSnooze()
 {
-    if((Hours == AlarmHours) && (Minutes == AlarmMinutes) && (Seconds == AlarmSeconds))
+    if((Hours == SnoozeHours) && (Minutes == SnoozeMinutes) && (Seconds == SnoozeSeconds))
     {
         AlarmFlag = ALARM_ON;
         sendAlarmFlagtoPIC2();
-        AlarmHours = 99;
-        AlarmMinutes = 99;
-        AlarmSeconds = 99;
-        snoozeF = 0;
+        SnoozeHours = 99;
+        SnoozeMinutes = 99;
+        SnoozeSeconds = 99;
+        snoozeFlag = 0;
+    }
+}
+
+void updatePomodoroTime(void)
+{
+    if (PomodoroSeconds == 0)
+    {
+        if(PomodoroMinutes == 0)
+        {
+            if(PomodoroFlag == 1)
+            {
+                PomodoroMinutes = 5;
+                PomodoroSeconds = 0;
+                AlarmFlag = ALARM_ON;
+                sendAlarmFlagtoPIC2();
+                PomodoroFlag = 2;
+            }
+            else
+            {
+                PomodoroMinutes = 99;
+                PomodoroSeconds = 99;
+                AlarmFlag = ALARM_ON;
+                sendAlarmFlagtoPIC2();
+                PomodoroFlag = 0;
+            }
+        }
+        else
+        {
+            PomodoroMinutes--;
+            PomodoroSeconds = 59;
+        }
+    }
+    else
+    {
+        PomodoroSeconds--;
     }
 }
