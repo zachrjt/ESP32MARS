@@ -36,8 +36,8 @@ SPIClass SDSPI(HSPI); //defines the spi bus for use with the SD card
 //PERIPHERAL GPIO SETUP SECTION END------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-int DATESTAMP = 20210411;  //The current year, month, day UTC
-int TIMESTAMP = 000000;    //The current time: hours (24 hours) minutes, seconds, UTC
+int DATESTAMP = 20210401;  //The current year, month, day UTC
+int TIMESTAMP = 200000;    //The current time: hours (24 hours) minutes, seconds, UTC
 
 //SETUP FUNCTION START-------------------------------------------------------------------------------------------------------------------------------------------------------------
 void setup()
@@ -119,6 +119,7 @@ void setup()
         }
         else
         {
+            myCalendar.event_precedence[i] = -1;
             Serial.println("Could not find an event");
         }
     }
