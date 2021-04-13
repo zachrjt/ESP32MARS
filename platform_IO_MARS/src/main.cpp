@@ -100,12 +100,14 @@ void setup()
     {
         myCalendar.jobs[i] = (CalendarEvent *)(pvPortMalloc(sizeof(CalendarEvent)));
         long next_event = 0;
+        int event_order =0;
         if(!find_event(&sdcard_calendar, &myCalendar, sector_table, &next_event, DATESTAMP, TIMESTAMP, 0xFF))
         {
             if(!initialize_event(&sdcard_calendar, &myCalendar, myCalendar.jobs[i], next_event))
             {
                 myCalendar.event_intialization = 1;//We have initializated an event within the calendar
-                myCalendar.event_precedence[i] = i;
+                myCalendar.event_precedence[i] = event_order++;
+                myCalendar.event_max_index++;
 
                 print_event(myCalendar.jobs[i]);
                 continue;//All good move onto next event

@@ -96,6 +96,8 @@
 
         int event_precedence[EVENTSTACKSIZE];                //The ints within the array related to the indices of the events, this is the order in which the events occur
 
+        int event_max_index = 0;                             //The number of events that are in the jobs array that are usable
+
         byte event_intialization = 0;                        //Indicates if events are present within the jobs array
 
         CalendarEvent *jobs[EVENTSTACKSIZE];                 //An array of CalendarEvent pointers that point to dynamically allocated or statically allocated CalendarEvent strucs
@@ -224,7 +226,9 @@
         -A byte for the update_sectors option, this will remove the event from the sector table before returning it so that the event_stack can be filled, 0x00 for no, 0xFF for yes
     PROMISES:
         -Upon success to return 0
-        -Upon failure to return -1
+        -Failure will return:
+            -1 if a general error like parsing or SD card connection occurs
+            -2 if there are no more events available
     */
 
 
@@ -333,16 +337,6 @@
         -To reorder the event precedence array
         -If no more events can be found in the ical file/sector table then the jobs array pointer will be NULL
             -And the event_precedence array with have a -1 at the element spot
-    */
-
-   byte fill_calendar_events(File *file, Calendar *user_calendar, long *sector_table, const int date_stamp, const int time_stamp);
-    /* 
-    REQUIRES:
-        -A SD card class file address which is initialized and opened
-        -A pointer to an initialized Calendar with allocated jobs in
-        -A pointer to the current sector table for the SD card ical file
-    PROMISES:
-        -To fill the event
     */
 //FUNCTION DECLARATION SECTION END-------------------------------------------------------------------------------------------------------------------------------------------------
 
