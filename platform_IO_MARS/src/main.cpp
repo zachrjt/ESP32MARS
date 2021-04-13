@@ -30,7 +30,7 @@ SPIClass PIC2_SPI;    //defines the spi bus for use with the PIC with alarm capa
 
 
 extern Calendar myCalendar;
-extern long sector_table[SECTORTABLESIZE];
+extern long sector_table;
 extern String weather_description;  //Pulls the weather description
 extern String weather_value;  //Pulls the weather value like -4
 
@@ -38,7 +38,7 @@ extern int TMRF;
 extern int snoozeF;
 
 
-String Event1 = "Pass out and sleep";   //Name of the next event
+extern String Event1;   //Name of the next event
 
 void setup()
 {
@@ -50,12 +50,12 @@ void setup()
   }
   displaySetup();   //will put in set up initialize eventually
   PICSPISetup();
-  clockButtonsSetup();
   setUpInterrupts();
 
   icalLibarySetup();//zach added, just doing first since the longest
+  clockButtonsSetup();
 
-  Event1 = myCalendar.jobs[0]->event_summary;
+  //Event1 = myCalendar.jobs[0]->event_summary;
 
 }
 
@@ -76,6 +76,7 @@ void loop()
   {
     TMRF = 0;
     getTimefromPIC1();
+    updateEvents();
   }
 
   printNextEvent();  //Prints the string on Event1 global var

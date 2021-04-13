@@ -6,6 +6,7 @@
 
 #ifndef SPI_FUNCTIONS_H
     #define SPI_FUNCTIONS_H
+    #include <ical_libary.h>            //Icalendar format file libary
 
     void PICSPISetup();
     void sendTimetoPIC1(void);          //Send time to PIC
@@ -15,4 +16,5 @@
     void pressed(Button2& btn);       //Button Pressed event
     void checkSnooze();
     extern void WifiUpdate(void);
+    extern void updateEvents(void);
 #endif

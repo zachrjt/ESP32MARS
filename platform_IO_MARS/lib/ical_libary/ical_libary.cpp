@@ -4,7 +4,6 @@
 
 #include "ical_libary.h"  //Associated header file
 
-
 char *parse_data_string(File *file, const long file_byte_offset, long max_byte_offset, ICALMODERTN const byte return_string_mode)
 {
     long current_file_byte_offset = file_byte_offset;
@@ -84,7 +83,7 @@ long find_next_keyword(File *file, const char *keyword, const long file_byte_off
 
     if (max_byte_offset == -1)   //pass -1 if we dont want to specifiy A maximum
     {
-        max_byte_offset = 2147483647;   //maximum value possible
+        max_byte_offset = 2147483647;   //maximum value possible for a long
     }
 
     int keyword_index = 0;                       //Pointer index of our keyword string
@@ -426,7 +425,7 @@ byte initialize_event(File *file, Calendar *user_calendar, CalendarEvent *user_e
     {
         return -1;
     }
-    const long max_event_byte_offset = find_next_keyword(file, "END:VEVENT", ICALOFFSET event_byte_offset, ICALOFFSET -1, ICALMODERTN FIRSTCHAR); //Find end of event
+    const long max_event_byte_offset = find_next_keyword(file, "END:VEVENT", ICALOFFSET event_byte_offset, ICALOFFSET -1, ICALMODERTN NEXTLINE); //Find end of event
     if(max_event_byte_offset < 0)
     {
         return -1;  //Error or failure to find end of event, returning error code
@@ -545,6 +544,11 @@ byte initialize_event(File *file, Calendar *user_calendar, CalendarEvent *user_e
 
         temp_code = (temp_code/100);
         user_event->event_end_year = temp_code;
+
+
+        //let us now update the event struc byte offset values incase we need them later
+        user_event->start_byte_offset = event_byte_offset;
+        user_event->end_byte_offset = max_event_byte_offset;
     }
     //Grabing times section--------------------------------------------------------------------------------------------------------------------------------------------------------
     
@@ -772,7 +776,9 @@ byte find_event(File *file, Calendar *user_calendar, long *sector_table, long *d
                             Serial.print(" / ");
                             Serial.println(temp_event_timing[3]);
                         }
-                        //These events were on the sector table but no longer are relevant shoul
+                        //These events were on the sector table but no longer are relevant, could happen if the time stamp is updated before find event after sector table initialization
+                        //Or if the event stack size isnt larger enough so like 100 events are scheduled to start/end at a given time and we can only "recognize/acknowledge" EVENTSTACKSIZE number of them
+                        //THen the end time around when removing these event we would arrive here finding event that have finished but are still present within the sector table
                         long event_end = find_next_keyword(file, "END:VEVENT", found_event_byte_offset, NOEND, NEXTLINE);
                         update_sector_table(sector_table, found_event_byte_offset, event_end);
                     }
@@ -824,6 +830,7 @@ byte fetch_event_time(File *file, Calendar *user_calendar, const long event_byte
     event_end_byte_offset = find_next_keyword(file, "END:VEVENT", event_start_byte_offset, NOEND, FIRSTCHAR);//Find end of event
 
     working_byte_offset = find_next_keyword(file, "DTSTART", event_start_byte_offset, event_end_byte_offset, NEXTCHAR);//Find the start date
+    
     if(working_byte_offset < 0)
     {
         return -1;  //Critical Error during search for DTSTART this is bad since all events must have a start time, bad ICAL file
@@ -1540,5 +1547,54 @@ void print_calendar(Calendar *user_calendar)
 }
 
 
-//only thing i would change would edit the parse event time function to use a prexisiting libary to adjust event times the PROPER way to UTC and manage time zone ids with the calendar and events
-//~zach
+void update_calendar_event(File *file, Calendar *user_calendar, long *sector_table, const int date_stamp, const int time_stamp)
+{
+    int focused_event_index = 0;
+    for(int i = 0; i < EVENTSTACKSIZE; i++)
+    {
+        if(user_calendar->event_precedence[i] == 0) //Looking for the element with the minimum precedence (0)
+        {
+            focused_event_index = i;                //Grabbing the jobs index which has the event to remove/refresh
+            break;
+        }
+    }
+    
+    long next_event = 0;    //byte offset value of the next event
+    int logic_state = 0;    //To make coding easier for zach
+
+    if(!find_event(file, user_calendar, sector_table, &next_event, date_stamp, time_stamp, 0xFF))
+    {
+        //need to initialize the event
+        if(!initialize_event(file, user_calendar, user_calendar->jobs[focused_event_index], next_event))
+        {
+            logic_state = 1;    //Since we did find an event and we did initialze it were good
+            if(Serial)
+            {
+                Serial.println("An event was replaced with a new event");
+            }
+        }
+    }
+    
+    if(!logic_state)
+    {
+        vPortFree(user_calendar->jobs[focused_event_index]);            //We deallocate the heap space that the event is contained in (hopefull it was heap allocated)??  
+        user_calendar->jobs[focused_event_index] = NULL;                //Since we could not find another event we clearly set the jobs element pointer to NULL
+        user_calendar->event_precedence[focused_event_index] = -1;     //And we also set the event precendence to -1 since there are no more events to put here
+    }
+
+    for(int i = 0; i < EVENTSTACKSIZE; i++)
+    {
+        if(user_calendar->event_precedence[i] == 0)
+        {
+            user_calendar->event_precedence[i] == EVENTSTACKSIZE-1;
+        }
+        else if(user_calendar->event_precedence[i] == -1)
+        {
+            //Do nothing since this event can't be used anyway
+        }
+        else
+        {
+            user_calendar->event_precedence[i] = user_calendar->event_precedence[i] - 1;//event thing gets shift down one
+        }
+    }
+}

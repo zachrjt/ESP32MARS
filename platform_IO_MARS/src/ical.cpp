@@ -12,10 +12,12 @@ Calendar myCalendar;
 int DATESTAMP = 20210412;
 String DATEREQUEST;
 
-int TIMESTAMP = 181500; //730am local?
+int TIMESTAMP = 181500;
 String TIMEREQUEST;
 
 long sector_table[SECTORTABLESIZE];//this must remain allocated so that SD card can be reopened later if needed
+
+String Event1 = "Pass out and sleep";   //Name of the next event
 
 void icalLibarySetup()
 {
@@ -108,6 +110,8 @@ void icalLibarySetup()
     SD.end();
 
 
+    Event1 = myCalendar.jobs[0]->event_summary;
+
     //WiFi setup-------------------------------------------------------------------------------------------------------------------------------------------------------------------
     WifiUpdate();
 }
@@ -162,7 +166,7 @@ void WifiUpdate(void)
         }
         if(end_of_pattern != 0)
         {
-           weather_description = request_data.substring((end_of_pattern+1), (end_of_pattern+11));
+           weather_description = request_data.substring((end_of_pattern+1), (end_of_pattern+12));
         }
         int end_of_usefull_string = 0;
         for(int i = 0; weather_description[i] != '<'; i++)
@@ -221,4 +225,37 @@ void WifiUpdate(void)
 
     WiFi.disconnect();  //disconnect from WiFi
 
+}
+
+void updateEvents(void)
+{
+    SDSPI.begin(SD_SPICLK, SD_MISO, SD_MOSI, SD_SPICS);//begin sdspi connecition with sd card
+    if (!SD.begin(SD_SPICS,  SDSPI))
+    {
+        if(Serial)
+        {
+            Serial.println("Could not mount SD card!");
+            Serial.println("Try re-inserting the SD card and hitting the side reset button");
+        }
+        return;
+    }
+    if(Serial)
+    {
+        Serial.println("Mounted SD card");
+    }
+
+    File sdcard_calendar = SD.open("/ils_calendar.ics");
+    update_calendar_event(&sdcard_calendar, &myCalendar, sector_table, DATESTAMP, TIMESTAMP);
+    sdcard_calendar.close();
+
+    for(int i = 0; i < EVENTSTACKSIZE; i++)
+    {
+        if((&myCalendar)->event_precedence[i] == 0) //Looking for the element with the minimum precedence (0)
+        {
+            Event1 = myCalendar.jobs[i]->event_summary; //sending the summary to be printed in the LCD screen
+            Serial.println(myCalendar.jobs[i]->event_start_date_code);
+            Serial.println(myCalendar.jobs[i]->event_start_time_code);
+            break;
+        }
+    }
 }

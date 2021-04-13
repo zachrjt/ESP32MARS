@@ -18,6 +18,7 @@ uint8_t Time1;
 uint8_t Time2;
 
 extern int TIMESTAMP;   //to change when getTimeFromPIC() is called
+extern int DATESTAMP;   //to change when getTimeFromPIC() is called
 //int update_time;        //if high, connect to webserver and pull a new date and time
 
 int Hours;
@@ -30,6 +31,8 @@ int AlarmSeconds = 99;
 
 int snoozeF;
 uint8_t AlarmFlag;
+extern Calendar myCalendar;
+extern long sector_table;
 
 void PICSPISetup()
 {
@@ -182,11 +185,6 @@ void pressed(Button2& btn) {
         AlarmMinutes = Minutes + SNOOZE_TIME_MINUTES;
         AlarmSeconds = 0;
         snoozeF = 1;
-        }
-        else
-        {
-        AlarmFlag = ALARM_ON;
-        sendAlarmFlagtoPIC2();
         }
     }
     else if (btn ==  btn2)

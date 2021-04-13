@@ -20,4 +20,5 @@
 
     void icalLibarySetup();
     void WifiUpdate(void);
+    void updateEvents(void);
 #endif

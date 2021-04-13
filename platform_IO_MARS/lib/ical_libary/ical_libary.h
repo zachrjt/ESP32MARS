@@ -5,36 +5,34 @@
     #include <SD.h>           //SD Card Libary
     //https://www.youtube.com/watch?v=y8OnoxKotPQ is best way I can sum up the .ical libary 
 
-    //ALL TIMES ARE UTCCCCCCCCCCCCCCCCCCCCCCC WHEN USING EVENTS
-    //CURRENTLY IN DAYLIGHT SAVINGS SO local time is -600 hours off, calendar takes care of daylight savings conversions provided the Calendar.timezone.daylight_mode is correct
-    //1 for daylight savings, 0 for standard time, note intialized events will not have there times adjusted automatically so on leap forward/back days, non UTC time events
-    //Will need to be reloaded, best if you are going to change that byte is to re-intialize the sector table then reintialize the events of the calendar, this will fix that issue
+
+
 
 //DEFINE STATEMENT SECTION START---------------------------------------------------------------------------------------------------------------------------------------------------
-    //#define PRINTOUTDEBUG  //Used so the printing function will replace whitespace with identifiers to make string output debug easier, comment out for no debug, 
+    //#define PRINTOUTDEBUG          //Used so the printing function will replace whitespace with identifiers to make string output debug easier, comment out for no debug, 
 
-    #define NEF 9999  //No-more-events is a return long value for when no events could be found that match the timestamp and tolerance given, different than EOF 
+    #define NEF 9999                //No-more-events is a return long value for when no events could be found that match the timestamp and tolerance given, different than EOF 
 
-    //77 is the maximum number of bytes/characters allowed in a single row of a .ical file, including the CR-LF terminating sequence
-    #define MAX_NAME_SIZE 77    //The maximimum array length of a character array containing a name
-    #define MAX_SUMMARY_SIZE 154 //The maximimum array length of a character array containing a event summary
-    #define MAX_LOCATION_SIZE 154 //The maximimum array length of a character array containing a location name
-    #define MAX_TZ_SIZE 35  //The maximum array length of a character array containing time-zone property strings, dont need to be as long
+    #define MAX_NAME_SIZE 77        //The maximimum array length of a character array containing a name
+    #define MAX_SUMMARY_SIZE 154    //The maximimum array length of a character array containing a event summary
+    #define MAX_LOCATION_SIZE 154   //The maximimum array length of a character array containing a location name
+    #define MAX_TZ_SIZE 35          //The maximum array length of a character array containing time-zone property strings, dont need to be as long
 
-    #define ICALMODERTN    //Just a nice way of indicating if an argument or parameter is mode of return value
-    #define ICALMODEOPR    //Just a nice way of indicating if an argument or parameter is mode of operation to find the return value
-    #define ICALOFFSET     //Just a nice way of indicating if an argument or parameter is a byte offset
+    #define ICALMODERTN             //Just a nice way of indicating if an argument or parameter is mode of return value
+    #define ICALMODEOPR             //Just a nice way of indicating if an argument or parameter is mode of operation to find the return value
+    #define ICALOFFSET              //Just a nice way of indicating if an argument or parameter is a byte offset
     
-    #define EVENTSTACKSIZE  8//The number of events being managed by the calendar at any given time
-    #define SECTORTABLESIZE 256    //The number of elements within the sector_table
+    #define EVENTSTACKSIZE  8       //The number of events being managed by the calendar at any given time
+    #define SECTORTABLESIZE 512     //The number of elements within the sector_table, # of pairs = 1/2 of this number
     
-    #define NEXTLINE 0x00   //Used for the keyword finding functions
-    #define FIRSTCHAR 0xFF  //Used for the keyword finding functions
-    #define NEXTCHAR 0x11   //Used for the keyword finding functions
+    #define NEXTLINE 0x00           //Used for the keyword finding functions to return the byteoffset of the first char of the next line after the keyword
+    #define FIRSTCHAR 0xFF          //Used for the keyword finding functions to return the byteoffset of the first char of the keyword
+    #define NEXTCHAR 0x11           //Used for the keyword finding functions to return the byteoffset of the next char after the keyword's last char
 
-    #define ONELINE 0x00     //Used for the parse_data function 
-    #define MULTILINE 0xFF  //Used for the parse_data function 
-    #define NOEND -1    //Used for the parse_data function 
+    #define ONELINE 0x00            //Used for the parse_data function to allow the parse function to only return a oneline string
+    #define MULTILINE 0xFF          //Used for the parse_data function to allow the parse function to return a multi-line string, (no newlines added)
+
+    #define NOEND -1                //Used for the parse_data function to indicate that a parse function will have no limit how far it searches in the file
 //DEFINE STATEMENT SECTION END-----------------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -43,18 +41,21 @@
 //CLASS/STRUCT DECLARATION SECTION START-------------------------------------------------------------------------------------------------------------------------------------------
     typedef struct Event
     {
-        //Sequence of events isn't consider, simply the order inwhich they are present within the .ical file is used for sequence
-        //Repeated/reoccuring events are implemented, perhaps if there is enough time
+        //Sequence of events isn't considered, simply the order inwhich they are present within the .ical file is used for sequence, re-occuring events are not implemented
+
         char event_summary[MAX_SUMMARY_SIZE];   //The summary of the event
 
         char event_location[MAX_LOCATION_SIZE]; //The location of the event
 
-        int event_start_date_code;  //Start date of event in utc parts: 2021 04 06(used for internal comparison)
+        long start_byte_offset;     //The byte offset of the event's BEGIN:VEVENT
+        long end_byte_offset;       //The byte offset of first char of the line following the event's END:VEVENT
+
+        int event_start_date_code;  //Start date of event in utc parts: 20210406 (used for internal comparison)
         int event_start_year;       //Start date year
         int event_start_month;      //Start date month
         int event_start_day;        //Start date day
 
-        int event_start_time_code;  //Start time of event in utc parts: 03 27 43 (used for internal comparison)
+        int event_start_time_code;  //Start time of event in utc parts: 032743 (used for internal comparison)
         int event_start_hour;       //Start time hour
         int event_start_minute;     //Start date minute
         int event_start_second;     //Start date seconds
@@ -80,23 +81,28 @@
 
         byte daylight_status;                   //If 1 then daylight saving occurs, if 0 no daylight savings
         byte daylight_mode;                     //Determines if we are in daylight or not, must be externally updated based on some webserver time or by hand, 1 for daylight savings 0 for no savings
+        
         char daylight_time_zone [MAX_TZ_SIZE];  //Time zone name (MST, PST, etc) of the daylight savings timezone
         int daylight_offset;                    //The numerical time offset, from UTC time, that daylight savings is in -0700 would be 7 hours behind utc
+        
         char standard_time_zone [MAX_TZ_SIZE];  //Time zone name (MST, MDT, etc) of the non-daylight savings timezone
         int standard_offset;                    //The numerical time offset, from UTC time, that standard time is in
 
-        //In the actual produc there should be more info like when daylight savings happens but parsing and interpreting this other info is tediuous
-        //Instead it's easier to upload this info to a server and have it grab some time, so this may or may not be implemented in the prototype
         //Soooo, an excercise left to the reader: Try parsing "RRULE:FREQ=YEARLY;BYMONTH=11;BYDAY=1SU" in a function that can accurately change the time for daylight savings
     } TimeZoneInfo;
 
     typedef struct UserCalendar
     {
-        char agenda_name[MAX_NAME_SIZE];                     //The name of the calendar, like who tf needs a multi-line calendar name 
+        char agenda_name[MAX_NAME_SIZE];                     //The name of the calendar, like who tf needs a multi-line calendar name
+
         TimeZoneInfo timezone;                               //A struc containing the timezone information about the Calendar
-        int event_precedence[EVENTSTACKSIZE];               //The ints within the array related to the indices of the events, this is the order in which the events occur
+
+        int event_precedence[EVENTSTACKSIZE];                //The ints within the array related to the indices of the events, this is the order in which the events occur
+
         byte event_intialization = 0;                        //Indicates if events are present within the jobs array
+
         CalendarEvent *jobs[EVENTSTACKSIZE];                 //An array of CalendarEvent pointers that point to dynamically allocated or statically allocated CalendarEvent strucs
+
     } Calendar;
 
 //CLASS/STRUCT DECLARATION SECTION END---------------------------------------------------------------------------------------------------------------------------------------------
@@ -111,8 +117,8 @@
         -A file_byte_offset which is the byte location/offset within the SD card File
         -A SD card class file address which is initialized and opened
         -A return_string_mode byte, most common is 0xFF indicating:
-            -0xFF: Mode is till end of string so it can return multi-line strings
-            -0x00: Mode is till end of the line (CR-LF sequence) 
+            -0xFF(MULTILINE): Mode is till end of string so it can return multi-line strings
+            -0x00(ONELINE): Mode is till end of the line (CR-LF sequence) 
         -A long containing the max byte offset we search to, if not appliacable use -1 or NOEND
     PROMISES:
         -Upon sucess to return a pointer to a heap allocated character array which contains the string or multi-line string that is on the line/lines following 
@@ -122,7 +128,7 @@
                 -Insufficent heap space for allocation of a text buffer
                 -Invaild file_byte_offset
                 -Bad SD card read
-                -End of file before end of a line
+                -End of file before end of a line (a bad ical file)
         -THREAD SAFE WITH pvPortMalloc() / vPortFree()
     */
 
@@ -132,43 +138,44 @@
     REQUIRES:
         -A file_byte_offset which is the byte location/offset within the SD card File
         -A max_byte_offset which is the maximum file byte offset to be searched up to, 
-            -PASS -1 IF NO MAX OFFSET DESIRED
+            -(-1) or NOEND, for no max offset to search to
         -A SD card class file address which is initialized and opened
         -The address to string constant or char array that is NULL TERMINATED and contains the desired keyword to be found
         -A return_offset_mode byte, most common is 0xFF, indicating:
-            -0xFF: Mode is start of keyword, means return value byte-offset is the first byte of the sequence of the keyword
-            -0x11: Mode is end of keyword, means return value byte-offset is the first byte after the end of the keyword
-            -0x00: Mode is next line after keyword, means return value byte-offset is the first byte of the next line after the keyword occurance line
+            -0xFF(FIRSTCHAR): Mode is start of keyword, means return value byte-offset is the first byte of the sequence of the keyword
+            -0x11(NEXTCHAR): Mode is end of keyword, means return value byte-offset is the first byte after the end of the keyword
+            -0x00(NEXTLINE): Mode is next line after keyword, means return value byte-offset is the first byte of the next line after the keyword occurance line
     PROMISES:
         -Upon sucess to return a long containing the file_byte_offset of the first char of the keyword specified that 
         occurs first after the input file_byte_offset
         -Upon error to return EOF
-                -Possible failures include:
-                -Invaild file_byte_offset
-                -End of file before occurance of the keyword
-        -Upon failure to find keyword with the max_byte_offset
-            =Return -2
+            -Possible failures include:
+            -Invaild file_byte_offset
+            -End of file before occurance of the keyword
+        -Upon failure to find keyword within the max_byte_offset and the file_byte_offset
+            -Return -2
     */
 
 
+    //legacy function may not be updated to the same functionality of find_next_keyword
     long find_previous_keyword(File *file, const char *keyword, const long file_byte_offset, long min_byte_offset, ICALMODERTN const byte return_offset_mode);
     /* 
     REQUIRES:
         -A file_byte_offset which is the byte location/offset within the SD card File that the function will read backwards from
         -A min_byte_offset which is the minimum file byte offset to be searched back up to, 
-            -PASS -1 IF NO MIN OFFSET DESIRED
+            -PASS -1(NOEND) IF NO MIN OFFSET DESIRED
         -A SD card class file address which is initialized and opened
         -The address to string constant or char array that is NULL TERMINATED and contains the desired keyword to be found
         -A return_offset_mode byte, most common is 0xFF, indicating:
-            -0xFF: Mode is start of keyword, means return value byte-offset is the first byte of the sequence of the keyword
-            -0x11: Mode is end of keyword, means return value byte-offset is the first byte after the end of the keyword
-            -0x00: Mode is next line after keyword, means return value byte-offset is the first byte of the next line after the keyword occurance line
+            -0xFF(FIRSTCHAR): Mode is start of keyword, means return value byte-offset is the first byte of the sequence of the keyword
+            -0x11(NEXTCHAR): Mode is end of keyword, means return value byte-offset is the first byte after the end of the keyword
+            -0x00(NEXTLINE): Mode is next line after keyword, means return value byte-offset is the first byte of the next line after the keyword occurance line
     PROMISES:
         -Upon sucess to return a long containing the file_byte_offset of byte per the specified mode
         -Upon Error to return EOF
-                -Possible failures include:
-                -Invaild file_byte_offset
-                -Begining of file before occurance of the keyword
+            -Possible failures include:
+            -Invaild file_byte_offset
+            -Begining of file before occurance of the keyword
         -Upon failure to find keyword after the min_byte_offset
             =Return -2
     */
@@ -312,9 +319,33 @@
    void print_calendar(Calendar *user_calendar);
     /* 
     REQUIRES:
-        -A pointer to an initializaed Calendar 
+        -A pointer to an initialized Calendar 
     PROMISES:
         -To Serial print out information about the calendar
+    */
+
+   void update_calendar_event(File *file, Calendar *user_calendar, long *sector_table, const int date_stamp, const int time_stamp);
+    /* 
+    REQUIRES:
+        -A SD card class file address which is initialized and opened
+        -A pointer to an initialized Calendar with initialized events in it's job array
+        -A pointer to the current sector table for the SD card ical file
+        -The current date and time stamps in UTC
+    PROMISES:
+        -To refresh the next occuring/occured event from the Calendar jobs
+        -To reorder the event precedence array
+        -If no more events can be found in the ical file/sector table then the jobs array pointer will be NULL
+            -And the event_precedence array with have a -1 at the element spot
+    */
+
+   byte fill_calendar_events(File *file, Calendar *user_calendar, long *sector_table, const int date_stamp, const int time_stamp);
+    /* 
+    REQUIRES:
+        -A SD card class file address which is initialized and opened
+        -A pointer to an initialized Calendar with allocated jobs in
+        -A pointer to the current sector table for the SD card ical file
+    PROMISES:
+        -To fill the event
     */
 //FUNCTION DECLARATION SECTION END-------------------------------------------------------------------------------------------------------------------------------------------------
 
