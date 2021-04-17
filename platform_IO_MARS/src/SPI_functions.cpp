@@ -8,7 +8,7 @@ extern SPIClass SDSPI; //defines the spi bus for use with the SD card
 extern SPIClass PIC1_SPI;    //defines the spi bus for use with the PIC with clock display
 extern SPIClass PIC2_SPI;    //defines the spi bus for use with the PIC with alarm capabilities
 SPISettings PICSPISettings =    {
-                                5000000, 
+                                500000, 
                                 MSBFIRST,
                                 SPI_MODE0
                                 };
@@ -35,6 +35,8 @@ int PomodoroFlag;           //0 if not using, 1 if study period, 2 if break peri
 extern Calendar myCalendar;
 extern long sector_table;
 
+
+
 void PICSPISetup()
 {
     pinMode(PIC_MISO, INPUT);
@@ -45,6 +47,8 @@ void PICSPISetup()
     PIC1_SPI.begin(PIC_SPICLK, PIC_MISO, PIC_MOSI, PIC1_SPICS);
     PIC2_SPI.begin(PIC_SPICLK, PIC_MISO, PIC_MOSI, PIC2_SPICS);
 }
+
+
 
 void sendTimetoPIC1(void)
 {
@@ -110,6 +114,10 @@ void  getTimefromPIC1(void)                     //Dont pull from PIC more than o
     PIC1_SPI.endTransaction();
     digitalWrite(PIC1_SPICS, HIGH);
 
+    Serial.println(Time2);
+    Serial.println(Time1);
+    Serial.println(Time0);
+
     Hours = 0;
     Minutes = 0;
     Seconds = 0;
@@ -143,9 +151,10 @@ void  getTimefromPIC1(void)                     //Dont pull from PIC more than o
         WifiUpdate();
     }
 
-    /*Serial.println(Hours);
+    Serial.println(Hours);
     Serial.println(Minutes);
-    Serial.println(Seconds);*/
+    Serial.println(Seconds);
+    Serial.println(TIMESTAMP);
 }
 
 
@@ -172,6 +181,8 @@ void clockButtonsSetup()
     btn2.setPressedHandler(pressed);
     btn3.setPressedHandler(pressed);
 }
+
+
 
 //Button Interrupts (?) for features, for some reason these are each triggered once during Start up so AlarmFlag is default off
 void pressed(Button2& btn) 
@@ -226,6 +237,8 @@ void pressed(Button2& btn)
     }
 }
 
+
+
 void checkSnooze()
 {
     if((Hours == SnoozeHours) && (Minutes == SnoozeMinutes) && (Seconds == SnoozeSeconds))
@@ -238,6 +251,8 @@ void checkSnooze()
         snoozeFlag = 0;
     }
 }
+
+
 
 void updatePomodoroTime(void)
 {

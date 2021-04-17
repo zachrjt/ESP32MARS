@@ -55,6 +55,7 @@ void setup()
 
   printNextEvent();
   printTemperature();
+  sendTimetoPIC1();
 }
 
 void loop()
@@ -63,7 +64,7 @@ void loop()
   btn2.loop();
   btn3.loop();
 
-  if (TMRF >= TIME_REQUEST_INTERVAL)  // gets time from PIC every 1 second
+  if (TMRF >= TIME_REQUEST_INTERVAL)  // gets time from PIC every 1 second and update snooze/pomodoro if being used
   {
     TMRF = 0;
     getTimefromPIC1();
@@ -78,6 +79,7 @@ void loop()
     }
   }
 
+  //sendTimetoPIC1();
 
   if(DISPLAYTMRF)   //updates display for non-pomodoro mode
   {
@@ -90,7 +92,7 @@ void loop()
 
 
 
-  /*if (ALARMSTAMP == TIMESTAMP) //checks for alarm from calendar event
+  if (ALARMSTAMP == TIMESTAMP) //checks for alarm from calendar event
   {
     if(!AlarmFlag)
     {
@@ -98,5 +100,5 @@ void loop()
       sendAlarmFlagtoPIC2();
       updateEvents();         //it probably works
     }
-  }*/
+  }
 }

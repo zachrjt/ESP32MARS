@@ -889,20 +889,6 @@ byte fetch_event_time(File *file, Calendar *user_calendar, const long event_byte
         //TZID/LOCAL TIMESTAMP-----------------------------------------------------------------------------------------------------------------------------------------------------
         else if (char_temp == ';')   //local time stamp or TZID time stamp
         {
-            int time_offset = 0; //offset of local time compared to utc, we use utc timestamps to figure out 
-            if (user_calendar->timezone.daylight_status == 1)//Does the calendar even have daylight savings info?
-            {
-                if(user_calendar->timezone.daylight_mode == 1)//Are we in daylight savings?
-                {
-                    time_offset = user_calendar->timezone.daylight_offset;//Yes we are, 
-                }
-                else
-                {
-                    time_offset = user_calendar->timezone.standard_offset;//No, or daylight savings mode was never specified hence the else and not else if ... 
-                }
-            }
-            time_offset *=100; //since timeoffset is in hours, minutes but utc stamps are hours, minute, seconds need to shift two places left
-
             char_temp = file->read();//Look for either ;VALUE=... or ;TZID=....
             //LOCAL TIMESTAMP------------------------------------------------------------------------------------------------------------------------------------------------------
             if(char_temp == 'V')
@@ -920,15 +906,7 @@ byte fetch_event_time(File *file, Calendar *user_calendar, const long event_byte
                 vPortFree(working_string_pointer); //freeing the start date stamp
 
                 //Note no time stamp, we assume time = 00:00.00 plus the offset in regards to utc, so same day by ahead if local is behind, behind if local is ahead
-                if (time_offset <= 0)//Check if negative
-                {
-                    event_time_code = (-1 * time_offset);//Local time is behind so utc equivalent is offset ahead
-                }
-                else
-                {
-                    event_date_code -=1;    //subtract a day since local time is ahead of utc
-                    event_time_code = 235959 - time_offset;
-                }
+                convert_local_time(user_calendar, event_date_code, 000000, &event_date_code, &event_time_code); //grabbing the converted local time
 
                 working_byte_offset = find_next_keyword(file, "DTEND;VALUE=DATE:", working_byte_offset, event_end_byte_offset, NEXTCHAR);//Grab end date
                 if(working_byte_offset == EOF)
@@ -953,17 +931,7 @@ byte fetch_event_time(File *file, Calendar *user_calendar, const long event_byte
                     calendar_str_to_int(working_string_pointer, -1, '\0', &event_date_end_code); //transfering the end datestamp year|month|day into event date stamp
                     event_time_end_code = 0;//No time stamp with this format set to 0
                     vPortFree(working_string_pointer);
-
-                    //Note no time stamp, we assume time = 00:00.00 plus the offset in regards to utc, so same day by ahead if local is behind, behind if local is ahead
-                    if (time_offset <= 0)//Check if negative
-                    {
-                        event_time_end_code = (-1 * time_offset);//Local time is behind so utc equivalent is offset ahead
-                    }
-                    else
-                    {
-                        event_date_end_code -=1;    //subtract a day since local time is ahead of utc
-                        event_time_end_code = 235959 - time_offset;
-                    }
+                    convert_local_time(user_calendar, event_date_end_code, 000000, &event_date_end_code, &event_time_end_code); //grabbing the converted local time
                 }
             }
             //LOCAL TIMESTAMP------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1007,15 +975,8 @@ byte fetch_event_time(File *file, Calendar *user_calendar, const long event_byte
                     vPortFree(working_string_pointer);  //freeing the heap timezoneid string
 
                     //Adjust time offset
-                    if (time_offset <= 0)//Check if negative
-                    {
-                        event_time_code += (-1 * time_offset);//Local time is behind so utc equivalent is offset ahead
-                    }
-                    else
-                    {
-                        event_date_code -=1;    //subtract a day since local time is ahead of utc
-                        event_time_code = 235959 - time_offset;
-                    }
+                    convert_local_time(user_calendar, event_date_code, event_time_code, &event_date_code, &event_time_code); //grabbing the converted local time
+
                     //Grabbing end time
                     working_byte_offset = find_next_keyword(file, "DTEND;TZID=", working_byte_offset, event_end_byte_offset, NEXTCHAR);//Check end date
                     if(working_byte_offset == EOF)
@@ -1047,16 +1008,7 @@ byte fetch_event_time(File *file, Calendar *user_calendar, const long event_byte
                         calendar_str_to_int(&(working_string_pointer[9]), -1, '\0', &event_time_end_code); //transfering the time stamp hour|minute|second into event end time stamp, it isnt Z terminated like UTC
                         vPortFree(working_string_pointer);
 
-                        //Adjusting end time based on calendar timezone offsets
-                        if (time_offset <= 0)//Check if negative
-                        {
-                            event_time_end_code += (-1 * time_offset);//Local time is behind so utc equivalent is offset ahead
-                        }
-                        else
-                        {
-                            event_date_end_code -=1;    //subtract a day since local time is ahead of utc
-                            event_time_end_code = 235959 - time_offset;
-                        }
+                        convert_local_time(user_calendar, event_date_end_code, event_time_end_code, &event_date_end_code, &event_time_end_code); //grabbing the converted local time
                     }
                 }
             }
@@ -1618,4 +1570,180 @@ void update_calendar_event(File *file, Calendar *user_calendar, long *sector_tab
             }
         }    
     }
+}
+
+void convert_local_time(Calendar *user_calendar, const int date_code, const int time_code, int *dest_date_code, int *dest_time_code)
+{
+    int time_offset = 0; //offset of local time compared to utc, we use utc timestamps to figure out 
+    if (user_calendar->timezone.daylight_status == 1)//Does the calendar even have daylight savings info?
+    {
+        if(user_calendar->timezone.daylight_mode == 1)//Are we in daylight savings?
+        {
+            time_offset = user_calendar->timezone.daylight_offset;//Yes we are, 
+        }
+        else
+        {
+            time_offset = user_calendar->timezone.standard_offset;//No, or daylight savings mode was never specified hence the else and not else if ... 
+        }
+    }
+
+    //Need to force the times into the individual ints
+    //variables used to convert time and dates properly
+    int day = 0;
+    int month = 0;
+    int year = 0;
+    
+    int second = 0;
+    int minute = 0;
+    int hour = 0;
+
+    int temp_code = time_code;
+    second = (temp_code % 100);
+    temp_code = (temp_code/100);
+    minute = (temp_code % 100);
+    temp_code = (temp_code/100);
+    hour = temp_code;
+
+    //now the date stamp
+    temp_code = date_code;
+    day = (temp_code % 100);
+    temp_code = (temp_code/100);
+    month = (temp_code % 100);
+    temp_code = (temp_code/100);
+    year = temp_code;
+
+    //Now we have all the individual parts of the time stamp so we can easily convert and account for overflowing months/years
+
+    if (time_offset <= 0)//Check if negative
+    {
+         time_offset*=-1;//Local time is behind so UTC must have offset added to, convert negative offset to positive
+    }
+    //otherwise offset is positive and local is ahead and thus must have timeoffset subtracted to get UTC time
+
+    int time_offset_minutes = (time_offset % 100); //since timeoffset is in hours, minutes need to modulus to get offset minutes out of it
+
+    time_offset = (time_offset/100);
+
+    int time_offset_hours = time_offset;          //Grabbing the hours of the time_offset from calendar timezone struct child
+
+   
+    //going to do a gross check to figure out if it is a leap year
+    int leap_year_state = 0;    //State variable 1 if a leap year, 0 otherwise
+    temp_code = year % 4;
+    if(temp_code  == 0)
+    {
+        temp_code = year % 100;
+        if(temp_code == 0)
+        {
+            temp_code = year % 400;
+            if(temp_code == 0)
+            {
+                leap_year_state = 1;
+            }
+        }
+        else
+        {
+            leap_year_state = 1;
+        }
+    }
+
+    minute += time_offset_minutes;
+    
+    hour += time_offset_hours;
+
+
+    //All ready for a massive logic structure disobeying https://www.youtube.com/watch?v=-5wpm-gesOY 
+
+    //technically the ical libary is leap second tolerant so yay I suppose !!
+
+
+    if(minute > 59)
+    {
+        hour+=1;
+        minute = minute-60;
+    }
+    if(hour > 23)
+    {   
+        int increment_month = 0;    //Logic state variable, 1 if we increment the month count, 0 if we do not
+        day+=1;
+        hour = hour-24;
+
+        if((month = 1) && (day > 31))  //Jan. more than 31 days?
+        {
+            increment_month = 1;
+        }
+        else if(month == 2)  //Feb.
+        {
+            if((leap_year_state == 1) && (day>29))  //Leap year and more than 29 days?
+            {
+                increment_month = 1;
+            }
+            else if (day>28)    //Not leap year and more than 28 days?
+            {
+                increment_month = 1;
+            }
+        }
+        else if((month = 3) && (day > 31))//March and more than 31 days?
+        {
+            increment_month = 1;  
+        }
+        else if((month = 4) && (day > 30))//April and more than 30 days?
+        {
+            increment_month = 1;  
+        }
+        else if((month = 5) && (day > 31))//May and more than 31 days?
+        {
+            increment_month = 1;  
+        }
+        else if((month = 6) && (day > 30))//June and more than 30 days?
+        {
+            increment_month = 1;  
+        }
+        else if((month = 7) && (day > 31))//July and more than 31 days?
+        {
+            increment_month = 1;  
+        }
+        else if((month = 8) && (day > 31))//August and more than 31 days?
+        {
+            increment_month = 1;  
+        }
+        else if((month = 9) && (day > 30))//September and more than 30 days?
+        {
+            increment_month = 1;  
+        }
+        else if((month = 10) && (day > 31))//October and more than 31 days?
+        {
+            increment_month = 1;  
+        }
+        else if((month = 11) && (day > 30))//November and more than 30 days?
+        {
+            increment_month = 1;  
+        }
+        else if((month = 12) && (day > 31))//December and more than 31 days?
+        {
+            month = 1;  //set the month to jan
+            day = 1;    //set the day to the 1st
+            year++; //increment the year
+        }
+        if(increment_month == 1)
+        {
+            month++;    //go to next month
+            day = 1;    //days dont start at 0 sadly :'(
+        }
+    }
+
+    int final_date_code = 0;
+    int final_time_code = 0;
+
+    final_date_code += day;
+    final_date_code += (100 * month);
+    final_date_code += (10000 * year);
+
+    final_time_code += second;
+    final_time_code += (100 * minute);
+    final_time_code += (10000 * hour);
+
+    *dest_date_code = final_date_code;
+
+    *dest_time_code = final_time_code;
 }

@@ -47,7 +47,7 @@
 [v _UserAppInitialize UserAppInitialize `(v  1 e 1 0 ]
 "112
 [v _UserAppRun UserAppRun `(v  1 e 1 0 ]
-"205
+"215
 [v _TimeXusInitialize TimeXusInitialize `(v  1 e 1 0 ]
 [s S410 . 1 `uc 1 GO 1 0 :1:0 
 ]
@@ -301,17 +301,17 @@
 "112 C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Time Display PIC\user_app.c
 [v _UserAppRun UserAppRun `(v  1 e 1 0 ]
 {
-"188
+"198
 } 0
 "81
 [v _UserAppInitialize UserAppInitialize `(v  1 e 1 0 ]
 {
 "97
 } 0
-"205
+"215
 [v _TimeXusInitialize TimeXusInitialize `(v  1 e 1 0 ]
 {
-"228
+"238
 } 0
 "252 C:\Users\marce\OneDrive\Documents\GitHub\ESP32MARS\Time Display PIC\encm369_pic18.c
 [v _SysTickSetup SysTickSetup `(v  1 e 1 0 ]

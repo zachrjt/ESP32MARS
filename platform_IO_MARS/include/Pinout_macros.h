@@ -10,8 +10,8 @@
     #define SD_SPICLK 32
     #define SD_SPICS 26
 
-    #define PIC_MOSI 12
-    #define PIC_MISO 13
+    #define PIC_MOSI 13
+    #define PIC_MISO 12
     #define PIC_SPICLK 15
     #define PIC1_SPICS 17
     #define PIC2_SPICS 22

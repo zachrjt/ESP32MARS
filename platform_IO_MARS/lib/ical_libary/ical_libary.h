@@ -328,6 +328,7 @@
         -To Serial print out information about the calendar
     */
 
+
    void update_calendar_event(File *file, Calendar *user_calendar, long *sector_table, const int date_stamp, const int time_stamp);
     /* 
     REQUIRES:
@@ -340,6 +341,18 @@
         -To reorder the event precedence array
         -If no more events can be found in the ical file/sector table then the jobs array pointer will be NULL
             -And the event_precedence array with have a -1 at the element spot
+    */
+
+
+   void convert_local_time(Calendar *user_calendar, const int date_code, const int time_code, int *dest_date_code, int *dest_time_code);
+    /* 
+    REQUIRES:
+        -A pointer to an initialized Calendar with timezone information
+        -A date and time code to convert to UTC
+        -Pointers to the resulting UTC date and time ints
+    PROMISES:
+        -To convert a given local time, a time that is in the same zone as the calendar's timezone, into a UTC time and date code
+        -And to return the results into pointed-to-dest-ints
     */
 //FUNCTION DECLARATION SECTION END-------------------------------------------------------------------------------------------------------------------------------------------------
 

@@ -35,7 +35,7 @@ void printNextEvent(void) //Prints the string on Event1 global var
 {
   tft.setCursor(0, 0);
   tft.setTextColor(TFT_WHITE,TFT_BLACK);
-  tft.setTextSize(2);
+  tft.setTextSize(3);
 
   printSplitString("Next event: \n");
   printSplitString(Event1);
@@ -77,7 +77,7 @@ void displayPomodoro(void)
 
   if(PomodoroFlag == 1)
   {
-    printSplitString("Study Time \n" + String(PomodoroMinutes) + ":" + String(PomodoroSeconds)
+    printSplitString("Study Time \n" + String(PomodoroMinutes) + ":" + String(PomodoroSeconds)    //if I print these separately they just dont print dont ask me why
                      + " left");
   }
   else if (PomodoroFlag == 2)

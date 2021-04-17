@@ -6,7 +6,7 @@ Linker command line:
   -pivt0x8=08h -cn \
   -h+dist/default/production\Time_Display_PIC.production.sym \
   --cmf=dist/default/production\Time_Display_PIC.production.cmf -z \
-  -Q18F27Q43 -oC:\Users\marce\AppData\Local\Temp\sg58.2 \
+  -Q18F27Q43 -oC:\Users\marce\AppData\Local\Temp\sam0.2 \
   --defsym=__MPLAB_BUILD=1 \
   -Mdist/default/production/Time_Display_PIC.production.map -E1 \
   -ver=XC8 Compiler --acfsm=1493 -ASTACK=0560h-025FFh -pstack=STACK \
@@ -33,7 +33,7 @@ Linker command line:
   -pfarbss=FARRAM,fardata=FARRAM,nvFARRAM=FARRAM \
   -pintsave_regs=BIGRAM,bigbss=BIGRAM,bigdata=BIGRAM -pbss=RAM \
   -pidata=CODE,irdata=CODE,ibigdata=CODE,ifardata=CODE -prparam=COMRAM \
-  C:\Users\marce\AppData\Local\Temp\sg58.o \
+  C:\Users\marce\AppData\Local\Temp\sam0.o \
   dist/default/production\Time_Display_PIC.production.o 
 
 Object code version is 3.11
@@ -43,7 +43,7 @@ Machine type is 18F27Q43
 
 
                 Name                               Link     Load   Length Selector   Space Scale
-C:\Users\marce\AppData\Local\Temp\sg58.o
+C:\Users\marce\AppData\Local\Temp\sam0.o
                 idloc                            200000   200000       20        0       5
                 config                           300000   300000        A        0       4
                 init                                102      102        4        4       0
@@ -52,23 +52,23 @@ dist/default/production\Time_Display_PIC.production.o
                 idloc                            200000   200000       20        0       5
                 config                           300000   300000        A        0       4
                 ivt0x8                                8        8       FA        4       0
-                text10                              334      334       74        4       0
-                text9                               4CC      4CC       1E      133       0
-                text8                               4FE      4FE        2      133       0
-                text7                               43A      43A       28        4       0
-                text6                               4EA      4EA       14      133       0
-                text5                               412      412       28        4       0
-                text4                               4A8      4A8       22        4       0
-                text3                               3E8      3E8       2A        4       0
-                text2                               486      486       22        4       0
-                text1                               236      236       FE        4       0
+                text10                              348      348       74       D2       0
+                text9                               4E0      4E0       1E      138       0
+                text8                               512      512        2      138       0
+                text7                               44E      44E       28       D2       0
+                text6                               4FE      4FE       14      138       0
+                text5                               426      426       28       D2       0
+                text4                               4BC      4BC       22       D2       0
+                text3                               3FC      3FC       2A       D2       0
+                text2                               49A      49A       22       D2       0
+                text1                               236      236      110        4       0
                 text0                               106      106      130        4       0
                 cstackCOMRAM                        53B      53B       15      501       1
                 dataCOMRAM                          501      501       24      501       1
                 bssCOMRAM                           525      525       16      501       1
-                cinit                               3A8      3A8       40        4       0
+                cinit                               3BC      3BC       40       D2       0
                 nvCOMRAM                            550      550        4      501       1
-                idataCOMRAM                         462      462       24        4       0
+                idataCOMRAM                         476      476       24       D2       0
 
 TOTAL           Name                               Link     Load   Length     Space
         CLASS   STACK          
@@ -77,19 +77,19 @@ TOTAL           Name                               Link     Load   Length     Sp
                 init                                102      102        4         0
                 reset_vec                             0        0        4         0
                 ivt0x8                                8        8       FA         0
-                text10                              334      334       74         0
-                text9                               4CC      4CC       1E         0
-                text8                               4FE      4FE        2         0
-                text7                               43A      43A       28         0
-                text6                               4EA      4EA       14         0
-                text5                               412      412       28         0
-                text4                               4A8      4A8       22         0
-                text3                               3E8      3E8       2A         0
-                text2                               486      486       22         0
-                text1                               236      236       FE         0
+                text10                              348      348       74         0
+                text9                               4E0      4E0       1E         0
+                text8                               512      512        2         0
+                text7                               44E      44E       28         0
+                text6                               4FE      4FE       14         0
+                text5                               426      426       28         0
+                text4                               4BC      4BC       22         0
+                text3                               3FC      3FC       2A         0
+                text2                               49A      49A       22         0
+                text1                               236      236      110         0
                 text0                               106      106      130         0
-                cinit                               3A8      3A8       40         0
-                idataCOMRAM                         462      462       24         0
+                cinit                               3BC      3BC       40         0
+                idataCOMRAM                         476      476       24         0
 
         CLASS   CONST          
 
@@ -192,8 +192,9 @@ TOTAL           Name                               Link     Load   Length     Sp
 SEGMENTS        Name                           Load    Length   Top    Selector   Space  Class
 
                 reset_vec                      000000  000004  000004         0       0  CODE    
-                ivt0x8                         000008  0004C2  0004CA         4       0  CODE    
-                text9                          0004CC  000034  000500       133       0  CODE    
+                ivt0x8                         000008  00033E  000346         4       0  CODE    
+                text10                         000348  000196  0004DE        D2       0  CODE    
+                text9                          0004E0  000034  000514       138       0  CODE    
                 dataCOMRAM                     000501  000053  000554       501       1  COMRAM  
 
 
@@ -235,13 +236,15 @@ UNUSED ADDRESS RANGES
         BANK9            000900-0009FF              100
         BIGRAM           000554-0025FF             20AC
         CODE             000004-000007                4
-                         0004CA-0004CB                2
-                         000500-01FFFF            1FB00
+                         000346-000347                2
+                         0004DE-0004DF                2
+                         000514-01FFFF            1FAEC
         COMRAM           000554-00055F                C
         CONFIG           30000A-300011                8
         CONST            000004-000007                4
-                         0004CA-0004CB                2
-                         000500-01FFFF            1FB00
+                         000346-000347                2
+                         0004DE-0004DF                2
+                         000514-01FFFF            1FAEC
         EEDATA           380000-3803FF              400
         MEDIUMCONST      002600-00FFFF             DA00
                          012600-01FFFF             DA00
@@ -261,7 +264,7 @@ SegmentDecoderIntialize@F15939 dataCOMRAM   000501
 _ANSELA                        (abs)        000400
 _ANSELB                        (abs)        000408
 _ANSELC                        (abs)        000410
-_ClockSetup                    text8        0004FE
+_ClockSetup                    text8        000512
 _G_au8AlarmTime0               nvCOMRAM     000550
 _G_au8AlarmTime1               bssCOMRAM    000533
 _G_au8AlarmTime2               bssCOMRAM    000532
@@ -277,9 +280,9 @@ _G_u8TimeFlag                  bssCOMRAM    00053A
 _G_u8UserAppFlags              bssCOMRAM    000534
 _G_u8receivedData              dataCOMRAM   000524
 _G_u8writeData                 dataCOMRAM   000523
-_GpioSetup                     text7        00043A
+_GpioSetup                     text7        00044E
 _INTCON0bits                   (abs)        0004D6
-_INTERRUPTInitialize           text6        0004EA
+_INTERRUPTInitialize           text6        0004FE
 _IPR3bits                      (abs)        000365
 _LATA                          (abs)        0004BE
 _LATB                          (abs)        0004BF
@@ -301,24 +304,24 @@ _SPI1CON0bits                  (abs)        000084
 _SPI1CON1                      (abs)        000085
 _SPI1CON2                      (abs)        000086
 _SPI1RXB                       (abs)        000080
-_SPI1RX_ISR                    text10       000334
+_SPI1RX_ISR                    text10       000348
 _SPI1SCKPPS                    (abs)        00026A
 _SPI1SDIPPS                    (abs)        00026B
 _SPI1SSPPS                     (abs)        00026C
 _SPI1STATUSbits                (abs)        000087
 _SPI1TXB                       (abs)        000081
-_SPIInitialize                 text5        000412
-_SysTickSetup                  text4        0004A8
+_SPIInitialize                 text5        000426
+_SysTickSetup                  text4        0004BC
 _T0CON0                        (abs)        00031A
 _T0CON1                        (abs)        00031B
 _TMR0H                         (abs)        000319
 _TMR0L                         (abs)        000318
-_TMR0_ISR                      text9        0004CC
+_TMR0_ISR                      text9        0004E0
 _TRISA                         (abs)        0004C6
 _TRISB                         (abs)        0004C7
 _TRISC                         (abs)        0004C8
-_TimeXusInitialize             text3        0003E8
-_UserAppInitialize             text2        000486
+_TimeXusInitialize             text3        0003FC
+_UserAppInitialize             text2        00049A
 _UserAppRun                    text1        000236
 __HRAM                         (abs)        000000
 __Habs1                        abs1         000000
@@ -510,7 +513,7 @@ __Ltext6                       text6        000000
 __Ltext7                       text7        000000
 __Ltext8                       text8        000000
 __Ltext9                       text9        000000
-__S0                           (abs)        000500
+__S0                           (abs)        000514
 __S1                           (abs)        000554
 __S2                           (abs)        000000
 __S4                           (abs)        000000
@@ -522,38 +525,38 @@ ___rparam_used                 (abs)        000001
 ___sp                          stack        000000
 __accesstop                    (abs)        000560
 __activetblptr                 (abs)        000000
-__end_of_ClockSetup            text8        000500
-__end_of_GpioSetup             text7        000462
-__end_of_INTERRUPTInitialize   text6        0004FE
-__end_of_SPI1RX_ISR            text10       0003A8
-__end_of_SPIInitialize         text5        00043A
-__end_of_SysTickSetup          text4        0004CA
-__end_of_TMR0_ISR              text9        0004EA
-__end_of_TimeXusInitialize     text3        000412
-__end_of_UserAppInitialize     text2        0004A8
-__end_of_UserAppRun            text1        000334
-__end_of__initialization       cinit        0003E2
+__end_of_ClockSetup            text8        000514
+__end_of_GpioSetup             text7        000476
+__end_of_INTERRUPTInitialize   text6        000512
+__end_of_SPI1RX_ISR            text10       0003BC
+__end_of_SPIInitialize         text5        00044E
+__end_of_SysTickSetup          text4        0004DE
+__end_of_TMR0_ISR              text9        0004FE
+__end_of_TimeXusInitialize     text3        000426
+__end_of_UserAppInitialize     text2        0004BC
+__end_of_UserAppRun            text1        000346
+__end_of__initialization       cinit        0003F6
 __end_of_main                  text0        000236
-__initialization               cinit        0003A8
+__initialization               cinit        0003BC
 __mediumconst                  mediumconst  000000
 __pbssCOMRAM                   bssCOMRAM    000525
-__pcinit                       cinit        0003A8
+__pcinit                       cinit        0003BC
 __pcstackCOMRAM                cstackCOMRAM 00053B
 __pdataCOMRAM                  dataCOMRAM   000501
-__pidataCOMRAM                 idataCOMRAM  000462
+__pidataCOMRAM                 idataCOMRAM  000476
 __pivt0x8                      ivt0x8       000008
 __pnvCOMRAM                    nvCOMRAM     000550
 __ptext0                       text0        000106
 __ptext1                       text1        000236
-__ptext10                      text10       000334
-__ptext2                       text2        000486
-__ptext3                       text3        0003E8
-__ptext4                       text4        0004A8
-__ptext5                       text5        000412
-__ptext6                       text6        0004EA
-__ptext7                       text7        00043A
-__ptext8                       text8        0004FE
-__ptext9                       text9        0004CC
+__ptext10                      text10       000348
+__ptext2                       text2        00049A
+__ptext3                       text3        0003FC
+__ptext4                       text4        0004BC
+__ptext5                       text5        000426
+__ptext6                       text6        0004FE
+__ptext7                       text7        00044E
+__ptext8                       text8        000512
+__ptext9                       text9        0004E0
 __ramtop                       ramtop       002600
 __size_of_ClockSetup           (abs)        000000
 __size_of_GpioSetup            (abs)        000000
@@ -568,7 +571,7 @@ __size_of_UserAppRun           (abs)        000000
 __size_of_main                 (abs)        000000
 __smallconst                   smallconst   000000
 _main                          text0        000106
-end_of_initialization          cinit        0003E2
+end_of_initialization          cinit        0003F6
 intlevel0                      text         000000
 intlevel1                      text         000000
 intlevel2                      text         000000
@@ -583,7 +586,7 @@ main@u8TimeCounter             bssCOMRAM    000535
 stackhi                        (abs)        0025FF
 stacklo                        (abs)        000560
 start                          init         000102
-start_initialization           cinit        0003A8
+start_initialization           cinit        0003BC
 
 
 FUNCTION INFORMATION:
@@ -687,7 +690,7 @@ Total ram usage:        0 bytes
 
  *************** function _TimeXusInitialize *****************
  Defined at:
-		line 205 in file "user_app.c"
+		line 215 in file "user_app.c"
  Parameters:    Size  Location     Type
 		None
  Auto vars:     Size  Location     Type
@@ -929,18 +932,18 @@ MODULE INFORMATION
 
 Module		Function		Class		Link	Load	Size
 encm369_pic18.c
-		_SPIInitialize 		CODE           	0412	0000	40
-		_INTERRUPTInitialize		CODE           	04EA	0000	20
-		_GpioSetup     		CODE           	043A	0000	40
-		_SysTickSetup  		CODE           	04A8	0000	34
-		_SPI1RX_ISR    		CODE           	0334	0000	116
-		_TMR0_ISR      		CODE           	04CC	0000	30
-		_ClockSetup    		CODE           	04FE	0000	2
+		_SPIInitialize 		CODE           	0426	0000	40
+		_INTERRUPTInitialize		CODE           	04FE	0000	20
+		_GpioSetup     		CODE           	044E	0000	40
+		_SysTickSetup  		CODE           	04BC	0000	34
+		_SPI1RX_ISR    		CODE           	0348	0000	116
+		_TMR0_ISR      		CODE           	04E0	0000	30
+		_ClockSetup    		CODE           	0512	0000	2
 
 encm369_pic18.c estimated size: 282
 
 shared
-		__initialization		CODE           	03A8	0000	58
+		__initialization		CODE           	03BC	0000	58
 
 shared estimated size: 58
 
@@ -950,9 +953,9 @@ main.c
 main.c estimated size: 304
 
 user_app.c
-		_UserAppRun    		CODE           	0236	0000	254
-		_TimeXusInitialize		CODE           	03E8	0000	42
-		_UserAppInitialize		CODE           	0486	0000	34
+		_UserAppRun    		CODE           	0236	0000	272
+		_TimeXusInitialize		CODE           	03FC	0000	42
+		_UserAppInitialize		CODE           	049A	0000	34
 
-user_app.c estimated size: 330
+user_app.c estimated size: 348
 

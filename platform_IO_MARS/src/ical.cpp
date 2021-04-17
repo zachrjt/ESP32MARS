@@ -2,16 +2,16 @@
 
 extern SPIClass SDSPI; //defines the spi bus for use with the SD card
 
-String weather_description;  //Pulls the weather description
+String weather_description = "-0.2";  //Pulls the weather description
 String weather_value;  //Pulls the weather value like -4
 
 Calendar myCalendar;
 
 //below are utc time stamps that the ical libary uses, there is no updating function within thats left up to the user/zach tom.
 
-int DATESTAMP = 20210412;
+int DATESTAMP = 20210413;
 String DATEREQUEST;
-int TIMESTAMP = 181500;
+int TIMESTAMP = 162700;
 String TIMEREQUEST;
 extern int ALARMSTAMP;
 
@@ -236,7 +236,7 @@ void WifiUpdate(void)
         }
     }
 
-    WiFi.disconnect();  //disconnect from WiFi
+    //WiFi.disconnect();  //disconnect from WiFi
 
 }
 

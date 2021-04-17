@@ -171,7 +171,7 @@ void __interrupt(irq(IRQ_SPI1RX), high_priority) SPI1RX_ISR(void)  //Could have 
         }
         else if(u8received == 1)        //First Time request from ESP32
         {
-            SPI1TXB = G_au8Time0;       //send Time2 into transfer buffer for ESP32 request
+            SPI1TXB = G_au8Time0;       //send Time0 into transfer buffer for ESP32 request
         }
     }
     else if(u8Counter == 1)

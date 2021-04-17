@@ -175,8 +175,18 @@ void UserAppRun(void)
     }
     
     SPI1STATUSbits.CLRBF = 1;   //update Transfer buffer for ESP32 Time request (Buffer only has a capacity of 2)
+    
+    if(SPI1STATUSbits.TXBE)
+    {
+        //LATCbits.LATC3 ^= 1;
+    }
     SPI1TXB = G_au8Time2;
     SPI1TXB = G_au8Time1;
+    
+    if(SPI1STATUSbits.TXBE)
+    {
+        LATCbits.LATC3 ^= 1;
+    }
     
     /*if(((G_au8Time0 == G_au8AlarmTime0) && (G_au8Time1 == G_au8AlarmTime1)) && (G_au8Time2 == G_au8AlarmTime2))
     {
