@@ -12,4 +12,10 @@ K display 7-segment clock LED
 F https://www.digikey.ca/en/products/detail/vishay-semiconductor-opto-division/TDCR1060M/4074711
 $ENDCMP
 #
+$CMP TTgo
+D esp32 microcontroller board
+K trash esp32 MARS
+F https://raw.githubusercontent.com/Xinyuan-LilyGO/TTGO-T-Display/master/schematic/ESP32-TFT(6-26).pdf
+$ENDCMP
+#
 #End Doc Library
