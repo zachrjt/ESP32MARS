@@ -1,0 +1,15 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP PIC18F27Q43
+D 8-Bit microcontroller chip
+K MCU 8-bit PIC
+F https://ww1.microchip.com/downloads/en/DeviceDoc/PIC18F27-47-57Q43-Data-Sheet-DS40002147E.pdf
+$ENDCMP
+#
+$CMP TDCR1060M
+D Common Cathode LED 4-Digit 7-Segment Clock Display
+K display 7-segment clock LED
+F https://www.digikey.ca/en/products/detail/vishay-semiconductor-opto-division/TDCR1060M/4074711
+$ENDCMP
+#
+#End Doc Library
