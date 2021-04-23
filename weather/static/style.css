@@ -1,0 +1,55 @@
+body{
+
+    background: lightcyan;
+    width: 800px;
+    margin: auto;
+    
+    }
+    
+    h1{
+        color: maroon;
+        text-align: center;
+    }
+    
+    div.ordered{
+        float: left;
+        margin: 20px;
+        border: 5px solid gray;
+        padding: 10px;
+    
+    }
+    
+    div.unordered{
+        float: right;
+        margin: 20px;
+        border: 5px solid gray;
+        padding: 10px;
+        
+    
+    }
+    
+    .redunderline{
+        color: red;
+        text-decoration: underline;
+    }
+    
+    ul{
+        color: gray;
+    }
+    
+    ol{
+        color: gray;
+    }
+    
+    /*Pseudo Classes*/
+    a:hover{
+        /*Hover over the underline goes away */
+        text-decoration: none;
+        color: blueviolet;
+    }
+    
+    li:nth-child(even){
+        /*All Even elements are highlighted with the color specified.*/
+        background: lightsalmon;
+    }
+    
