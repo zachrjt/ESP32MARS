@@ -1,3 +1,4 @@
 (sym_lib_table
   (lib (name MARS_components)(type Legacy)(uri ${KIPRJMOD}/MARS_components.lib)(options "")(descr ""))
+  (lib (name MARS_time_display-rescue)(type Legacy)(uri ${KIPRJMOD}/MARS_time_display-rescue.lib)(options "")(descr ""))
 )
